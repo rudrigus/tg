@@ -1,0 +1,29 @@
+library ieee;
+
+package Common is
+  constant numcols : integer := 60;
+  constant numlin : integer := 60;
+  type LinhaImagem is array (0 to numcols - 1) of bit_vector(7 downto 0);
+  type MatrizImagem is array (0 to numlin - 1) of LinhaImagem;
+  
+  type lin3 is array (0 to 2) of bit_vector(7 downto 0);
+  type mat33 is array (0 to 2) of lin3;
+end Common;
+
+package body Common is
+   function  matmul  ( a : mat33; b : mat33 ) return mat33 is
+  variable i,j,k : integer:=0;
+  variable prod : mat33:=(others => (others => (others => '0')));
+begin
+  for i in 0 to 2 loop
+  for j in 0 to 2 loop
+  for k in 0 to 2 loop
+    prod(i)(j) := bit_vector(integer(prod(i)(j)) + integer((a(i)(k)) * integer(b(k)(j))));
+  end loop;
+  end loop;
+  end loop;
+return prod;
+end matmul;
+   
+   -- subprogram bodies here
+end Common;

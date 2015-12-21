@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="ProcessadorImagemGMAW">
+		<CBX_INST_ENTRY INSTANCE_NAME="|ProcessadorImagemGMAW|Bordas:bloco_bordas|altsyncram:somaVert_rtl_0" CBX_FILE_NAME="altsyncram_k0h1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|ProcessadorImagemGMAW|TopoBase:bloco_topo_base|ImagensRAM:ram|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_2go1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|ProcessadorImagemGMAW|Bordas:bloco_bordas|ImagensRAM:ram|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_2go1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|ProcessadorImagemGMAW|ImagensRAM:ram|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_2go1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|ProcessadorImagemGMAW|SeletorImagem:bloco_receptor|ImagensRAM:ram|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_2go1.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

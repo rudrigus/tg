@@ -1,0 +1,93 @@
+%TCIDATA{LaTeXparent=0,0,relatorio.tex}
+                      
+
+\chapter{Desenvolvimento}\label{CapDesenvolvimento}
+
+% Resumo opcional. Comentar se não usar.
+\resumodocapitulo{Resumo opcional.}
+
+\section{Introdução}
+
+
+
+\section{Arquitetura geral}
+
+O sistema devera implementar um controlador em malha fechada, que teoricamente será superior ao controle de malha aberta comumente utilizado em sistemas soldas automatizadas. Ou seja, o sinal de entrada deve ser o resultado da soma do sinal de referência, que será o trajeto definido na programação de um robô, e do sinal de controle, que será calculado por um computador.
+
+Para que o sistema seja realimentado é necessário obter medidas da saída do sistema e, se possível, outros estados. O estado de saída no caso será obtido através de um algoritmo que irá processar fotos do processo e retornar valores numéricos relevantes à operação. Esta etapa é feita com o uso de uma câmera de alta taxa de captura de imagens, capaz de fotografar o arame e a poça de soldagem no instante em que há um curto circuito. O algoritmo processa as imagens e obtém valores numéricos de tamanho da poça, desvio e inclinação do arame. Finalmente, o algoritmo calcula e fornece um sinal de controle para corrigir o posicionamento da tocha de soldagem ou parâmetros como velocidade de alimentação do arame e corrente elétrica.
+
+\section{Identificação do ângulo da câmera e distorção de perspectiva}
+
+A câmera de ser posicionada obliquamente em relação à poça de soldagem não apenas por questões físicas mas também para que inclua tanto poça de soldagem quanto arame. Isso significa que os elementos (poça e arame) ficam em diagonal com o plano da imagem, o que causa uma distorção de perspectiva do que seria a imagem ideal para processamento. Dessa forma, a distorção de perspectiva da imagem deve ser conhecida para que seja possível obter valores corretos no processamento. Uma forma de obter essa informação seria por inserção de dados como ângulo, distância entre câmera e tocha, e distância focal da lente por um operador no sistema. Mas considerando que o sistema possa ser utilizado  com câmeras, atuadores e posicionamentos diferentes, inclusive com a possibilidade de alteração de alguma variável entre dois \textit{setups} diferentes, há a possibilidade de erros e aumento do tempo de \textit{setup}.
+
+%IMAGEM da posicao da camera AQUI!!!
+
+Portanto o sistema deve obter esses dados através de uma pré-calibração simples e rápida. Esta pré calibração é feita com o processamento de  uma imagem inicial. A imagem deve conter o mínimo de quatro pontos conhecidos, como descrito em \ref{section:CalculoMatrizTransf} no espaço tridimensional para que seja possível calcular a matriz de transformação.
+
+A pré calibração é feita utilizando-se um objeto quadrado de dimensões conhecidas no plano paralelo à peça que será soldada. Isso pode ser feito colocando-se uma pequena chapa metálica quadrada sobre o plano de soldagem. Apenas uma imagem é necessária para se obter a matriz de transformação, desde que o resto do ambiente contido na imagem seja bem controlado no momento da calibração. Os algoritmo gerado com Matlab para gerar a matriz de transformação se mostrou eficiente, mas pode apresentar erros caso haja na imagem cantos mais definidos que os cantos do quadrado.
+
+Esse algoritmo utiliza o método de detecção de cantos de Harris descrito em \ref{section:DeteccaoCanto}
+
+Para implementação em uma FPGA, devem-se separar blocos da imagem para serem processados paralelamente. Dessa forma uma imagem separada em e
+
+
+
+\section{Implementação em Matlab}
+
+
+O primeiro algoritmo foi desenvolvido para funcionamento de forma sequencial, pois seria implementado com o software Matlab. A sequência de operações foi definida de acordo com a descrição abaixo. As descrições entre parênteses indicam os parâmetros utilizados em testes que obtiveram bons resultados.
+
+
+\begin{enumerate}
+\item Limpar memória e fechar figuras
+\item Carregar quantidadeImagens imagens (quantidadeImagens=3)
+\item Criar imagem média das imagens carregadas -> I
+
+\item Retirar pixels abaixo de threshold1 para retirar scanlines (threshold1 = 10)
+\item Filtro de mediana em I para retirar ruído -> I2
+\item Retirar pixels abaixo de threshold2  de I2 -> B (threshold2 = 20)
+
+\item Encontrar topo e base do arame
+\subitem  Criar vetor de soma do perfil horizontal de B -> somaHor
+\subitem  Criar vetor de derivadas de somaHor -> derivadaHor
+\subitem  Encontrar topo do arame
+\subsubitem    Valor máximo de derivadaHor entre o topo da imagem e o provável meio do arame (meioVert = 125) -> posArameTopo
+\subitem  Encontrar base do arame
+\subsubitem    Valor mínimo de derivadaHor entre o meio do arame e o fim da imagem - posArameBase
+
+\item Encontrar borda esquerda e direita da poça de soldagem
+\subitem  Criar vetor de soma do perfil vertical de B -> somaVert
+\subitem  Criar vetor de derivadas de somaVert -> derivadaVert
+\subitem  Encontrar borda esquerda da poça
+\subsubitem    Valor máximo de derivadaVert entre o começo e o meio da imagem -> limEsqPoca
+\subitem  Encontrar borda direita da poça
+\subsubitem    Valor mínimo de derivadaVert entre o meio e o final da imagem -> limDirPoca
+
+\item Encontrar laterais do arame
+\subitem  Criar vetor de derivadas de B na horizontal entre topo e base do arame -> derivadaArame
+\subitem  Valores mínimos de derivadaArame -> vetor inicioArame
+\subitem  Valores máximos de derivadaArame -> vetor fimArame
+\subitem  Linearizar inicioArame e fimArame
+\end{enumerate}
+
+Esses passos com os valores para os parâmetros definidos acima obtiveram bons resultados para uma grande quantidade de imagens (imagens antigas). O algoritmo demonstrou certa robustez à ruídos, porém quando a imagem foge muito ao padrão esperado, o algoritmo fornece valores equivocados. Um exemplo é quando há uma grande gota de solda fora da área da poça. 
+% Mencionar que deve ser usado um filtro de Kalman?
+
+\section{Implementação do processamento em FPGA}
+
+O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa FPGA, utilizando-se a linguagem VHDL. Boa parte dos procedimentos continuou com a característica sequencial, pois as imagens são obtidas desta forma. Alguns procedimentos utilizaram do paralelismo para economia de tempo e recursos, como a obtenção da imagem média: em vez de armazenar mais uma imagem na memória para a representação da média, como na implementação em Matlab, o valor médio de um pixel é obtido à partir da média calculada no momento em que este precisar ser utilizado.
+
+% apresentar resultados a cada imagem lida
+% calcular as medidas em paralelo: utilizar imagens carregadas
+% problema: fica difícil carregar dados de linhas e colunas -> dois endereços de leitura vs leitura sequencial
+
+
+
+
+A placa receberá sequencialmente os dados da câmera e armazenará $ quantidade_imagens $ em memória. Isto é feito para se aplicar o filtro de média de imagens. A imagem média não necessita ser armazenada pois cada pixel pode ser obtido através da média dos pixels das imagens armazenadas à medida que for necessário. Desta forma foi implementado um bloco de RAM utilizando uma \textit{megafunction} do Quartus para o armazenamento dessas imagens. São utilizados quatro blocos, sendo três com imagens carregadas e um para o carregamento da imagem atual. Estes quatro blocos são utilizados de forma rotativa, sendo que o identificador da última imagem é armazenado em uma variável $ bloco_atual $. % Este método ocupa uma quantidade considerável de memória, porém se mostrou extremamente útil nos testes com matlab.
+
+A seleção de imagens propícias ao processamento é feito no momento de obtenção da imagem. Ao final do recebimento de uma imagem $ bloco_atual $ permanece inalterado caso a imagem apresente brilho excessivo. Caso contrário $ bloco_atual $ tem seu valor aumentado de 1 e a imagem mais antiga é descartada. Portanto , o processamento é feito sempre com as últimas três imagens propícias armazenadas em memória.
+
+
+
+

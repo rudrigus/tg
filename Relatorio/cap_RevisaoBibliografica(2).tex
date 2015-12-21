@@ -1,0 +1,456 @@
+%TCIDATA{LaTeXparent=0,0,relatorio.tex}
+                      
+\chapter{Revisão Bibliográfica}\label{CapRevisaoBibliografica}
+
+\section{Processo de Soldagem GMAW}
+
+O processo de soldagem GMAW do inglês \textit{Gas Metal Arc Welding}, também conhecido como MIG/MAG (\textit{Metal Inert Gas/Metal Active Gas}) é um dos processos de soldagem mais propícios para automação.
+
+
+
+\subsection{Fundamentos}
+
+O princípio da soldagem GMAW consiste em introduzir um fio de metal na tocha, fio esse que é fundido no arco elétrico. O arame de soldar desempenha duas funções: por um lado é o eletrodo que conduz corrente, por outro, é também, em simultâneo, o material de adição a ser introduzido na poça de soldagem. A imagem \ref{fig:solda_mig_mag} demonstra o processo de formação do cordão de solda e seus elementos principais.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/solda_mig_mag}
+\caption{Elementos básicos da soldagem GMAW. (1) Direção de trabalho, (2) Tubo de contato, (3) Arame consumivel, (4) Gás de proteção, (5) Poça de fusão, (6) Solda solidificada, (7) Peça de Trabalho, (8) Arco elétrico.}
+\label{fig:solda_mig_mag}
+\end{figure}
+
+
+Um gás de proteção que flui através do bocal da tocha protege o arco elétrico e o material em fusão, podendo o mesmo ser inerte (MIG) ou ativo (MAG). Os gases inertes, tais como o argônio e o hélio, não entram em reação com o material em fusão. Por outro lado, os gases ativos, não só interferem no próprio arco elétrico, como também reagem com o material em fusão. Um exemplo de gás ativo é o argon, com uma pequena parte de dióxido de carbono ou oxigênio. A componente ativa tem influência, por exemplo, sobre a penetração e/ou a temperatura do banho de fusão.
+
+Além disto, o gás também tem influência nas perdas de elementos químicos, na temperatura da poça de fusão, na sensibilidade à fissuração e na porosidade, bem como na facilidade da execução da soldagem em diversas posições. Os gases nobres (processo MIG) são preferidos por razões metalúrgicas, enquanto o CO2 puro, é preferido por razões econômicas. O processo MAG é utilizado somente na soldagem de materiais ferrosos, enquanto o processo MIG pode ser usado tanto na soldagem de materiais ferrosos quanto não ferrosos como Alumínio, Cobre, Magnésio, Níquel e suas ligas.
+
+A soldagem GMAW funciona com corrente contínua (CC), normalmente com o arame no pólo positivo. Essa configuração é conhecida como polaridade reversa. A polaridade direta é raramente utilizada por causa da transferência deficiente do metal fundido do arame de solda para a peça. São comumente empregadas correntes de soldagem de 50 A até mais que 600 A e tensões de soldagem de 15 V até 32 V. Um arco elétrico autocorrigido e estável é obtido com o uso de uma fonte de tensão constante e com um alimentador de arame de velocidade constante. A corrente de soldagem controla fortemente a velocidade de fusão do arame. Além disso, a penetração, o reforço e a largura do cordão tendem a aumentar com a corrente quando as demais variáveis são mantidas constantes.
+
+
+
+
+
+\subsection{Equipamentos}
+
+
+
+A tocha, que guia o arame e o gás de proteção para a região de soldagem. Ela também leva a energia de soldagem até o arame. Tipos diferentes de tocha foram desenvolvidos para proporcionar o desempenho máximo na soldagem para diferentes tipos de aplicações. Elas variam desde tochas para ciclos de trabalho pesados para atividades envolvendo altas correntes até tochas leves para baixas correntes e soldagem fora de posição. Em ambos os casos estão disponíveis tochas refrigeradas a água ou secas (refrigeradas pelo gás de proteção), e tochas com extremidades retas ou curvas. Geralmente são adicionados sistemas de refrigeração na tocha para facilitar o manuseio. Nos casos em que são executados trabalhos com altas correntes é possível usar uma tocha mais robusta.
+
+
+
+
+%Imagem tocha_mig_mag.png. 
+%(1) Tocha MIG/MAG, (2) Anel de proteção , (3) Gas de proteção, (4) %Bico de contato, (5) Arame
+
+
+
+%Explicar e falar por que é necessária a monitoração e realimentação.
+
+\subsection{Monitoração dos parâmetros de soldagem}
+
+Diversas variáveis do processo GMAW podem ser ajustadas para uma boa soldagem do metal. Estas variáveis são a velocidade de alimentação do eletrodo, a distância do bocal à peça, o \textit{stickout}, a inclinação de trabalho do eletrodo, e o fluxo de gás. Essas variáveis requerem uma monitoração constante por parte do operador, ou por um equipamento automático, que é o escopo deste trabalho. A velocidade de soldagem, a posição de soldagem e o diâmetro do eletrodo também influenciam consideravelmente na geometria do cordão de solda.
+
+
+
+\section{Processamento de imagens}
+%Filtros para seleção.
+
+As imagens obtidas no trabalho anterior de Luciano Duarte \cite{luciano},
+
+As imagens capturadas do processo de soldagem necessitam passar por um processamento para que os valores necessários sejam obtidos. Nesta seção será explicado como é feito esse processamento.
+
+
+A área de processamento de imagens desperta interesse de estudiosos por ter diversas aplicações em duas principais categorias: (1) aprimoramento de informações pictóricas para interpretação humana; e (2) extração automática de dados relevantes à partir de uma cena \cite{oge}. A segunda categoria, que será utilizada neste trabalho, também pode ser designada como "análise de imagens", "visão por computador" ou "reconhecimento de padrões".
+
+Diversas áreas se beneficiam de técnicas de processamento de imagens. Na medicina procedimentos computacionais melhoram o contraste, codificam níveis de intensidade para melhor interpretação e podem até mesmo calcular a quantidade de uma determinada célula em uma imagem. Geógrafos fazem uso de técnicas semelhantes e podem determinar áreas de vegetação, desmatamento, e poluição \cite{gonzalez}. Existem muitos outros exemplos, que vão até o controle de qualidade e de processos.
+
+\subsection{Elementos de sistemas de processamento de imagens}
+Um sistema de processamento de imagens consiste alguns elementos básicos mostrados a seguir:
+\begin{enumerate}
+\item {Aquisição:
+
+São necessários: um dispositivo físico sensível a uma faixa de frequência no espectro eletromagnético (preferencialmente a luz visível) que produza um sinal elétrico proporcional ao nível de energia detectado; e um digitalizador que converte o sinal elétrico analógico em um sinal digital.
+}
+\item{Armazenamento:
+
+Um desafio em processamento de imagens, o armazenamento de imagens digitais requer muita memória RAM ou \it{frame buffers} (Armazenamento por curto tempo) e espaço em disco (Arquivamento). \textbf{Apesar de os computadores atuais não terem grandes problemas com armazenamento, alguns equipamentos podem não ter memória suficiente para a tarefa como, por exemplo, um microcontrolador.}
+}
+
+\item{Processamento:
+
+É um procedimento algorítmico que normalmente é realizado via software. Em casos em que velocidade é um fator importante no processamento pode ser necessário o uso de hardware especializado. É a parte mais complexa do sistema, exige pesquisa e desenvolvimento. 
+}
+\item{Comunicação:
+
+A transmissão de imagens digitais necessita de uma alta largura de banda. Técnicas de compressão de imagens costumam ser utilizadas para reduzir este problema. Em aplicações em tempo real é necessária a sincronização dos dados.
+}
+\item{Exibição:
+
+Por fim, o resultado do processamento é exposto ao ser humano através de um monitor. Pode ser desnecessária a exibição de todas as imagens de um processo que for automático.
+}
+
+\end{enumerate}
+
+O elemento mais importante neste trabalho, Processamento de Imagens,possui alguns passos fundamentais para se chegar ao objetivo proposto. São eles:
+
+\begin{enumerate}
+\item{\textbf{Pré-processamento}: tem por objetivo melhorar a qualidade da imagem para que os estágios seguintes tenham mais garantia de sucesso. Geralmente envolve técnicas de realce de contrastes, remoção de ruído e isolamento de regiões.
+}
+\item{\textbf{Segmentação}: é a divisão da imagem pré-processada em partes ou objetos constituintes. Por exemplo, caracteres em uma imagem de texto. É uma das tarefas mais difíceis de se implementar  e geralmente é o que define se o processamento vai ter sucesso ou não.
+}
+\item{\textbf{Representação e descrição}: nesse estágio, os dados obtidos pela segmentação em forma de pixels passam a ser representados de forma fronteiras e/ou  regiões completas. A partir dessa representação, há a descrição de características quantitativas ou qualitativas, por exemplo, uma concavidade ou um buraco.
+}
+\item{\textbf{Reconhecimento e interpretação}: finalmente, os objetos descritos anteriormente devem ser reconhecidos como algum padrão ou um valor para então se fazer a interpretação de um conjunto de objetos reconhecidos e atribuir um significado a esse conjunto. Por exemplo, uma imagem da palavra "sim" deve conter os objetos reconhecidos como "s","i", "m" e ser interpretada com a palavra "sim".
+}
+\end{enumerate}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale = 0.7]{./Figuras/passos_fundamentais.jpg}
+\caption{Passos Fundamentais em processamento de imagens digitais}\label{fig:passos_fundamentais}
+\end{center}
+\end{figure}
+
+Todos esses passos são possíveis quando se tem uma \textbf{Base de conhecimento} prévia que fica codificada no sistema de processamento de imagens. Com esses conhecimentos sobre o problema em questão e os métodos disponíveis pode-se criar uma solução viável. Por exemplo, quando é conhecida a região da imagem que tem informações de interesses é mais fácil segmentar essa imagem.
+
+\subsection{Realce de imagens}
+
+O objetivo das técnicas de realce é obter uma imagem mais apropriada para uma aplicação específica por meio de técnicas de processamento. As técnicas escolhidas, assim como seus parâmetros e a ordem em que são aplicadas dependem completamente da aplicação.
+Existem basicamente dois métodos de realce: \textbf{Métodos no domínio espacial} e \textbf{Métodos no domínio da frequência}.
+
+Os métodos no domínio espacial operam diretamente sobre o agregado de pixels que compõem uma imagem. Funções de processamento de imagens no domínio espacial podem ser expressas como:
+
+\begin{equation}
+g(x,y)=T[f(x,y)]
+\end{equation}
+
+em que $f(x,y)$ é a imagem de entrada, $g(x,y) $ é a imagem processada e $T$ é um operador sobre $f$, definido sobre alguma vizinhança de $(x,y)$. $T$ pode operar sobre um conjunto de imagens de entrada, como será explicado mais adiante.
+
+A estratégia é definir uma subimagem em torno de um pixel $(x,y)$ (quadrado, retângulo ou mesmo aproximação de um círculo) e aplicar a operação sobre essa subimagem para cada pixel da imagem e obter $g$ em cada posição correspondente. A vizinhança mais simples que pode ser definida tem tamanho $1\times 1$, e $T$ é uma \textit{trasformação de níveis de cinza} ou \textit{processamtento ponto-a-ponto} da forma:
+
+\begin{equation}
+s=T(r)
+\end{equation}
+
+em que $r$ e $s$ representam os níveis de cinza de $f(x,y)$ e $g(x,y)$, respectivamente. Este tipo de função permite operações como mudança de contraste, binarização de imagem ou limiarização.
+Outra variedade de funções pode ser aplicada sobre a imagem ao se trabalhar vizinhanças maiores. Costuma-se utilizar uma janela ou \textit{máscara} em forma de matriz $3\times 3$ para se fazer operações. Essa técnica costuma ser chamada de \textit{filtragem}.
+
+Os métodos no domínio da frequência se baseiam no teorema da convolução com um operador linear invariante com a posição $h(x,y)$ na forma:
+
+\begin{equation}
+g(x,y) = h(x,y)*f(x,y)
+\label{eq:convolucao}
+\end{equation}
+
+ou, a partir do teorema da convolução, no domínio da frequência:
+
+\begin{equation}
+G(u,v)=H(u,v)F(u,v)
+\end{equation}
+
+em que $G$, $H$ e $F$ são transformadas de Fourier de $g$, $h$ e $f$, respectivamente. Similarmente aos sistemas lineares, a transformada $H(u,v)$ é chamada de \textit{função de transferência óptica}. A equação \ref{eq:convolucao} é um processo espacial análogo ao uso de máscaras e $h(x,y)$ costuma ser chamada de \textit{máscara de convolução espacial}.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale = 0.7]{Figuras/convolucao.png}
+\caption{Máscara e vizinhança de pixel}\label{fig:convolucao}
+\end{center}
+\end{figure}
+
+A seguir são detalhados os métodos de processamento utilizados neste trabalho.
+
+\subsubsection{Limiarização}
+
+Esta é um método espacial que consiste em separar uma imagem em diferentes  níveis de cinza. O comum é ter apenas um limiar e dois níveis, o que constitui em uma binarização da imagem.
+
+
+
+\subsection{Distorção de perspectiva}
+
+Imagens de objetos tridimensionais capturados por uma câmera podem ter suas dimensões distorcidas pois a imagem é uma projeção bidimensional de parte do objeto. Essa distorção pode tornar impossível a tarefa de medir corretamente dimensões do objeto em questão. 
+
+A projeção que ocorre no caso de captura de imagem por uma câmera é do tipo cônica, e não cilíndrica, isso implica que objetos de dimensões iguais no mundo real que estejam a diferentes distâncias da câmera terão suas projeções com diferentes tamanhos na imagem. Além disso câmeras podem ficar em ângulos oblíquos em relação aos planos de interesse dos objetos e essa projeção oblíqua pode resultar em diferentes medidas em diferentes eixos.
+
+Para eliminar o problema de distorção existem dois métodos comumente utilizados: visão estereoscópica e transformação de projeção. O método de visão estereoscópica, apesar de permitir gerar um objeto tridimensional virtual, foi descartado neste trabalho pois seria tecnicamente inviável. Em ambientes com um razoável controle, como manter a câmera fixa em relação ao objeto, a transformação de projeção é suficiente para se obter os dados necessários.
+
+\begin{figure}[h!]
+\begin{center}
+\subfigure[\label{fig:ModeloPlanoCamera}]{
+\includegraphics[scale = 0.7]{Figuras/ModeloPlanoCamera.jpg}}
+\subfigure[\label{fig:Modelo1DimCamera}]{
+\includegraphics[scale = 0.7]{Figuras/Modelo1DimCamera.jpg}}
+\caption{ (a) Modelo de câmera plana. (b) Modelo de câmera unidimensional.}\label{fig:ModeloCamera}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Coordenadas Homogêneas}
+
+Matematicamente o modelo de câmera e de projeção pode ser definido por uma matriz de transformação $H$. Pontos do plano real, $\Pi$  são representados por vetores em letra maiúscula, $\textbf{X}$, e as imagens correspondentes, no plano $\pi$ são representadas por vetores de letra minúscula, $\textbf{x}$. A projeção de perspectiva dos pontos correspondentes é dada por \cite{chapter:Zisserman:23} :
+
+
+\begin{equation}
+\textbf{X} = T\textbf{x}
+\end{equation}\label{eq:ModeloCamera}
+
+Onde $T$ é uma matriz $3 \times 3$, "$= $"  representa igualdade em escala. Os vetores de pontos são dados por: $\textbf{X} = (X_1,X_2,X_3)^T$ e $\textbf{x} = (x_1,x_2,x_3)^T$
+
+
+O ponto da imagem, uma projeção, e representado por três coordenadas cartesianas, $\textbf{x} = (x_1,x_2,x_3)^T$. Essas coordenadas são chamadas de homogêneas. Apenas a direção do vetor é importante visto que, independente da distância da câmera, qualquer ponto real em determinada direção aparecerá em um único ponto na projeção. Portanto todos os pontos da forma $ \lambda \textbf{x} = (\lambda x_1, \lambda x_2, \lambda x_3)$ são equivalentes.
+
+Para representar os pontos em um plano cartesiano convencional da forma $(x,y)$, deve-se construir um plano especial $\pi_e)$, perpendicular ao eixo $x_3$ a uma distância unitária na direção de $x_3$. A intersecção do vetor $\textbf{x}$ com o plano $\pi_e$ é o ponto $x_e = (x,y,1)$.
+
+É de interesse que a posição desse plano não afete a posição das coordenadas cartesianas $(x,y)$, portanto define-se essas coordenadas da seguinte forma:
+
+\begin{equation*}
+x_e = (\frac{x_1}{x_3},\frac{x_2}{x_3},1)^T = (x,y,1)^T
+\end{equation*}
+
+
+
+O modelo da câmera é completamente especificado pela matriz $T$, que pode ser calculada com a posição relativa dos dois planos e o ponto focal da câmera. Porém, essa matriz também pode ser calculada diretamente por correspondência entre pontos na imagem e pontos no mundo real. Esse cálculo é descrito na seção \ref{section:CalculoMatrizTransf}.
+
+
+
+\subsubsection{Cálculo da matriz de transformação}\label{section:CalculoMatrizTransf}
+
+
+A equação \ref{eq:ModeloCamera} pode ser melhor visualizada a seguir:
+
+\begin{equation*}
+\begin{bmatrix} 
+x_1 \\
+x_2 \\
+x_3
+\end{bmatrix} 
+ =
+\begin{bmatrix} 
+t_{11} & t_{12} & t_{13} \\
+t_{21} & t_{22} & t_{23} \\
+t_{31} & t_{32} & t_{33}
+\end{bmatrix} 
+\begin{bmatrix}
+X_1 \\
+X_2 \\
+X_3
+\end{bmatrix} 
+\end{equation*}
+
+
+A escala $\lambda$ da matriz não afeta a equação, portanto apenas os oito graus de liberdade correspondentes à razão dos elementos da matriz são significantes.
+
+À partir da equação \ref{eq:ModeloCamera},cada correspondência entre pontos reais e pontos da imagem gera duas equações de coordenada cartesianas $\textbf{H}$. Para $n$ correspondências obtém-se um sistema com $2n$ equações com $8$ variáveis. Se $n = 4$, obtém-se a solução exata \cite{chapter:Zisserman:23}. Se $n > 4$, a matriz  é super-determinada e estima-se $\textbf{H}$ por minimização \cite{article:Criminisi}.%
+% % MUITO IMPORTANTE!!! Significa que são necessários 4 pontos conhecidos no mundo real. Posso colocar uma escala sobre a peça para obter o modelo da câmera e fazer uma pré calibração
+
+A representação em coordenadas cartesianas demonstra a natureza não linear da transformação:
+
+\begin{eqnarray}
+x = \frac{x_1}{x_3} = \frac{t_{11}X + t_{12}Y + t_{13}}{t_{31}X + t_{32}Y + t_{33}} \\
+y = \frac{x_2}{x_3} = \frac{t_{21}X + t_{22}Y + t_{23}}{t_{31}X + t_{32}Y + t_{33}}
+\end{eqnarray}
+
+Para definir os elementos da matriz de transformação deve-se ter quatro correspondências de pontos entre plano real e projeção. Com a escala de $\textbf{T}$ arbitrária, e $t_{33}=1$, temos os pontos representados por $(\lambda_i x_i, \lambda_i y_i, lambda_i)^T = T(X_i,Y_i,1)^T$. O sistema de equações lineares resultantes é:
+
+\begin{equation}
+\begin{bmatrix}
+X_1 & Y_1 & 1 & 0 & 0 & 0 & -x_1 X_1 & -x_1 Y_1 \\
+0 & 0 & 0 & X_1 & Y_1 & 1 & -y_1 X_1 & -y_1 Y_1 \\
+X_2 & Y_2 & 1 & 0 & 0 & 0 & -x_2 X_2 & -x_2 Y_2 \\
+0 & 0 & 0 & X_2 & Y_2 & 1 & -y_2 X_2 & -y_2 Y_2 \\
+X_3 & Y_3 & 1 & 0 & 0 & 0 & -x_3 X_3 & -x_3 Y_3 \\
+0 & 0 & 0 & X_3 & Y_3 & 1 & -y_3 X_3 & -y_3 Y_3 \\
+X_4 & Y_4 & 1 & 0 & 0 & 0 & -x_4 X_4 & -x_4 Y_4 \\
+0 & 0 & 0 & X_4 & Y_4 & 1 & -y_4 X_4 & -y_4 Y_4 \\
+\end{bmatrix}
+\begin{bmatrix}
+t_{11}\\
+t_{12}\\
+t_{13}\\
+t_{21}\\
+t_{22}\\
+t_{23}\\
+t_{31}\\
+t_{32}\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_1\\
+y_1\\
+x_2\\
+y_2\\
+x_3\\
+y_3\\
+x_4\\
+y_4\\
+\end{bmatrix}
+\end{equation}\label{eq:SistEqZisserman}
+
+Esse sistema linear garante a solução para a matriz $\textbf{T}$, desde que nenhum grupo de três pontos sejam colineares.
+
+\subsubsection{Minimização de erros da transformação}
+
+Para que se minimize as margens de erro da matriz de transformação $\textbf{T}$, são necessários mais de quatro correspondências de pontos. De modo geral, como demonstrado em \cite{article:Criminisi}, quanto mais pontos utilizados na determinação da matriz de transformação, menor é a incerteza. Para $n$ pontos, sistema de equações é semelhante à \ref{eq:SistEqZisserman}:
+
+\begin{equation}
+\begin{bmatrix}
+X_1 & Y_1 & 1 & 0 & 0 & 0 & -x_1 X_1 & -x_1 Y_1 \\
+0 & 0 & 0 & X_1 & Y_1 & 1 & -y_1 X_1 & -y_1 Y_1 \\
+X_2 & Y_2 & 1 & 0 & 0 & 0 & -x_2 X_2 & -x_2 Y_2 \\
+0 & 0 & 0 & X_2 & Y_2 & 1 & -y_2 X_2 & -y_2 Y_2 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+X_n & Y_n & 1 & 0 & 0 & 0 & -x_n X_n & -x_n Y_n \\
+0 & 0 & 0 & X_n & Y_n & 1 & -y_n X_n & -y_n Y_n \\
+\end{bmatrix}
+\begin{bmatrix}
+t_{11}\\
+t_{12}\\
+t_{13}\\
+t_{21}\\
+t_{22}\\
+t_{23}\\
+t_{31}\\
+t_{32}\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_1\\
+y_1\\
+x_2\\
+y_2\\
+\vdots \\
+x_n\\
+y_n\\
+\end{bmatrix}
+\end{equation}
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\subsection{Detecção de cantos}\label{section:DeteccaoCanto}
+
+Muitas tarefas em processamento de imagens requerem a identificação de elementos em imagens, como figuras geométricas, linhas e pontos. Existem diversos métodos e algorítimos para detecção de cantos, mas apenas o método de Harris \cite{article:Harris} será descrito nessa seção pois apresenta alta taxa de acerto e fácil implementação de paralelismo, que pode acelerar o processo em um FPGA.
+
+\subsubsection{Detector de Moravec}
+
+O algorítimo parte do princípio de diferenciação intensidade em porções de imagens usado no detector de imagens de Moravec \cite{article:Moravec}. O detector de Moravec funciona considerando uma janela na imagem, e determina a mudança de intensidade da imagem que resulta do deslocamento dessa janela em várias direções. São feitas as seguintes considerações:
+
+\begin{enumerate}
+\item Se a imagem na janela é plana, (aproximadamente constante em intensidade), então todas os deslocamentos resultam em uma mudança pequena;
+\item Se a janela de move ao longo de uma borda, então a mudança de intensidade é pequena, mas se o deslocamento for perpendicular à borda, a mudança é grande;
+\item Se a janela contém um canto ou ponto isolado, então todas os deslocamentos resultam em uma grande mudança de intensidade. Portanto, um canto pode ser detectado quando a menor mudança produzida por qualquer deslocamento for grande.
+\end{enumerate}
+
+Foi feita a descrição matemática das considerações acima. Denotando as intensidades como $I$, a mudança $E$ produzida por um deslocamento $(x,y)$ é dado por:
+
+\begin{equation}
+E_{x,y} = \sum\limits_{u}^{v} w_{u,v} | I_{x+u,y+v} - I_{u,v} |^2
+\end{equation}
+
+onde $w$ especifica a janela da imagem: é uma unidade dentro de uma região retangular específica, e zero fora dela. Os deslocamentos $(x,y)$, são do tipo ${(1,0),(1,1),(0,1),(-1,1)}$. Portando o detector de Moravec é basicamente: procurar por um máximo local em $min(E)$ acima de uma limite estabelecido.
+
+\subsubsection{Detector de auto-correlação}
+
+A performance do detector de Moravec contém uma série de erros conforme demonstrado em \cite{article:Harris}, que então os listou e fez as devidas correções:
+
+\begin{enumerate}
+\item \textbf{A resposta é anisotrópica porque apenas um grupo de deslocamentos discretos é considerado} - todos os possíveis deslocamentos podem ser cobertos fazendo uma expansão analítica em torno do centro de deslocamento.
+\begin{equation}
+E_{x,y} = \sum\limits_{u}^{v} w_{u,v} [I_{x+u,y+v} - I_{u,v}] ^2
+= \sum\limits_{u}^{v} w_{u,v} [x X + y Y + O(x^2,y^2)]^2
+\end{equation}
+
+onde os primeiros gradientes são aproximados por
+\begin{eqnarray*}
+X = I \otimes (-1,0,1) \approx \delta I/\delta x
+\\Y = I \otimes (-1,0,1)^T \approx \delta I/\delta y
+\end{eqnarray*}
+
+Então para pequenas mudanças, $E$ pode ser escrito
+\begin{equation*}
+E(x,y) = A x^2 + 2C x y + B y^2
+\end{equation*}
+
+onde
+\begin{eqnarray*}
+A = X^2 \otimes w
+\\B = Y^2 \otimes w
+\\ C = (X Y) \otimes w
+\end{eqnarray*}
+
+\item \textbf{A resposta é ruidosa porque a janela é binária e retangular} - usar uma janela circular suave, por exemplo uma Gaussiana:
+\begin{equation*}
+w_{u,v} = exp -(u^2+v^2)/2 \sigma^2
+\end{equation*}
+
+\item \textbf{O operador responde muito cedo a bordas porque o apenas o mínimo de $E$ é considerado} - reformular a medida de canto para usar a variação de $E$ com a direção do deslocamento. A mudança, $E$, para um pequeno deslocamento $(x,y)$ pode ser escrita como:
+\begin{equation*}
+E(x,y) = (x,y) M (x,y)^T
+\end{equation*}
+
+onde a matriz $M$, $2 \times 2$  simétrica é:
+\begin{equation}
+M = \begin{bmatrix}
+A & C
+\\ C & B
+\end{bmatrix}
+\end{equation}
+\end{enumerate} 
+
+Os autovalores $\alpha$ e $\beta$ de $M$ correspondem à principais curvaturas da função de autocorrelação local. São três os casos em relação aos autovalores:
+
+\begin{enumerate}
+\item Se ambos são pequenos, a janela corresponde a uma imagem plana;
+\item Se um é pequeno e o outro é grande, a janela corresponde a uma borda;
+\item Se ambos são grandes, a janela corresponde a um canto.
+\end{enumerate}
+
+Com essas três considerações, se faz necessário uma medida também uma medida de qualidade de cantos. Calcula-se então uma medida $R$, função de $/alpha$ e  $/beta$. Para evitar a decomposição dos autovalores de $M$, usa-se o traço e a determinante da matriz, sendo que:
+\begin{eqnarray*}
+Tr (M) = \alpha + \beta = A + B
+\\ Det (M) = \alpha \beta = A B - C^2
+\end{eqnarray*}
+
+Finalmente, Harris usou a seguinte formulação:
+\begin{equation}
+R = Det (M) - k Tr (M)^2
+\end{equation}
+
+Com essa formulação, pode-se definir o tipo da região localizada em $(u,v)$:
+
+\begin{Bitemize}
+\item Canto, se $R$ é positivo;
+\item Borda, se $R$ é negativo;
+\item Região plana, se $R$ é pequeno.
+\end{Bitemize}
+
+Como $R$ pode assumir uma grande gama de valores, positivos e negativos, usa-se um limite inferior e um limite superior 
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+
+\section{Sistemas reconfiguráveis}
+
+Os custos para se testar circuitos na indústria de eletrônicos são muito elevados, pois é necessário fazer todo o \textit{setup} do processo de produção para um novo circuito. Por esse motivo foi desenvolvida o FPGA, ou \textit{Field Programable Gate Array}, que é um circuito reconfigurável que pode rapidamente assumir as características de um circuito digital, com todas as suas ligações e portas lógicas.
+
+A característica de reconfigurabilidade dos FPGAs as tornam ferramentas ideais para o desenvolvimento de projetos em eletrônica digital, sobretudo quando há necessidade de processamento paralelo para diminuir o tempo de resposta tal como o processamento de imagens. É possível usar um FPGA para realizar centenas de procedimentos simples em paralelo, reduzindo o tempo de processamento em centenas de vezes. Os FPGAs atuais são produzidas com uma série de facilidades que incluem: memória, entradas e saídas de alta velocidade e blocos lógicos.
+
+O FPGA é um arranjo de CLBs, ou \textit{Configurable Logic Blocks}, ligados por chaves de interconexão, também reconfiguráveis. O CLB é a unidade básica do FPGA e consiste de uma matriz de seleção configurável com quatro ou seis entradas, um circuito de seleção (como um multiplexador), e Flip-Flops.
+
+
+
+
+
+
+
+\section{Filtro de Kalman}
+
+
+Retirar ruídos dos dados gerados pelo processamento de imagens.
+Geração do sinal de controle à partir dos vetores gerados pelo algoritmo de processamento.
+
+
+
+\section{VHDL}
+
+
+

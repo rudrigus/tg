@@ -1,0 +1,114 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{1.42.2.1 }
+
+\bibitem{article:Ventura:2010}
+\abntrefinfo{Ventura}{VENTURA}{2010}
+{VENTURA, R. Mudanças no perfil do consumo no brasil.
+August 2010.}
+
+\bibitem{Broering}
+\abntrefinfo{Broering}{BROERING}{2005}
+{BROERING, C.~E.
+\emph{Desenvolvimento de Sistemas para a Automação da Soldagem e corte
+  Térmico}.
+Disserta��o (Mestrado) --- Universidade Federal de Santa Catarina, 2005.}
+
+\bibitem{article:Trandel:1991}
+\abntrefinfo{Trandel}{TRANDEL}{1991}
+{TRANDEL, G.~A. The bias due to omitting quality when estimating automobile
+  demand.
+\emph{The Review of Economics and Statistics}, August 1991.}
+
+\bibitem{book:modenesi}
+\abntrefinfo{Marques, Modenesi e Bracarense}{MARQUES; MODENESI;
+  BRACARENSE}{2005}
+{MARQUES, P.~V.; MODENESI, P.~J.; BRACARENSE, A.~Q. \emph{Soldagem: Fundamentos
+  e Tecnologia}. [S.l.]: Editora UFMG, 2005.}
+
+\bibitem{article:Adolfsson:1997}
+\abntrefinfo{Adolfsson}{ADOLFSSON}{1997}
+{ADOLFSSON, S. On-line quality monitoring in short-circuit gas metal arc
+  welding.
+\emph{Welding Journal}, December 1997.}
+
+\bibitem{book:ivanguerra}
+\abntrefinfo{Machado}{MACHADO}{2007}
+{MACHADO, I.~G. \emph{Soldagem e técnicas conexas}. [S.l.: s.n.], 2007.}
+
+\bibitem{luciano}
+\abntrefinfo{Franco}{FRANCO}{2007}
+{FRANCO, L. D.~N.
+\emph{Sincronização, captura e análise de imagens da poça de soldagem no
+  processo GMAW convencional, no modo de transferência metálica por curto
+  circuito}.
+Disserta��o (Mestrado) --- Universidade de Brasília, 2007.}
+
+\bibitem{oge}
+\abntrefinfo{Filho e Neto}{FILHO; NETO}{1999}
+{FILHO, O.~M.; NETO, H.~V. \emph{Processamento Digital de Imagens}. Rio de
+  Janeiro: Brasport, 1999.}
+
+\bibitem{gonzalez}
+\abntrefinfo{Gonzalez e Woods}{GONZALEZ; WOODS}{2000}
+{GONZALEZ, R.~C.; WOODS, R.~E. \emph{Processamento de Imagens Digitais}. 1ª.
+  ed. [S.l.]: Edgard Blücher LTDA, 2000.}
+
+\bibitem{chapter:Zisserman:23}
+\abntrefinfo{Mundy Joseph.~Zisserman}{MUNDY JOSEPH.~ZISSERMAN}{1992}
+{MUNDY JOSEPH.~ZISSERMAN, A. Geometric invariance in computer vision.
+In:  \underline{\ \ \ \ \ \ \ \ }. [S.l.]: MIT Press, 1992. cap.~23.}
+
+\bibitem{article:Criminisi}
+\abntrefinfo{Criminisi, Reid e Zisserman}{CRIMINISI; REID; ZISSERMAN}{1997}
+{CRIMINISI, A.; REID, I.; ZISSERMAN, A. A plane measuring device.
+\emph{British Machine Vision Conferencel}, July 1997.}
+
+\bibitem{article:Harris}
+\abntrefinfo{Harris}{HARRIS}{1998}
+{HARRIS, M.~S. C. A combined corner and edge detector.
+\emph{Plessey Research Roke Manor}, 1998.}
+
+\bibitem{article:Moravec}
+\abntrefinfo{Moravec}{MORAVEC}{1977}
+{MORAVEC, H.~P. Towards automatic visual obstacle avoidance.
+\emph{Proc. 5th International Joint Conference on Artificial Intelligence},
+  p.~584, 1977.}
+
+\bibitem{online:Wayback}
+\abntrefinfo{History\ldots}{HISTORY\ldots}{}
+{HISTORY of FPGAs.
+Dispon{\'\i}vel em: $<$url$>$.}
+
+\bibitem{page1985re}
+\abntrefinfo{Page e Peterson}{PAGE; PETERSON}{1985}
+{D.W. Page e L.V.R. Peterson. \emph{Re-programmable PLA}. abr.~2 1985.
+US Patent 4,508,977.
+Dispon{\'\i}vel em: $<$http://www.google.com/patents/US4508977$>$.}
+
+\bibitem{book:Amore}
+\abntrefinfo{D'Amore}{D'AMORE}{2005}
+{D'AMORE, R. \emph{VHDL: descri{\c{c}}ao e s{\'\i}ntese de circuitos digitais}.
+  LTC, 2005.
+ISBN 9788521614524. Dispon{\'\i}vel em:
+  $<$https://books.google.com.br/books?id=6I26AAAACAAJ$>$.}
+
+\bibitem{ieeeVHDL87}
+\abntrefinfo{IEEE\ldots}{IEEE\ldots}{1988}
+{IEEE Standard VHDL Language Reference Manual.
+\emph{IEEE Std 1076-1987}, p.~01--, 1988.}
+
+\bibitem{ieeeVHDL93-1076}
+\abntrefinfo{IEEE\ldots}{IEEE\ldots}{1994}
+{IEEE Standard VHDL Language Reference Manual.
+\emph{ANSI/IEEE Std 1076-1993}, p.~i--, 1994.}
+
+\bibitem{ieee1997-1076.3}
+\abntrefinfo{IEEE\ldots}{IEEE\ldots}{1997}
+{IEEE Standard VHDL Synthesis Packages.
+\emph{IEEE Std 1076.3-1997}, p. 1--52, June 1997.}
+
+\end{thebibliography}

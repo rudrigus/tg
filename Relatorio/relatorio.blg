@@ -1,0 +1,78 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: relatorio.aux
+A level-1 auxiliary file: resumos.aux
+A level-1 auxiliary file: simbolos.aux
+A level-1 auxiliary file: cap_Introducao.aux
+A level-1 auxiliary file: cap_RevisaoBibliografica.aux
+A level-1 auxiliary file: cap_Desenvolvimento.aux
+A level-1 auxiliary file: cap_Experimentos.aux
+A level-1 auxiliary file: cap_Conclusoes.aux
+The style file: abnt-num.bst
+A level-1 auxiliary file: anexo_Esquematicos.aux
+A level-1 auxiliary file: anexo_CD.aux
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: bibliografia.bib
+Warning--entry type for "online:Wayback" isn't style-file defined
+--line 219 of file bibliografia.bib
+Warning--I didn't find a database entry for "book:intro_soldagem"
+Warning--I didn't find a database entry for "freeman1989configurable"
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
++---------------------------------------------------------+
+| Estilo bibliográfico abnt-num.bst versão 1.42.2.1           |
+| Em caso de dúvidas ou problemas com este estilo procure |
+| http://abntex.codigolivre.org.br                        |
++---------------------------------------------------------+
+You've used 19 entries,
+            6480 wiz_defined-function locations,
+            1275 strings with 11678 characters,
+and the built_in function-call counts, 12455 in all, are:
+= -- 1211
+> -- 280
+< -- 6
++ -- 197
+- -- 88
+* -- 765
+:= -- 1708
+add.period$ -- 60
+call.type$ -- 19
+change.case$ -- 145
+chr.to.int$ -- 22
+cite$ -- 19
+duplicate$ -- 605
+empty$ -- 951
+format.name$ -- 432
+if$ -- 3036
+int.to.chr$ -- 0
+int.to.str$ -- 0
+missing$ -- 320
+newline$ -- 102
+num.names$ -- 60
+pop$ -- 454
+preamble$ -- 1
+purify$ -- 64
+quote$ -- 0
+skip$ -- 918
+stack$ -- 1
+substring$ -- 395
+swap$ -- 229
+text.length$ -- 5
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 32
+warning$ -- 0
+while$ -- 89
+width$ -- 0
+write$ -- 241
+(There were 3 warnings)
