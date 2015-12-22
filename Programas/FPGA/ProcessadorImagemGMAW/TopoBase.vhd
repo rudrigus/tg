@@ -10,7 +10,9 @@ entity TopoBase is
   in_clock      : in std_logic;
   in_janela     : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : in unsigned(1 downto 0);
+  bloco_atual   : in natural range qtd_imagens downto 0;
+  q                : in std_logic_vector(7 downto 0);
+  endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
   posArameTopo  : out natural range numlin downto 0;
   posArameBase  : out natural range numlin downto 0);
 end TopoBase;
@@ -18,14 +20,12 @@ end TopoBase;
 architecture comportamental of TopoBase is
 signal coluna : natural range (numcols - 1) downto 0 := 0;
 signal linha  : natural range (numlin  - 1) downto 0 := 0;
-signal somaLinha        : natural;
+signal somaLinha        : integer;
 --signal somaLinhaAntiga  : natural;
 signal somaHor          : vetorHor := (others => 0);
 signal derivadaHor      : vetorHor := (others => 0);
 signal max_derivada     : integer := -1000000;
 signal min_derivada     : integer := 1000000;
-signal endereco_leitura : unsigned(13 downto 0) := unsigned(std_logic_vector(bloco_atual) & "000000000000");
-signal q                : std_logic_vector(7 downto 0);
 
 component ImagensRAM
   PORT(
@@ -40,7 +40,7 @@ END component;
 
 begin
 
-ram : ImagensRAM port map(in_clock, "00000000", std_logic_vector(endereco_leitura), "00000000000000", '0', q);
+--ram : ImagensRAM port map(in_clock, "00000000", std_logic_vector(endereco_leitura), "00000000000000", '0', q);
 
 
 -- pegar valores das 3 imagens carregadas e calcular (só estou lendo uma imagem, isso vai dar dor de cabeça)
@@ -57,7 +57,7 @@ begin
     
     if(in_janela = '1') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
-      endereco_leitura <= unsigned(std_logic_vector(bloco_atual) & "000000000000");
+      endereco_leitura <= to_unsigned((bloco_atual - 2) * tamanho_imagem, 14);
       coluna <= 0;
       linha <= 0;
       max_derivada <= -1000000;
@@ -70,10 +70,13 @@ begin
         coluna <= 0;
         somaLinha <= 0;
         --somaLinhaAntiga <= 0;
+        endereco_leitura <= endereco_leitura + 1;
 
         if (linha = numlin -1) then
         -- fim de uma imagem
           linha <= 0;
+          endereco_leitura <= to_unsigned((bloco_atual - 2) * tamanho_imagem, 14);
+          
           max_derivada <= -1000000;
           min_derivada <= 1000000;
         else
@@ -104,7 +107,7 @@ begin
 
         end if;
       else
-      -- ler mais um pixel
+      -- ler mais um pixel na linha
         endereco_leitura <= endereco_leitura + 1;
         coluna <= coluna + 1;
 

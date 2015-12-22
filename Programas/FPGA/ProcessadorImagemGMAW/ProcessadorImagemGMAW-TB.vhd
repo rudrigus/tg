@@ -223,8 +223,8 @@ SIGNAL clk_count : natural := 0;
 SIGNAL brilho_maximo : UNSIGNED(24 DOWNTO 0);
 SIGNAL in_clock : STD_LOGIC;
 SIGNAL in_janela : STD_LOGIC;
-SIGNAL pixel_entrada : STD_LOGIC_VECTOR(7 DOWNTO 0);
-SIGNAL bloco_atual : unsigned(1 downto 0) := "00";
+SIGNAL pixel_entrada : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
+SIGNAL bloco_atual : natural range qtd_imagens downto 0 := 0;
 SIGNAL linha : integer range 0 to numcols - 1 := 0;
 SIGNAL coluna : integer range 0 to numlin - 1 := 0;
 SIGNAL reset : STD_LOGIC;
@@ -287,7 +287,11 @@ BEGIN
 
 brilho_maximo <= to_unsigned(720000,25) after 0 ns;
 in_janela <= '1' after 0 ns,
-             '0' after 5 ns;
+             '0' after 5 ns,
+             '1' after (1 sec / frequencia_camera) * (numcols * numlin)- 1 ns,
+             '0' after (1 sec / frequencia_camera) * (numcols * numlin + 1) - 1 ns,
+             '1' after (1 sec / frequencia_camera) * 2 * (numcols * numlin) - 1 ns,
+             '0' after (1 sec / frequencia_camera) * (2 *(numcols * numlin) + 1) - 1 ns;
 
 IN_process: process (in_clock) begin
   if(rising_edge(in_clock)) then
@@ -295,9 +299,9 @@ IN_process: process (in_clock) begin
 
     -- avanca as imagens
     case bloco_atual is
-      when "00" => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao0(linha, coluna));
-      when "01" => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao1(linha, coluna));
-      when "10" => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao2(linha, coluna));
+      when 0 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao0(linha, coluna));
+      when 1 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao1(linha, coluna));
+      when 2 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao2(linha, coluna));
       when others => pixel_entrada <= STD_LOGIC_VECTOR(imagem_padrao0(linha, coluna));
     end case;
 

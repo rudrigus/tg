@@ -10,7 +10,7 @@ entity Bordas is
   in_clock      : in std_logic;
   in_janela     : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : in unsigned(1 downto 0);
+  bloco_atual   : in natural range qtd_imagens downto 0;
   limEsqPoca    : out natural range numcols downto 0;
   limDirPoca    : out natural range numcols downto 0);
 end Bordas;
@@ -25,7 +25,7 @@ signal somaVert2         : vetorVert := (others => 0);
 signal derivadaVert      : vetorVert := (others => 0);
 signal max_derivada      : integer := -1000000;
 signal min_derivada      : integer := 1000000;
-signal endereco_leitura  : unsigned(13 downto 0) := unsigned(std_logic_vector(bloco_atual) & "000000000000");
+signal endereco_leitura  : unsigned(13 downto 0) := to_unsigned(bloco_atual * tamanho_imagem, 14);
 signal q                 : std_logic_vector(7 downto 0);
 
 component ImagensRAM
@@ -54,7 +54,7 @@ begin
     
     if(in_janela = '1') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
-      endereco_leitura <= unsigned(std_logic_vector(bloco_atual) & "000000000000");
+      endereco_leitura <= to_unsigned(bloco_atual * tamanho_imagem, 14);
       coluna <= 0;
       linha <= 0;
       max_derivada <= -1000000;
