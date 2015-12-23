@@ -9,7 +9,7 @@ entity SeletorImagem is
   in_clock      : in std_logic;
   in_janela     : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : inout natural range qtd_imagens downto 0 := 0;
+  bloco_atual   : inout unsigned(1 downto 0) := "00";
   endereco_escrita : inout unsigned(13 downto 0) := (others => '0'));
   
 end SeletorImagem;
@@ -17,7 +17,6 @@ end SeletorImagem;
 
 architecture comportamental of SeletorImagem is
   signal soma_imagem : unsigned(25 downto 0) := (others => '0');
-  signal lega : natural := 0;
 
 
   component ImagensRAM
@@ -42,11 +41,9 @@ begin
       soma_imagem <= (others => '0');
 -- passa para próximo bloco apenas se a imagem tem brilho menor que máximo
       if (soma_imagem < brilho_maximo) then
-        bloco_atual <= bloco_atual + 1;
-        lega <= lega + 1;
+        bloco_atual <= bloco_atual + "01";
       end if;
-      endereco_escrita <= to_unsigned(tamanho_imagem * (bloco_atual + 1), 14);
-      --endereco_escrita <= unsigned(std_logic_vector(bloco_atual + 1) & "000000000000");
+      endereco_escrita <= (bloco_atual + "01") & "000000000000";
     else
       endereco_escrita <= endereco_escrita + 1;
     end if;  

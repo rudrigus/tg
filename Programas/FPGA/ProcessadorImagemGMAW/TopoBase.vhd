@@ -10,9 +10,9 @@ entity TopoBase is
   in_clock      : in std_logic;
   in_janela     : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : in natural range qtd_imagens downto 0;
-  q                : in std_logic_vector(7 downto 0);
+  bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
+  q                : in std_logic_vector(7 downto 0);
   posArameTopo  : out natural range numlin downto 0;
   posArameBase  : out natural range numlin downto 0);
 end TopoBase;
@@ -26,16 +26,20 @@ signal somaHor          : vetorHor := (others => 0);
 signal derivadaHor      : vetorHor := (others => 0);
 signal max_derivada     : integer := -1000000;
 signal min_derivada     : integer := 1000000;
+signal bloco_uns : unsigned(13 downto 0) := (others => '0');
+signal bloco_int : integer := 0;
 
-component ImagensRAM
-  PORT(
-    clock   : IN STD_LOGIC  := '1';
-    data    : IN STD_LOGIC_VECTOR (7 downto 0);
-    rdaddress   : IN STD_LOGIC_VECTOR (13 downto 0);
-    wraddress   : IN STD_LOGIC_VECTOR (13 downto 0);
-    wren    : IN STD_LOGIC  := '0';
-    q   : OUT STD_LOGIC_VECTOR (7 downto 0));
-END component;
+
+
+--component ImagensRAM
+--  PORT(
+--    clock   : IN STD_LOGIC  := '1';
+--    data    : IN STD_LOGIC_VECTOR (7 downto 0);
+--    rdaddress   : IN STD_LOGIC_VECTOR (13 downto 0);
+--    wraddress   : IN STD_LOGIC_VECTOR (13 downto 0);
+--    wren    : IN STD_LOGIC  := '0';
+--    q   : OUT STD_LOGIC_VECTOR (7 downto 0));
+--END component;
 
 
 begin
@@ -47,17 +51,17 @@ begin
   -- preciso pegar tambem do (bloco_atual -1) e do (bloco_atual -2)
   -- fazer um for() aqui e tirar a média? ou talvez usar memórias separadas?
 -- OU -> usar pixel de entrada direto da leitura
-  -- guardar os vetores somaHor e derivadaHor, para então subtrair do vetor os valores antigos de (bloco_atual -2)
+  -- guardar os vetores somaHor e derivadaHor, para então subtrair do vetor os valores antigos de (bloco_atual -3)
   -- se der certo dá para usar tranquilamente quantas imagens eu quiser, pelo menos no cálculo de topo e base
 
 process(in_janela,in_clock)
 begin
-  
   if(rising_edge(in_clock)) then
     
     if(in_janela = '1') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
-      endereco_leitura <= to_unsigned((bloco_atual - 2) * tamanho_imagem, 14);
+      --endereco_leitura <= to_unsigned(bloco_antigo * tamanho_imagem, 14);
+      endereco_leitura <= (bloco_atual - "10") & "000000000000";
       coluna <= 0;
       linha <= 0;
       max_derivada <= -1000000;
@@ -75,7 +79,7 @@ begin
         if (linha = numlin -1) then
         -- fim de uma imagem
           linha <= 0;
-          endereco_leitura <= to_unsigned((bloco_atual - 2) * tamanho_imagem, 14);
+          endereco_leitura <= (bloco_atual - "10") & "000000000000";
           
           max_derivada <= -1000000;
           min_derivada <= 1000000;

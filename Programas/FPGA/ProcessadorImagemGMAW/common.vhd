@@ -5,7 +5,7 @@ package Common is
   constant numcols : integer := 60;
   constant numlin : integer := 60;
   constant tamanho_imagem : integer := numcols * numlin;
-  constant qtd_imagens : natural := 3;
+  constant qtd_imagens : natural := 4;
   type LinhaImagem is array (0 to numcols - 1) of unsigned(7 downto 0);
   type MatrizImagem is array (0 to numlin - 1, 0 to numcols - 1) of unsigned(7 downto 0);
   
