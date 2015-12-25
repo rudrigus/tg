@@ -5,7 +5,8 @@ use work.common.all;
 
 entity SeletorImagem is
   port (
-  brilho_maximo : in unsigned(24 downto 0) := (others => '0'); 
+  brilho_maximo : in unsigned(24 downto 0) := (others => '0');
+  threshold1    : in std_logic_vector(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
@@ -19,18 +20,20 @@ architecture comportamental of SeletorImagem is
   signal soma_imagem : unsigned(25 downto 0) := (others => '0');
 
 
-  component ImagensRAM
-  PORT(
-    clock   : IN STD_LOGIC  := '1';
-    data    : IN STD_LOGIC_VECTOR (7 DOWNTO 0);
-    rdaddress   : IN STD_LOGIC_VECTOR (13 DOWNTO 0);
-    wraddress   : IN STD_LOGIC_VECTOR (13 DOWNTO 0);
-    wren    : IN STD_LOGIC  := '0';
-    q   : OUT STD_LOGIC_VECTOR (7 DOWNTO 0));
-  END component;
+  --component ImagensRAM
+  --PORT(
+  --  clock   : IN STD_LOGIC  := '1';
+  --  data    : IN STD_LOGIC_VECTOR (7 DOWNTO 0);
+  --  rdaddress   : IN STD_LOGIC_VECTOR (13 DOWNTO 0);
+  --  wraddress   : IN STD_LOGIC_VECTOR (13 DOWNTO 0);
+  --  wren    : IN STD_LOGIC  := '0';
+  --  q   : OUT STD_LOGIC_VECTOR (7 DOWNTO 0));
+  --END component;
 
 begin
 --ram : ImagensRAM port map(in_clock, pixel_entrada, "00000000000000", std_logic_vector(endereco_escrita), in_clock, q);
+
+  
 
 process(in_janela,in_clock)
 begin

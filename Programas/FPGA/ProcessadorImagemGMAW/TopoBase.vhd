@@ -20,7 +20,7 @@ end TopoBase;
 architecture comportamental of TopoBase is
 signal coluna : natural range (numcols - 1) downto 0 := 0;
 signal linha  : natural range (numlin  - 1) downto 0 := 0;
-signal somaLinha        : integer;
+signal somaLinha        : integer := 0;
 --signal somaLinhaAntiga  : natural;
 signal somaHor          : vetorHor := (others => 0);
 signal derivadaHor      : vetorHor := (others => 0);
@@ -60,8 +60,8 @@ begin
     
     if(in_janela = '1') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
-      --endereco_leitura <= to_unsigned(bloco_antigo * tamanho_imagem, 14);
-      endereco_leitura <= (bloco_atual - "10") & "000000000000";
+      -- Adiantar endereço de memória pois sempre há o atraso de um ciclo para leitura e um para a subtração em soma_linha
+      endereco_leitura <= (bloco_atual - "10") & ("000000000000" + "000000000010");
       coluna <= 0;
       linha <= 0;
       max_derivada <= -1000000;
@@ -87,7 +87,7 @@ begin
         -- proxima linha
           linha <= linha + 1;
 --somaHor(linha) <= somaHor(linha) + somaLinha - somaLinhaAntiga;
-          somaHor(linha) <= somaLinha;
+          somaHor(linha) <= somaHor(linha) + somaLinha;
           
           -- calculo das derivadas dos perfis horizontais
           if(linha > 0) then

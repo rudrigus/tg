@@ -52,9 +52,11 @@ set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -sectio
 set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH TB -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_NAME TB -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME i1 -section_id TB
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "75 us" -section_id TB
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "100 us" -section_id TB
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ProcessadorImagemGMAW_TB -section_id TB
 set_global_assignment -name EDA_SIMULATION_RUN_SCRIPT simulation/modelsim/ProcessadorImagemGMAW_run_msim_rtl_vhdl.do -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_FILE "ProcessadorImagemGMAW-TB.vhd" -section_id TB
+set_global_assignment -name VHDL_FILE ImagensTeste.vhd
 set_global_assignment -name VHDL_FILE TopoBase.vhd
 set_global_assignment -name VHDL_FILE "ProcessadorImagemGMAW-TB.vhd"
 set_global_assignment -name QIP_FILE ImagensRAM.qip
@@ -64,5 +66,4 @@ set_global_assignment -name VHDL_FILE SomadorLinhas.vhd
 set_global_assignment -name VHDL_FILE ImagemExemplo1.vhd
 set_global_assignment -name VHDL_FILE common.vhd
 set_global_assignment -name VHDL_FILE ProcessadorImagemGMAW.vhd
-set_global_assignment -name EDA_TEST_BENCH_FILE "ProcessadorImagemGMAW-TB.vhd" -section_id TB
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

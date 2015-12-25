@@ -8,7 +8,7 @@ RelatorioAntigo/*
 Tese\ Luciano/*
 **/msim_transcript
 .grive
-Programas/FPGA/ProcessadorImagemGMAW/db
-Programas/FPGA/ProcessadorImagemGMAW/incremental_db
-Programas/FPGA/ProcessadorImagemGMAW/output_files
-Programas/FPGA/ProcessadorImagemGMAW/simulation
+Programas/FPGA/ProcessadorImagemGMAW/db/*
+Programas/FPGA/ProcessadorImagemGMAW/incremental_db/*
+Programas/FPGA/ProcessadorImagemGMAW/output_files/*
+Programas/FPGA/ProcessadorImagemGMAW/simulation/*
