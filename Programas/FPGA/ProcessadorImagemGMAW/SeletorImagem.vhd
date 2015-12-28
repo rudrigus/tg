@@ -9,7 +9,7 @@ entity SeletorImagem is
   threshold1    : in std_logic_vector(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
+  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : inout unsigned(1 downto 0) := "00";
   endereco_escrita : inout unsigned(13 downto 0) := (others => '0'));
   
@@ -31,7 +31,7 @@ architecture comportamental of SeletorImagem is
   --END component;
 
 begin
---ram : ImagensRAM port map(in_clock, pixel_entrada, "00000000000000", std_logic_vector(endereco_escrita), in_clock, q);
+--ram : ImagensRAM port map(in_clock, dado_escrita, "00000000000000", std_logic_vector(endereco_escrita), in_clock, q);
 
   
 
@@ -39,7 +39,7 @@ process(in_janela,in_clock)
 begin
   
   if(rising_edge(in_clock)) then
-    soma_imagem <= soma_imagem + unsigned(pixel_entrada);
+    soma_imagem <= soma_imagem + unsigned(dado_escrita);
     if(in_janela = '1') then
       soma_imagem <= (others => '0');
 -- passa para próximo bloco apenas se a imagem tem brilho menor que máximo

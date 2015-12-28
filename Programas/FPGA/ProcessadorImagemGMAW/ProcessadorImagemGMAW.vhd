@@ -12,7 +12,7 @@ entity ProcessadorImagemGMAW is
   brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
   threshold1    : in std_logic_vector(7 downto 0);
   meioVert      : in unsigned(7 downto 0);
-  meioImagem   : in unsigned(7 downto 0);
+  meioImagem    : in unsigned(7 downto 0);
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   limEsqPoca    : out natural range numcols downto 0;
   limDirPoca    : out natural range numcols downto 0);
@@ -47,7 +47,7 @@ component SeletorImagem
   threshold1    : in std_logic_vector(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
+  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : inout unsigned(1 downto 0) := "00";
   endereco_escrita : inout unsigned(13 downto 0) := (others => '0'));
 end component;
@@ -55,9 +55,10 @@ end component;
 component TopoBase
   port(
   meioVert      : in unsigned(7 downto 0);
+  meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
+  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0);
   q                : in std_logic_vector(7 downto 0);
@@ -70,7 +71,7 @@ component Bordas
   meioImagem   : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
+  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
   limDirPoca    : out natural range numcols downto 0);
@@ -83,9 +84,9 @@ begin
 
   -- Entrada está sempre indo para a memoria
   ram : ImagensRAM port map(in_clock, dado_escrita, std_logic_vector(endereco_leitura), std_logic_vector(endereco_escrita), in_clock, q);
-  bloco_receptor: SeletorImagem port map(brilho_maximo, threshold1, in_clock, in_janela, pixel_entrada, bloco_atual, endereco_escrita);
-  bloco_topo_base: TopoBase port map(meioVert, in_clock, in_janela, pixel_entrada, bloco_atual, endereco_leitura, q, posArameTopo, posArameBase);
-  bloco_bordas: Bordas port map(meioImagem, in_clock, in_janela, pixel_entrada, q, limEsqPoca, limDirPoca);
+  bloco_receptor: SeletorImagem port map(brilho_maximo, threshold1, in_clock, in_janela, dado_escrita, bloco_atual, endereco_escrita);
+  bloco_topo_base: TopoBase port map(meioVert, meioImagem, in_clock, in_janela, dado_escrita, bloco_atual, endereco_leitura, q, posArameTopo, posArameBase);
+  bloco_bordas: Bordas port map(meioImagem, in_clock, in_janela, dado_escrita, q, limEsqPoca, limDirPoca);
 
 
 

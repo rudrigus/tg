@@ -75,18 +75,68 @@ Esses passos com os valores para os parâmetros definidos acima obtiveram bons re
 
 \section{Implementação do processamento em FPGA}
 
-O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa FPGA, utilizando-se a linguagem VHDL. Boa parte dos procedimentos continuou com a característica sequencial, pois as imagens são obtidas desta forma. Alguns procedimentos utilizaram do paralelismo para economia de tempo e recursos, como a obtenção da imagem média: em vez de armazenar mais uma imagem na memória para a representação da média, como na implementação em Matlab, o valor médio de um pixel é obtido à partir da média calculada no momento em que este precisar ser utilizado.
+O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa FPGA, utilizando-se a linguagem VHDL. Boa parte dos procedimentos continuou com a característica sequencial, pois as imagens são obtidas desta forma. Alguns procedimentos utilizaram do paralelismo para economia de tempo e recursos. Por exemplo: a obtenção de topo e base do arame e largura da poça de soldagem ocorrem simultaneamente. A seguir é demonstrado como foi feita a implementação de cada item do algoritmo.
+
+\subsection{Retirada de scanlines}
+
+Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
+
+A binarização consiste basicamente transformar em zero qualquer pixel que seja maior que $threshold1$. O valor utilizado para testes $threshold1$ foi de 10, sendo o brilho máximo 255.
+
+\subsection{Constantes e tipos customizados}
+
+Para agilizar o desenvolvimento do projeto foi criada um pacote com valores e tipos que são recorrentemente utilizados nas diversas entidades. As constantes e tipos dependem basicamente das dimensões das imagens que se pretende processar. São estes:
+
+\begin{enumerate}
+\item Constantes
+\begin{itemize}
+\item $numcols$: Largura da imagem, ou quantidade de colunas (pixels) na dimensão horizontal;
+\item $numlin$: Altura da imagem, ou quantidade de linhas (pixels) na dimensão vertical.
+\end{itemize}
+\item Tipos
+\begin{itemize}
+\item $vetorHor$: Vetor utilizado para guardar algum tipo de informação de cada linha. Possui $numlin$ elementos do tipo inteiro;
+\item $vetorVert$: Vetor utilizado para guardar algum tipo de informação de cada coluna. Possui $numcols$ elementos do tipo inteiro;
+\item $MatrizImagem$ Matriz utilizada para armazenar imagens inteiras na  simulação. Tem tamanho de $numlin$ por $numcols$ do tipo \textit{unsigned} de 8b.
+\end{itemize}
+\end{enumerate}
+
+\subsection{Filtro de imagem média e seleção de imagens propícias} \label{subsec:filtro_media}
+
+Para que fosse implementado este filtro foi utilizado um bloco de memória subdividido em quatro blocos, cada um dimensionado para receber uma imagem. A placa recebe sequencialmente os dados da câmera e armazena três imagens em memória. A imagem média não necessita ser armazenada pois cada pixel pode ser obtido através da média dos pixels das imagens armazenadas à medida que for necessário. 
+
+A seleção de imagens propícias ao processamento foi feito no momento de obtenção da imagem. Uma nova imagem é armazenada no bloco marcado como $ bloco\_atual $. Ao final do recebimento desta, o sinal $ bloco\_atual $ permanece inalterado caso a imagem apresente brilho excessivo ou tem seu valor aumentado de 1 caso contrário. Se $ bloco\_atual $ permanece com o mesmo valor, a imagem mais recente recebida é sobrescrita pela nova imagem que será recebida em seguida. Se $ bloco\_atual $ for acrescido, a imagem mais antiga é sobrescrita. Desta forma, à partir da terceira imagem sempre há três imagens úteis carregadas e uma sendo recebida.
+
+% desenhar um esquemático e colocar aqui
+
+Para que isto fosse possível durante a simulação, foi implementado um bloco de RAM utilizando uma \textit{megafunction} do Quartus II. O tamanho desta memória calculado para armazenar quatro vezes a quantidade de bits de uma imagem. Para os primeiros estágios do desenvolvimento e teste, foram utilizadas imagens de 296x264 pixels reduzidas a 60x60 pixels (para economia de tempo e melhor visualização da simulação). O tamanho desta memória deveria comportar $ 60 \times 60 \times 4 = 1440 B $, portanto foi utilizada uma memória de 16 KB.
+
+O interessante dessa implementação é que o endereçamento de leitura e escrita pode utilizar diretamente o sinal $ bloco\_atual $ com uma simples concatenação, o que poupa operações na implementação em VHDL e recursos na placa.
+
+Como será visto mais detalhadamente abaixo em \ref{subsec:topo_base}, os cálculos e operações são feitos a cada novo pixel durante o carregamento de uma imagem. Assim, a média de cada pixel das últimas três imagens válidas deve ser calculada a cada ciclo de \textit{clock}. Como os valor absoluto não são de interesse durante os cálculos ficou decidido que a soma das três imagens seria suficiente, o que evita uma divisão desnecessária.
+
+Durante a implementação foi constatado que fazer a leitura de diversos pixels em diferentes endereços de memória podeira consumir muito tempo e talvez se tornar proibitivo caso se deseje uma quantidade maior de imagens no filtro de média. A solução para este problema foi utilizar uma espécie de média móvel nos sinais que são utilizados para os cálculos. Em vez de se fazer a leitura de dois endereços de memória mais recentes para somá-los com o novo pixel recebido ($dado\_escrita$), foi feita apenas a leitura do mais antigo par ser subtraído da soma. Por exemplo: quando era feito o recebimento de um pixel da linha $linha$, coluna $coluna$ o valor do elemento $somaHor(linha)$ era atualizado da seguinte forma:
+
+$$
+somaHor(linha) = somaHor(linha) + dado\_escrita - q(bloco\_atual - 3,linha,coluna)
+$$
+
+Onde $q$ é o byte armazenado no endereço de memória dado por $bloco\_atual$ concatenado com $linha \times numcols + coluna$,  sendo $numcols$ a largura da imagem.
+
+\subsection{Cálculo de topo e base do arame} \label{subsec:topo_base}
+
+Os dados de topo e base do arame foram obtidos com a mesma lógica criada para Matlab e de forma sequencial. Foi utilizado um processo que tem $in_janela$ e $in_clock$ como \textit{sensitivity list}. O sinal $in_janela$ foi utilizado para sincronização de final de imagem e o $in_clock$ era o \textit{clock} de entrada da câmera e define o fim e o começo da transmissão de cada pixel.
+
+Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{subsec:filtro_media} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
+
+Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com simples testes ao final de cada linha. Ao final da imagem estes valores já estão devidamente definidos.
 
 % apresentar resultados a cada imagem lida
-% calcular as medidas em paralelo: utilizar imagens carregadas
-% problema: fica difícil carregar dados de linhas e colunas -> dois endereços de leitura vs leitura sequencial
 
 
 
 
-A placa receberá sequencialmente os dados da câmera e armazenará $ quantidade_imagens $ em memória. Isto é feito para se aplicar o filtro de média de imagens. A imagem média não necessita ser armazenada pois cada pixel pode ser obtido através da média dos pixels das imagens armazenadas à medida que for necessário. Desta forma foi implementado um bloco de RAM utilizando uma \textit{megafunction} do Quartus para o armazenamento dessas imagens. São utilizados quatro blocos, sendo três com imagens carregadas e um para o carregamento da imagem atual. Estes quatro blocos são utilizados de forma rotativa, sendo que o identificador da última imagem é armazenado em uma variável $ bloco_atual $. % Este método ocupa uma quantidade considerável de memória, porém se mostrou extremamente útil nos testes com matlab.
 
-A seleção de imagens propícias ao processamento é feito no momento de obtenção da imagem. Ao final do recebimento de uma imagem $ bloco_atual $ permanece inalterado caso a imagem apresente brilho excessivo. Caso contrário $ bloco_atual $ tem seu valor aumentado de 1 e a imagem mais antiga é descartada. Portanto , o processamento é feito sempre com as últimas três imagens propícias armazenadas em memória.
 
 
 

@@ -7,9 +7,10 @@ use work.common.all;
 entity TopoBase is
   port(
   meioVert      : in unsigned(7 downto 0);
+  meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
+  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
   q                : in std_logic_vector(7 downto 0);
@@ -20,32 +21,28 @@ end TopoBase;
 architecture comportamental of TopoBase is
 signal coluna : natural range (numcols - 1) downto 0 := 0;
 signal linha  : natural range (numlin  - 1) downto 0 := 0;
-signal somaLinha        : integer := 0;
---signal somaLinhaAntiga  : natural;
-signal somaHor          : vetorHor := (others => 0);
-signal derivadaHor      : vetorHor := (others => 0);
-signal max_derivada     : integer := -1000000;
-signal min_derivada     : integer := 1000000;
-signal bloco_uns : unsigned(13 downto 0) := (others => '0');
-signal bloco_int : integer := 0;
+--signal somaLinha        : integer := 0;
+signal somaHor            : vetorHor := (others => 0);
+signal derivadaHor        : vetorHor := (others => 0);
+signal max_derivada       : integer := -1000000;
+signal min_derivada       : integer := 1000000;
 
-
-
---component ImagensRAM
---  PORT(
---    clock   : IN STD_LOGIC  := '1';
---    data    : IN STD_LOGIC_VECTOR (7 downto 0);
---    rdaddress   : IN STD_LOGIC_VECTOR (13 downto 0);
---    wraddress   : IN STD_LOGIC_VECTOR (13 downto 0);
---    wren    : IN STD_LOGIC  := '0';
---    q   : OUT STD_LOGIC_VECTOR (7 downto 0));
---END component;
-
+signal inicioArame        : vetorVert := (others => 0);
+signal inicioArame0       : vetorVert := (others => 0);
+signal inicioArame1       : vetorVert := (others => 0);
+signal inicioArame2       : vetorVert := (others => 0);
+signal inicioArame3       : vetorVert := (others => 0);
+signal fimArame           : vetorVert := (others => 0);
+signal fimArame0          : vetorVert := (others => 0);
+signal fimArame1          : vetorVert := (others => 0);
+signal fimArame2          : vetorVert := (others => 0);
+signal fimArame3          : vetorVert := (others => 0);
+signal max_derivada_arame : integer := -1000000;
+signal min_derivada_arame : integer := 1000000;
+signal pixel_antigo       : unsigned(7 downto 0) := (others => '0');
+signal derivada           : integer := 0;
 
 begin
-
---ram : ImagensRAM port map(in_clock, "00000000", std_logic_vector(endereco_leitura), "00000000000000", '0', q);
-
 
 -- pegar valores das 3 imagens carregadas e calcular (só estou lendo uma imagem, isso vai dar dor de cabeça)
   -- preciso pegar tambem do (bloco_atual -1) e do (bloco_atual -2)
@@ -66,14 +63,14 @@ begin
       linha <= 0;
       max_derivada <= -1000000;
       min_derivada <= 1000000;
-      somaLinha <= 0;
-      --somaLinhaAntiga <= 0;
+      max_derivada_arame <= -1000000;
+      min_derivada_arame <= 1000000;
+
+      
     else
       if (coluna = numcols - 1) then
       -- fim de uma linha
         coluna <= 0;
-        somaLinha <= 0;
-        --somaLinhaAntiga <= 0;
         endereco_leitura <= endereco_leitura + 1;
 
         if (linha = numlin -1) then
@@ -86,12 +83,22 @@ begin
         else
         -- proxima linha
           linha <= linha + 1;
---somaHor(linha) <= somaHor(linha) + somaLinha - somaLinhaAntiga;
-          somaHor(linha) <= somaHor(linha) + somaLinha;
           
+          max_derivada_arame <= -1000000;
+          min_derivada_arame <= 1000000;
+
+          inicioArame3(linha) <= inicioArame2(linha);
+          inicioArame2(linha) <= inicioArame1(linha);
+          inicioArame1(linha) <= inicioArame0(linha);
+          inicioArame(linha) <= inicioArame(linha) + inicioArame0(linha) - inicioArame3(linha);
+          fimArame3(linha) <= fimArame2(linha);
+          fimArame2(linha) <= fimArame1(linha);
+          fimArame1(linha) <= fimArame0(linha);
+          fimArame(linha) <= fimArame(linha) + fimArame0(linha) - fimArame3(linha);
+
           -- calculo das derivadas dos perfis horizontais
           if(linha > 0) then
-            derivadaHor(linha) <= somaLinha - somaHor(linha -1);
+            derivadaHor(linha) <= somaHor(linha) - somaHor(linha -1);
           else
             derivadaHor(linha) <= 0;
           end if;
@@ -115,17 +122,28 @@ begin
         endereco_leitura <= endereco_leitura + 1;
         coluna <= coluna + 1;
 
+        -- definicao das laterais do arame
+        derivada <= to_integer(unsigned(dado_escrita)) - to_integer(unsigned(pixel_antigo));
+        if (coluna < meioImagem) then
+          if (derivada < min_derivada_arame) then
+            min_derivada_arame <= derivada;
+            inicioArame0(linha) <= coluna;
+          end if;
+        else
+          if (derivada > max_derivada_arame) then
+            max_derivada_arame <= derivada;
+            fimArame0(linha) <= coluna;
+          end if;      
+        end if;
+
         -- vetores sao formados enquanto a leitura ocorre
-        somaLinha <= somaLinha + to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(q));
-        --somaLinhaAntiga <= somaLinhaAntiga + to_integer(unsigned(q));
+        somaHor(linha) <= somaHor(linha) + to_integer(unsigned(dado_escrita)) - to_integer(unsigned(q));
+        pixel_antigo <= unsigned(dado_escrita);
       end if;
 
     end if;  
   end if;
 
 end process;
-
-
-
 
 end comportamental;
