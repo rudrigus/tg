@@ -1,13 +1,16 @@
-tres blocos de imagem na memória
-Registrador de imagem atual da memória: 2 bits
+Programar uma placa no GRACO 
 
-A cada nova imagem, receber pixels na memória e paralelamente
-  se a soma destes for um número muito alto
-    descartar atual e manter resultado anterior
-  senão
-    descartar a mais antiga
-    atualiza registrador de memória atual
-  fazer imagem média desta mais as duas anteriores e processar
-    usar imagens na memoria na hora do processamento (nao precisa de imagem media)
-Nova imagem
+Criar receptor para camera na fpga
+  Precisa de um clock 7x mais rápido que o da câmera (7x85MHz)
+  Deserializador para 8 bits. 7 em uma porta e 1 em outra
+  Tem que arrumar a sincronia do primeiro bit no meio do clock high
+  Arrumar sinais de fim de janela e linha
+  Prestar atenção no bit de "data check"
 
+Colocar segundo threshold depois do filtro gaussiano. Verificar no Matlab se a imagem fica Binária da 0 e 1 ou 0 e 20 a 255
+
+Implementar filtro gaussiano no Matlab e testar 
+
+Implementar filtro de mediana na fpga
+
+* linearizar laterais do arame na fpga(vai ser foda)
