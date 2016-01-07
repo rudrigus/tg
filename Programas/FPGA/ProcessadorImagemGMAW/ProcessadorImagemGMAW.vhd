@@ -25,10 +25,20 @@ signal endereco_escrita : unsigned(13 downto 0) := "00000000000000";
 signal endereco_leitura : unsigned(13 downto 0) := "00000000000000";
 --signal ativar_escrita : std_logic  := '0';
 signal q                : std_logic_vector(7 downto 0);
-signal dado_escrita     : std_logic_vector(7 downto 0);
+signal pixel_filtrado0  : std_logic_vector(7 downto 0);
+signal pixel_filtrado1  : std_logic_vector(7 downto 0);
 
 signal posArameTopo : natural range numlin downto 0;
 signal posArameBase : natural range numlin downto 0;
+
+
+component FiltroGaussiana is
+  port (
+  in_clock         : in std_logic;
+  in_janela        : in std_logic;
+  pixel_entrada    : in std_logic_vector(7 downto 0) := (others => '0');
+  pixel_filtrado   : out std_logic_vector(7 downto 0) := (others => '0'));
+end component;
 
 
 component ImagensRAM
@@ -43,23 +53,23 @@ END component;
 
 component SeletorImagem
   port(
-  brilho_maximo : in unsigned(24 downto 0);
-  threshold1    : in std_logic_vector(7 downto 0);
-  in_clock      : in std_logic;
-  in_janela     : in std_logic;
-  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : inout unsigned(1 downto 0) := "00";
+  brilho_maximo    : in unsigned(24 downto 0);
+  threshold1       : in std_logic_vector(7 downto 0);
+  in_clock         : in std_logic;
+  in_janela        : in std_logic;
+  pixel_entrada    : in std_logic_vector(7 downto 0) := "00000000";
+  bloco_atual      : inout unsigned(1 downto 0) := "00";
   endereco_escrita : inout unsigned(13 downto 0) := (others => '0'));
 end component;
 
-component TopoBase
+component MedidasArame
   port(
-  meioVert      : in unsigned(7 downto 0);
-  meioImagem    : in unsigned(7 downto 0);
-  in_clock      : in std_logic;
-  in_janela     : in std_logic;
-  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : in unsigned(1 downto 0);
+  meioVert         : in unsigned(7 downto 0);
+  meioImagem       : in unsigned(7 downto 0);
+  in_clock         : in std_logic;
+  in_janela        : in std_logic;
+  pixel_entrada    : in std_logic_vector(7 downto 0) := "00000000";
+  bloco_atual      : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0);
   q                : in std_logic_vector(7 downto 0);
   posArameTopo  : out natural range numlin downto 0;
@@ -68,10 +78,10 @@ end component;
 
 component Bordas
   port(
-  meioImagem   : in unsigned(7 downto 0);
+  meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
+  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
   limDirPoca    : out natural range numcols downto 0);
@@ -79,14 +89,15 @@ end component;
 
 begin
   -- threshold1
-  dado_escrita <= "00000000" when pixel_entrada < threshold1 else
+  pixel_filtrado0 <= "00000000" when pixel_entrada < threshold1 else
                   pixel_entrada;
 
   -- Entrada está sempre indo para a memoria
-  ram : ImagensRAM port map(in_clock, dado_escrita, std_logic_vector(endereco_leitura), std_logic_vector(endereco_escrita), in_clock, q);
-  bloco_receptor: SeletorImagem port map(brilho_maximo, threshold1, in_clock, in_janela, dado_escrita, bloco_atual, endereco_escrita);
-  bloco_topo_base: TopoBase port map(meioVert, meioImagem, in_clock, in_janela, dado_escrita, bloco_atual, endereco_leitura, q, posArameTopo, posArameBase);
-  bloco_bordas: Bordas port map(meioImagem, in_clock, in_janela, dado_escrita, q, limEsqPoca, limDirPoca);
+  filtro_gaussiana: FiltroGaussiana port map(in_clock, in_janela, pixel_filtrado0, pixel_filtrado1);
+  ram : ImagensRAM port map(in_clock, pixel_filtrado0, std_logic_vector(endereco_leitura), std_logic_vector(endereco_escrita), in_clock, q);
+  bloco_receptor : SeletorImagem port map(brilho_maximo, threshold1, in_clock, in_janela, pixel_filtrado0, bloco_atual, endereco_escrita);
+  bloco_topo_base : MedidasArame port map(meioVert, meioImagem, in_clock, in_janela, pixel_filtrado0, bloco_atual, endereco_leitura, q, posArameTopo, posArameBase);
+  bloco_bordas : Bordas port map(meioImagem, in_clock, in_janela, pixel_filtrado0, q, limEsqPoca, limDirPoca);
 
 
 

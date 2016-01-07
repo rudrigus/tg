@@ -56,8 +56,10 @@ set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "100 us" -section_id TB
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ProcessadorImagemGMAW_TB -section_id TB
 set_global_assignment -name EDA_SIMULATION_RUN_SCRIPT simulation/modelsim/ProcessadorImagemGMAW_run_msim_rtl_vhdl.do -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_FILE "ProcessadorImagemGMAW-TB.vhd" -section_id TB
+set_global_assignment -name VHDL_FILE Multiplicador8B16B.vhd
+set_global_assignment -name VHDL_FILE FiltroGaussiana.vhd
+set_global_assignment -name VHDL_FILE MedidasArame.vhd
 set_global_assignment -name VHDL_FILE ImagensTeste.vhd
-set_global_assignment -name VHDL_FILE TopoBase.vhd
 set_global_assignment -name VHDL_FILE "ProcessadorImagemGMAW-TB.vhd"
 set_global_assignment -name QIP_FILE ImagensRAM.qip
 set_global_assignment -name VHDL_FILE ImagensRAM.vhd

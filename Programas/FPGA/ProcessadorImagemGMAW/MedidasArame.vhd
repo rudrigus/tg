@@ -4,21 +4,21 @@ use ieee.std_logic_1164.all;
 use work.common.all;
 
 
-entity TopoBase is
+entity MedidasArame is
   port(
   meioVert      : in unsigned(7 downto 0);
   meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
+  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
   q                : in std_logic_vector(7 downto 0);
   posArameTopo  : out natural range numlin downto 0;
   posArameBase  : out natural range numlin downto 0);
-end TopoBase;
+end MedidasArame;
 
-architecture comportamental of TopoBase is
+architecture comportamental of MedidasArame is
 signal coluna : natural range (numcols - 1) downto 0 := 0;
 signal linha  : natural range (numlin  - 1) downto 0 := 0;
 --signal somaLinha        : integer := 0;
@@ -114,7 +114,7 @@ begin
               min_derivada <= derivadaHor(linha);
               posArameBase <= linha;
             end if;
-          end if; 
+          end if;
 
         end if;
       else
@@ -123,7 +123,7 @@ begin
         coluna <= coluna + 1;
 
         -- definicao das laterais do arame
-        derivada <= to_integer(unsigned(dado_escrita)) - to_integer(unsigned(pixel_antigo));
+        derivada <= to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(pixel_antigo));
         if (coluna < meioImagem) then
           if (derivada < min_derivada_arame) then
             min_derivada_arame <= derivada;
@@ -137,8 +137,8 @@ begin
         end if;
 
         -- vetores sao formados enquanto a leitura ocorre
-        somaHor(linha) <= somaHor(linha) + to_integer(unsigned(dado_escrita)) - to_integer(unsigned(q));
-        pixel_antigo <= unsigned(dado_escrita);
+        somaHor(linha) <= somaHor(linha) + to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(q));
+        pixel_antigo <= unsigned(pixel_entrada);
       end if;
 
     end if;  

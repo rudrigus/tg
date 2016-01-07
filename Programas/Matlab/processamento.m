@@ -12,7 +12,7 @@ I = I.*a;
 %% Encontrar posicao do arame (algoritmo 3)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % filtro de mediana
-H = fspecial('average',3);
+H = fspecial('gaussian',3);
 I2 = imfilter(I,H,'replicate');
 %I2=I;
 
@@ -45,13 +45,13 @@ derivadaVert = diff(somaVert);
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Borda esquerda da poça
+% Borda esquerda da poï¿½a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [M, limEsqPoca] = max(derivadaVert(1:1:tamanho(2)/2));
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Borda direita da poça
+% Borda direita da poï¿½a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [M, limDirPoca] = min(derivadaVert(tamanho(2)/2:1:tamanho(2)-1));
 limDirPoca = limDirPoca + tamanho(2)/2;

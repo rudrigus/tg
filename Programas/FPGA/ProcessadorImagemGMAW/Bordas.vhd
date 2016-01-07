@@ -9,7 +9,7 @@ entity Bordas is
   meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   in_janela     : in std_logic;
-  dado_escrita  : in std_logic_vector(7 downto 0) := "00000000";
+  pixel_entrada : in std_logic_vector(7 downto 0) := (others => '0');
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
   limDirPoca    : out natural range numcols downto 0);
@@ -26,8 +26,6 @@ signal max_derivada       : integer := -1000000;
 signal min_derivada       : integer := 1000000;
 signal max_derivada_arame : integer := -1000000;
 signal min_derivada_arame : integer := 1000000;
---signal endereco_leitura  : unsigned(13 downto 0) := to_unsigned(bloco_atual * tamanho_imagem, 14);
---signal q                 : std_logic_vector(7 downto 0);
 
 begin
 
@@ -66,7 +64,7 @@ begin
         coluna <= coluna + 1;
 
         -- vetores sao formados enquanto a leitura ocorre
-        somaVert(coluna) <= somaVert(coluna) + to_integer(unsigned(dado_escrita)) - to_integer(unsigned(q));
+        somaVert(coluna) <= somaVert(coluna) + to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(q));
 
         -- fazer os calculos na ultima linha
         if (linha = numlin - 1) then

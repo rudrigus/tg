@@ -6,15 +6,15 @@ close all;
 
 %%
 %%Carregar imagens
-cd d:/trabaio/TG
-Diretorio_leitura = './Tese_Luciano/Videos/sincronizada/1000 fps/Resultados Filtro Adaptativo/';
+cd ~/UNB/TG
+Diretorio_leitura = './Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/';
 Diretorio_escrita = './Img_alteradas/';
 inicio = 150;
 fim    = 200;
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%Média de imagens para reduzir ruídos
+%%Mï¿½dia de imagens para reduzir ruï¿½dos
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 quantidadeImagens = 3;
 ImTemp = imread(strcat(Diretorio_leitura,'Img',int2str(inicio),'.bmp'));
@@ -27,10 +27,10 @@ Im = zeros(tamanho(1),tamanho(2),quantidadeImagens);
         Im(:,:,i) = imread(strcat(Diretorio_leitura,'Img',int2str(imagemInicial-i+1),'.bmp'));
     end
     
-    I = Mean(Im,3);
+    I = mean(Im,3);
     
     
-    %[ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame] = processamento(I,tamanho);
+    %%[ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame] = processamento(I,tamanho);
     
 
 %%Retirar scanlines
@@ -78,7 +78,7 @@ derivadaVert = diff(somaVert);
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Borda esquerda da poça
+% Borda esquerda da poï¿½a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [M, limEsqPoca] = max(derivadaVert(1:1:tamanho(2)/2));
 
@@ -140,7 +140,7 @@ anguloDesvio = anguloDesvio*180/pi;
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Borda direita da poça
+% Borda direita da poï¿½a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [M, limDirPoca] = min(derivadaVert(tamanho(2)/2:1:tamanho(2)-1));
 limDirPoca = limDirPoca + centroBase;
@@ -152,7 +152,7 @@ figure;image(ImagemTratada);colormap(gray(256))
 hold on;
 % plot(1:1:tamanho(2),posArameTopo,'--r',1:1:tamanho(2),posArameBase,'--r',[inicioArameTopo,fimArameTopo],posArameTopo,'+g',[inicioArameBase,fimArameBase],posArameBase,'+g',[centroBase centroTopo],[posArameBase posArameTopo],'b',limEsqPoca,1:1:tamanho(1),'--y',limDirPoca,1:1:tamanho(1),'--y');
 plot(1:1:tamanho(2),posArameTopo,'--r',1:1:tamanho(2),posArameBase,'--r',limEsqPoca,1:1:tamanho(1),'--y',limDirPoca,1:1:tamanho(1),'--y');
-%plot(inicioArame,posArameTopo:intervalo:posArameTopo+intervalo*(n-1),fimArame,posArameTopo:intervalo:posArameTopo+intervalo*(n-1));
+% plot(inicioArame,posArameTopo:intervalo:posArameTopo+intervalo*(n-1),fimArame,posArameTopo:intervalo:posArameTopo+intervalo*(n-1));
 plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1), tamanho(1)*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo tamanho(1)],'r')
 plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1), tamanho(1)*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo tamanho(1)],'r')
 

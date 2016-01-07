@@ -410,4 +410,3 @@ end process;
 
 
 END ProcessadorImagemGMAW_arch;
- 

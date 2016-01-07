@@ -1,7 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/pixel_entrada
-add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/dado_escrita
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_topo_base/pixel_antigo
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/bloco_topo_base/q
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/endereco_escrita
@@ -24,8 +23,9 @@ add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_bordas/max_derivada_arame
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_bordas/min_derivada_arame
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_topo_base/inicioArame
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_topo_base/fimArame
+add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/filtro_gaussiana/pixel_filtrado
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {94251379 ps} 0}
+WaveRestoreCursors {{Cursor 1} {4429875 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 309
 configure wave -valuecolwidth 100
@@ -41,4 +41,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {105 us}
+WaveRestoreZoom {4019718 ps} {4840032 ps}

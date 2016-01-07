@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.10.14)  19 DEC 2015 22:35
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.10.14)  30 DEC 2015 22:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -675,21 +675,21 @@ Cap\'{\i }tulo 3.
 
 
 
-] [25] [26]) [27]
+] [25] [26] [27]) [28]
 \openout2 = `cap_Experimentos.aux'.
 
  (./cap_Experimentos.tex
 Cap\'{\i }tulo 4.
-) [28
+) [29
 
 
 
-] [29]
+] [30]
 \openout2 = `cap_Conclusoes.aux'.
 
  (./cap_Conclusoes.tex
 Cap\'{\i }tulo 5.
-) [30
+) [31
 
 
 
@@ -699,19 +699,19 @@ Underfull \hbox (badness 2326) in paragraph at lines 94--98
 de cir-cuitos dig-i-tais\T1/cmr/m/n/10.95 . LTC, 2005. ISBN
  []
 
-[31
+[32
 
 
-]) [32]
+]) [33]
 \c@noAnexo=\count118
- [33
+ [34
 
 ]
 \openout2 = `anexo_Esquematicos.aux'.
 
  (./anexo_Esquematicos.tex
 ANEXO I.
-) [34
+) [35
 
 
 ]
@@ -719,7 +719,7 @@ ANEXO I.
 
  (./anexo_CD.tex
 ANEXO II.
-) [35
+) [36
 
 
 
@@ -736,10 +736,10 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 5163 strings out of 495028
- 69821 string characters out of 6181496
- 156071 words of memory out of 5000000
- 8125 multiletter control sequences out of 15000+600000
+ 5167 strings out of 495028
+ 69887 string characters out of 6181496
+ 157097 words of memory out of 5000000
+ 8129 multiletter control sequences out of 15000+600000
  27550 words of font info for 64 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  42i,13n,43p,975b,331s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -765,10 +765,10 @@ s/texmf/fonts/type1/public/amsfonts/cm/cmmi8.pfb></home/rudrigus/texmf/fonts/ty
 pe1/public/amsfonts/cm/cmr10.pfb></home/rudrigus/texmf/fonts/type1/public/amsfo
 nts/cm/cmr8.pfb></home/rudrigus/texmf/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 >
-Output written on relatorio.pdf (45 pages, 752412 bytes).
+Output written on relatorio.pdf (46 pages, 758766 bytes).
 PDF statistics:
- 1002 PDF objects out of 1200 (max. 8388607)
- 194 compressed objects within 2 object streams
+ 1008 PDF objects out of 1200 (max. 8388607)
+ 196 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  51 words of extra memory for PDF output out of 10000 (max. 10000000)
 
