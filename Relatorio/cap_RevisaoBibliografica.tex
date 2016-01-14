@@ -456,6 +456,7 @@ Como $R$ pode assumir uma grande gama de valores, positivos e negativos, usa-se 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 
+
 \section{Sistemas reconfiguráveis}
 
 Os custos para se testar circuitos na indústria de eletrônicos são muito elevados, pois é necessário fazer todo o \textit{setup} do processo de produção para um novo circuito. Por esse motivo foi desenvolvida a FPGA, ou \textit{Field Programable Gate Array}, que é um circuito reconfigurável que pode rapidamente assumir as características de um circuito digital, com todas as suas ligações e portas lógicas.
@@ -521,12 +522,10 @@ https://www.google.com.br/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8&cl
 
 \end{verbatim}
 
+
 \section{Linguagens de Descrição de Hardware e VHDL}
 
 Uma linguagem de descrição de hardware, ou HDL (\textit{Hardware Description Language}) é semelhante a uma linguagem de programação em termos de sintaxe e estrutura, porém como o próprio nome diz ela serve mais para descrever do que para programar. Esse tipo de linguagem tem por objetivo facilitar o projeto de circuitos eletrônicos, com uma descrição formal e precisa. Uma HDL padronizada permite a intercambialidade de informações entre diferentes fabricantes e projetistas além da automatização de simulação e síntese de circuitos. Existem variadas HDLs, dentre as quais foi escolhida a VHDL para este trabalho por motivos a serem expostos adiante.
-
-
-
 
 \subsection{História do VHDL}
 
@@ -585,13 +584,13 @@ USE ieee.std_logic_1164.all ;
 USE ieee.std_logic_arith.all;
 
 ENTITY main is
-    port ( 	CLOCK	: in std_logic;
-		start_stop	: in std_logic ;
-           	up_down     	: in std_logic ;
-		D1A, D1B, D1C, D1D, D1E, D1F, D1G, DP1 : out std_logic;
-	);
-			  
-			  
+    port (  CLOCK : in std_logic;
+    start_stop  : in std_logic ;
+            up_down       : in std_logic ;
+    D1A, D1B, D1C, D1D, D1E, D1F, D1G, DP1 : out std_logic;
+  );
+        
+        
 END main ;
 
 ARCHITECTURE ESTRUTURA of main is
@@ -599,19 +598,19 @@ ARCHITECTURE ESTRUTURA of main is
 SIGNAL BCD : std_logic_vector(3 downto 0);
 SIGNAL binario4bits : integer(11 downto 0);
 COMPONENT CONTADOR
-PORT 	(	
-	CLK	 	: in std_logic;
-	start_stop  	: in std_logic ;
-   	up_down   	: in std_logic ;
-	binario4bits 	: out integer(3 downto 0)
-	);
+PORT  ( 
+  CLK   : in std_logic;
+  start_stop    : in std_logic ;
+    up_down     : in std_logic ;
+  binario4bits  : out integer(3 downto 0)
+  );
 END component;
 
 COMPONENT BIN_7SEG
-PORT 	(	
-	BIN : in std_logic_vector(3 downto 0);
-	SEG_A, SEG_B, SEG_C, SEG_D, SEG_E, SEG_F, SEG_G, DP : out std_logic
-	);
+PORT  ( 
+  BIN : in std_logic_vector(3 downto 0);
+  SEG_A, SEG_B, SEG_C, SEG_D, SEG_E, SEG_F, SEG_G, DP : out std_logic
+  );
 END component;
 
 BEGIN
@@ -657,15 +656,15 @@ Pacotes definidos pelo usuário precisam ser claramente identificados pela palavr
 
 \begin{verbatim}
 PACKAGE meu_pacote IS
-	TYPE \textbf{meu_inteiro} IS range -127 to 127;
+  TYPE \textbf{meu_inteiro} IS range -127 to 127;
 END meu_pacote;
 
 USE work.meu_pacote.all;
 
 ENTITY minha_entidade IS
 PORT(
-		entrada : in \textbf{meu_inteiro};
-		saida: out \textbf{meu_inteiro} );
+    entrada : in \textbf{meu_inteiro};
+    saida: out \textbf{meu_inteiro} );
 END minha_entidade;
 \end{verbatim}
 
@@ -705,6 +704,78 @@ Com a descrição de componentes e ligações entre os mesmos, o sintetizador faz o 
 
 \subsection{Simulação}
 
+LEMBRAR DE ESCREVER AQUI!!
+
+
+\section{Aquisição de imagens}
+
+As imagens necessárias para o processamento devem ser obtidas adequadamente à velocidade do processo em questão. Apesar do processo de soldagem não ser muito rápido se comparado à velocidade de circuitos digitais, a obtenção das informações úteis não é trivial. As melhores imagens para identificação de parâmetros só são visíveis por curtos períodos de tempo durante o momento de curto-circuito da solda, não mais que alguns milissegundos.
+
+% mostrar imagem de curto-circuito vs imagem normal
+
+Câmeras comuns não são capazes de registrar estas imagens, pois não conseguem transmitir os dados de forma suficientemente rápida. O curto-circuito começa e acaba antes que a câmera transmita um \textit{frame} inteiro. O mais comum nesse caso é uma imagem com brilho excessivo provindo do arco de solda que dura muito mais tempo que o curto-circuito.
+
+
+Algumas câmeras especiais, desenvolvidas para uso industrial ou pesquisa científica, são capazes de registrar \textit{frames} em períodos extremamente reduzidos de tempo. Estas possuem alta taxa de captura de imagens e consequentemente uma alta taxa de transmissão de dados. Este é o caso da câmera DALSA DS-21-0001M150, utilizada neste trabalho, que possui uma taxa máxima de amostragem de 150 fps com resolução de 1 \textit{megapixel}(1024 x 1024 pixels). Com cada pixel representado em 8 níveis de cinza, a taxa de transmissão desta câmera é de 1200 Mb/s, ou aproximadamente 1,2 Gb/s. \cite{luciano}
+
+\subsection{Camera Link}
+
+Atualmente existem protocolos rápidos o suficiente para transmissão de dados à partir da ordem de 1 Gb/s, como a fibra ótica e os cabos ethernet Cat 6 e Cat 7. Mas a câmera em questão utiliza um outro protocolo padronizado especificamente para aplicação com câmeras, o \textit{Camera Link}. Este protocolo permite transmissão de até 6,8 Gb/s em uma configuração máxima de três \textit{Channel-links} e transmite até 80 bits por ciclo. Esta característica é muito interessante para uso com FPGAs pois tem um grau de paralelismo naturalmente superior à outros protocolos.
+
+O Camera Link usa de um a três \textit{Channel-links}. Com apenas um é classificado como Configuração Base (\textit{Base Configuration}) e pode transmitir até 2,04 Gb/s. As outras configurações são a Média (\textit{Medium Configuration}) e a Completa (\textit{Full Configuration}) e transmitem 4,08 e 6,8 Gb/s respectivamente.
+
+
+O \textit{Channel-link} é uma interface de comunicação com um par emissão e recepção. Ele recebe 28 bits e os transmite de forma serial em quatro canais de 7 bits e um canal de clock, todos em LVDS(\textit{Low Voltage Differential Signaling}). \cite{camera-link}
+
+
+\subsubsection{Especificações}
+
+A configuração base transmite 24 bits de dados do pixel mais 3 bits de validação e um bit reserva a cada ciclo de clock. Os bits de validação são \textit{Data Valid}, \textit{Line Valid} e \textit{Frame Valid}. As configurações média e completa utilizam doi e três \textit{Channel-links} respectivamente, duplicando ou triplicando a quantidade de bits transmitios simultaneamente. Elas podem omitir os bits de validação redundantes e transmitir até 80 bits de dados por ciclo \cite{camera-link}. Esta característica da interface \textit{Camera Link} a torna ideal para processamento com alto nível de paralelismo, como em FPGAs. 
+
+A transmissão serial é feita com 7 bits em cada canal a cada ciclo de clock. O início de cada palavra fica no meio do valor alto do clock e o clock tem o período de valor alto maior que o de valor baixo na proporção 4:3. Esta configuração pode ser melhor observada na imagem \ref{fig:camera-link-serial}. \cite{camera-link-ip-core}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/camera-link-serial.jpg}
+\caption{Codificação de dados do \textit{Camera Link}}
+\label{fig:camera-link-serial}
+\end{figure}
+
+Pode-se notar na imagem \ref{fig:camera-link-serial} que os dados de cada cor são distribuídos de forma complicada entre os quatro canais da interface. 
+
+Os bits de validação dependem basicamente da câmera utilizada mas seguem sempre um mesmo padrão \cite{camera-link}:
+
+\begin{itemize}
+\item FVAL (\textit{Frame Valid}) tem o valor ALTO para linhas válidas e sem deslocamento entre a borda de subida de FVAL e o começo da primeira linha válida.
+\item LVAL (\textit{Line Valid}) tem o valor ALTO para pixels válidos e sem deslocamento entre o começo de LVAL e o primeiro pixel válido.
+\item DVAL (\textit{Data Valid}) tem o valor ALTO para dados válidos.
+\end{itemize}
+
+Estes bits podem ser melhor visualizados no manual do fabricante da câmera utilizada nos experimentos, conforme a imagem \ref{fig:bits-validacao-camera-freerunning} abaixo \cite{dalsa}:
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/bits-validacao-camera-freerunning.jpg}
+\caption{Esquema de validação de dados da câmera DALSA DS-21-0001M150}
+\label{fig:bits-validacao-camera-freerunning}
+\end{figure}
+
+A imagem \ref{fig:bits-validacao-camera-freerunning} demonstra com clareza os momentos de ativação e desativação dos bits de validação, além de outras características interessantes dessa transmissão de dados. O valor \textit{INTEGRATION} por exemplo se refere ao tempo de exposição da câmera, CPRE (\textit{Clocks after exposure of the sensor}) que é um tempo mínimo entre a exposição e o início da transmissão de dados e \textit{line pause} é o tempo entre uma linha e outra.
+
+\subsection{Configuração da câmera}
+
+A câmera é extremamente versátil e permite uma grande gama de configurações que podem inclusive alterar a duração de alguns tempos demonstrados na imagem \ref{fig:bits-validacao-camera-freerunning}. Algumas opções incluem \cite{dalsa}:
+
+\begin{itemize}
+\item Tempo de exposição - é a duração de tempo que a câmera recebe luz do ambiente externo a cada imagem. Normalmente, quanto maior for o tempo de exposição, maior o brilho das imagens obtidas;
+\item \textit{Frame Time} - define o tempo de duração de cada frame, ou seu inverso: a taxa de aquisição da câmera, também chamada de FPS (\textit{Frames Per Second}). 
+\item Dimensionamento de janela - é uma das funções mais interessantes dessa câmera, pois permite usar apenas setores de interesse dentro da janela da câmera. Isto permite a aquisição de imagens menores a uma taxa mais elevada de FPS. Por exemplo, pode ser transmitido um vídeo de 1024 x 1024 pixels (1 Mp) a 150 FPS ou um de 512 x 1024 pixels (0,5) Mp a 300 FPS.
+\end{itemize}
+
+Todos esses parâmetros podem ser definidos através de comunicação serial por um software fornecido pelo fabricante. As configurações ficam armazenadas na EEPROM (Electrically-Erasable Programmable Read-Only Memory) da câmera e continuam em vigor mesmo após a mesma ser desligada.
+Isso significa que a câmera pode ser configurada com o software e utilizada para aquisição com outra interface mesmo após ser desligada.
+
+
 
 
 
@@ -716,9 +787,6 @@ Com a descrição de componentes e ligações entre os mesmos, o sintetizador faz o 
 Retirar ruídos dos dados gerados pelo processamento de imagens.
 Geração do sinal de controle à partir dos vetores gerados pelo algoritmo de processamento.
 
-
-
-\section{VHDL}
 
 
 
