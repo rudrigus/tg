@@ -77,11 +77,41 @@ Esses passos com os valores para os parâmetros definidos acima obtiveram bons re
 
 O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa FPGA, utilizando-se a linguagem VHDL. Boa parte dos procedimentos continuou com a característica sequencial, pois as imagens são obtidas desta forma. Alguns procedimentos utilizaram do paralelismo para economia de tempo e recursos. Por exemplo: a obtenção de topo e base do arame e largura da poça de soldagem ocorrem simultaneamente. A seguir é demonstrado como foi feita a implementação de cada item do algoritmo.
 
+\subsection{Aquisição de imagens}
+% falar da camera link na revisão bibliografica
+
+Diferentemente do projeto em matlab, o algoritmo para a FPGA engloba faz captura de dados diretamente da câmera. Os dados fornecidos serialmente foram desserializados e disponibilizados em apenas um \textit{std\_logic\_vector} pois apenas eram necessários níveis de cinza.
+
+A implementação em FPGA desenvolvida apenas recebe imagens para a função \textit{Freerunning Mode} da câmera. A princípio, o algoritmo não precisa de nenhum gatilho de sincronia enviado à câmera pois deve selecionar as imagens por conta própria como descrito em \ref{subsec:filtro_media_imagens}.
+
+O primeiro passo para o recebimento do vídeo pela placa é a sincronização com o clock da câmera. Apesar deste clock ser fornecido pelo \textit{Channel Link}, as palavras de dados não são sincronizadas com a subida do clock. Também é necessario um sinal com 7 vezes a frequencia do clock fornecido para fazer a leitura dos 7 bits de cada palavra transmitida por ciclo. 
+
+\subsubsection{PLL}\label{section-PLL-desenv}
+
+Foi utilizado um PLL (\textit{Phase-locked loop}) para esta função, pois cria tanto o clock sincronizado com as palavras de dados quanto o clock para a leitura dos bits dessas palavras. O Quartus II permite a configuração de PLLs através do \textit{MegaWizard Plugin Manager} com o Plug-in chamado ''ALTPLL''.
+
+Foi utilizado um PLL com um sinal de entrada e dois de saída. O primeiro sinal de saída tem a mesma frequência do sinal de entrada e uma defasagem de 102º. Além disso foi configurado o \textit{duty cycle} deste sinal como 57\% para manter a mesma proporção de 4:3 do clock do \textit{Camera Link}. Este sinal foi automáticamente denominado $c0$ pelo \textit{MegaWizard Plugin Manager}.
+
+o segundo sinal de saída tem um fator de multiplicação de 7 e um fator de divisão de 2, sendo assim 3,5 vezes mais rápido que o primeiro sinal. Esta frequência foi escolhida dessa forma pois o módulo desserializador descrito em \ref{section-LVDS-desenv} aceita a sincronização tanto com subida quanto descida do sinal. Este sinal foi automáticamente denominado $c1$ pelo \textit{MegaWizard Plugin Manager}.
+
+Este módulo foi chamada simplesmente de ''PLL'' na configuração.
+
+\subsubsection{Desserializador LVDS}\label{section-LVDS-desenv}
+
+Os dados seriais são transformados em uma única palavra de 28 bits com ajuda do Plug-in ''ALTLVDS_RX'' do Quartus II. Este módulo possui tem como entrada os quatro canais do \textit{Camera Link}, $c0$ e $c1$. O vetor de 28 bits que compõe a saída, foi denominado $rx_out$ pelo \textit{MegaWizard Plugin Manager}. Infelizmente, os bits não saem deste módulo na ordem desejada, portanto foram necessários alguns roteamentos para separar os oito bits necessários para processamento e os bits de validação.
+
+Este módulo foi configurado sem um PLL interno pois não seria possível satisfazer todas as especificações do protocolo, como o atraso de fase. Por esse motivo foi utilizado o PLL descrito em \ref{section-PLL-desenv}
+
+Este módulo foi chamada de ''deserializer'' na configuração.
+
+Por fim, os módulos ''PLL'' e ''deserializer'' foram instancializados em uma entidade chamada ''ReceptorDados'' que fornece os dados corretamente para o resto do sistema.
+
 \subsection{Retirada de scanlines}
 
 Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
 
 A binarização consiste basicamente transformar em zero qualquer pixel que seja maior que $threshold1$. O valor utilizado para testes $threshold1$ foi de 10, sendo o brilho máximo 255.
+
 
 \subsection{Constantes e tipos customizados}
 
@@ -101,7 +131,7 @@ Para agilizar o desenvolvimento do projeto foi criada um pacote com valores e ti
 \end{itemize}
 \end{enumerate}
 
-\subsection{Filtro de imagem média e seleção de imagens propícias} \label{subsec:filtro_media}
+\subsection{Filtro de imagem média e seleção de imagens propícias} \label{subsec:filtro_media_imagens}
 
 Para que fosse implementado este filtro foi utilizado um bloco de memória subdividido em quatro blocos, cada um dimensionado para receber uma imagem. A placa recebe sequencialmente os dados da câmera e armazena três imagens em memória. A imagem média não necessita ser armazenada pois cada pixel pode ser obtido através da média dos pixels das imagens armazenadas à medida que for necessário. 
 
@@ -127,7 +157,7 @@ Onde $q$ é o byte armazenado no endereço de memória dado por $bloco\_atual$ conc
 
 Os dados de topo e base do arame foram obtidos com a mesma lógica criada para Matlab e de forma sequencial. Foi utilizado um processo que tem $in_janela$ e $in_clock$ como \textit{sensitivity list}. O sinal $in_janela$ foi utilizado para sincronização de final de imagem e o $in_clock$ era o \textit{clock} de entrada da câmera e define o fim e o começo da transmissão de cada pixel.
 
-Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{subsec:filtro_media} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
+Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{subsec:filtro_media_imagens} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
 
 Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com simples testes ao final de cada linha. Ao final da imagem estes valores já estão devidamente definidos.
 
