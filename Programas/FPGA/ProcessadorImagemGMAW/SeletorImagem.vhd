@@ -8,7 +8,7 @@ entity SeletorImagem is
   brilho_maximo : in unsigned(24 downto 0) := (others => '0');
   threshold1    : in std_logic_vector(7 downto 0);
   in_clock      : in std_logic;
-  in_janela     : in std_logic;
+  FVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : inout unsigned(1 downto 0) := "00";
   endereco_escrita : inout unsigned(13 downto 0) := (others => '0'));
@@ -35,12 +35,12 @@ begin
 
   
 
-process(in_janela,in_clock)
+process(FVAL,in_clock)
 begin
   
   if(rising_edge(in_clock)) then
     soma_imagem <= soma_imagem + unsigned(pixel_entrada);
-    if(in_janela = '1') then
+    if(FVAL = '1') then
       soma_imagem <= (others => '0');
 -- passa para próximo bloco apenas se a imagem tem brilho menor que máximo
       if (soma_imagem < brilho_maximo) then

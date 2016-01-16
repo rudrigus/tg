@@ -8,7 +8,7 @@ entity Bordas is
   port(
   meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
-  in_janela     : in std_logic;
+  FVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := (others => '0');
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
@@ -31,12 +31,12 @@ begin
 
 -- algoritmo parecido com o TopoBase.vhd, mas calcula só na última linha
 
-process(in_janela,in_clock)
+process(FVAL,in_clock)
 begin
   
   if(rising_edge(in_clock)) then
     
-    if(in_janela = '1') then
+    if(FVAL = '1') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
       coluna <= 0;
       linha <= 0;

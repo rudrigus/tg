@@ -289,6 +289,7 @@ SIGNAL meioVert      : unsigned(7 downto 0);
 SIGNAL meioImagem    : unsigned(7 downto 0);
 SIGNAL in_clock : STD_LOGIC;
 SIGNAL in_janela : STD_LOGIC;
+SIGNAL RX : STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');
 SIGNAL pixel_entrada : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
 SIGNAL bloco_atual : natural range qtd_imagens downto 0 := 0;
 SIGNAL linha : integer range 0 to numcols - 1 := 0;
@@ -298,19 +299,21 @@ SIGNAL start_stop :  STD_LOGIC;
 SIGNAL contador12b : STD_LOGIC_VECTOR(11 DOWNTO 0);
 SIGNAL qtd_imagens : UNSIGNED(1 DOWNTO 0) := "11";
 --SIGNAL fim_imagem : STD_LOGIC := '0';
-SIGNAL frequencia_camera : real := 150.000E6;
+SIGNAL frequencia_camera : real := 85.000E6;
 
 
 COMPONENT ProcessadorImagemGMAW
 	PORT (
-	brilho_maximo : IN UNSIGNED(24 DOWNTO 0);
-  threshold1    : in STD_LOGIC_VECTOR(7 downto 0);
-  meioVert      : in UNSIGNED(7 downto 0);
-  meioImagem    : in UNSIGNED(7 downto 0);
-	in_clock      : IN STD_LOGIC;
-	in_janela     : IN STD_LOGIC;
-	pixel_entrada : IN STD_LOGIC_VECTOR(7 DOWNTO 0)
-	);	
+	in_clock      : in std_logic;                                       -- clock gerado pela camera
+  FVAL_teste    : in std_logic;                                       -- para simulacao
+  RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
+  brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
+  threshold1    : in std_logic_vector(7 downto 0);
+  meioVert      : in unsigned(7 downto 0);
+  meioImagem    : in unsigned(7 downto 0);
+  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";      -- para simulacao
+  limEsqPoca    : out natural range numcols downto 0;
+  limDirPoca    : out natural range numcols downto 0);	
 END COMPONENT;
 
 
@@ -353,8 +356,9 @@ BEGIN
   threshold1 => threshold1,
   meioVert => meioVert,
   meioImagem => meioImagem,
-	in_clock => in_clock,
-	in_janela => in_janela,
+  in_clock => in_clock,
+	RX => RX,
+	FVAL_teste => in_janela,
 	pixel_entrada => pixel_entrada
 	);
 

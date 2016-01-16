@@ -9,8 +9,13 @@ Criar receptor para camera na fpga
 
 Colocar segundo threshold depois do filtro gaussiano. Verificar no Matlab se a imagem fica Binária da 0 e 1 ou 0 e 20 a 255
 
-Implementar filtro gaussiano no Matlab e testar 
+OK Implementar filtro gaussiano no Matlab e testar 
+  Ficou bom: manter na FPGA
 
-Implementar filtro de mediana na fpga
+OFF Implementar filtro de mediana na fpga
+  não vale a pena
 
 * linearizar laterais do arame na fpga(vai ser foda)
+  Linearização tem complexidade da ordem n, onde n é o número de observações. Algoritmos com robustez tem alto nível de paralelismo!
+  Cálculos matriciais (olhar arquivo quadrados_minimos.pdf)
+  ou os somatórios (no wikipedia), que usam menos multiplicaões

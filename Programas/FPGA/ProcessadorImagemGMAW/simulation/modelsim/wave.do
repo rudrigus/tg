@@ -24,6 +24,9 @@ add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_bordas/min_derivada_arame
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_topo_base/inicioArame
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_topo_base/fimArame
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/filtro_gaussiana/pixel_filtrado
+add wave -noupdate /processadorimagemgmaw_tb/i1/phase_lock/inclk0
+add wave -noupdate /processadorimagemgmaw_tb/i1/phase_lock/c0
+add wave -noupdate /processadorimagemgmaw_tb/i1/phase_lock/c1
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {4429875 ps} 0}
 quietly wave cursor active 1
@@ -41,4 +44,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {4019718 ps} {4840032 ps}
+WaveRestoreZoom {99220702 ps} {100041016 ps}

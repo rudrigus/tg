@@ -513,6 +513,17 @@ O FPGA é um arranjo de CLBs (\textit{Configurable Logic Blocks}) e IOBs(\textit{
 \label{fig:esquemaCLB_FPGA}
 \end{figure}
 
+\subsection{Módulos especiais}
+
+Em caso geral, as FPGAs também vêm equipadas com módulos especiais que seriam de difícil implementação por parte do desenvolvedor ou mesmo impossíveis devido às restrições da própria arquitetura. A quantidade e variedade desses módulos varia bastante de placa para placa. Alguns dos mais comuns foram utilizados neste projeto e serão aqui descritos.
+
+\subsubsection{PLL}
+
+A PLL, ou \textit{Phase-locked loop}, é um módulo capaz de sincronizar diferentes interfaces e um dos circuitos mais importantes na eletrônica de telecomunicações. Basicamente, uma PLL gera um sinal de saída que é proporcional a um sinal de entrada.
+
+% % % %        % % % %         % % % %       % % % %
+LER DESSES TEXTOS E EXPLICAR MAIS
+
 \begin{verbatim}
 https://en.wikipedia.org/wiki/Field-programmable_gate_array#cite_note-book-16
 file:///home/rodrigo/Downloads/US4508977.pdf
@@ -629,10 +640,6 @@ A entidade de projeto ou \textit{top level entity} é o nível mais alto na hierar
 Assim como outras entidades, a entidade de projeto tem entradas e saídas de diferentes tipos, porém estas não são utilizadas por outras entidades pois esta não está contida em nenhuma outra. As portas declaradas para essa entidade são diretamente relacionadas com o ambiente externo ao dispositivo. Por exemplo: são as portas desta entidade que o sintetizador usa para mapear os pinos de uma placa FPGA. Todas as outras portas de outras entidades são sinais internos à placa neste caso.
 
 A arquitetura da entidade de projeto define o comportamento geral de todo o circuito, com as principais entidades que serão instanciadas e o relacionamento entre as mesmas. Em grandes projetos é comum não haver operações nesta entidade, somente ligações entre outras entidades e entre estas com o meio exterior.
-
-
-
-
 
 
 \subsection{Bibliotecas e Pacotes}

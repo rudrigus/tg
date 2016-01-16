@@ -7,7 +7,7 @@ use work.common.all;
 entity FiltroGaussiana is
   port (
   in_clock         : in std_logic;
-  in_janela        : in std_logic;
+  FVAL             : in std_logic;
   pixel_entrada    : in std_logic_vector(7 downto 0) := (others => '0');
   pixel_filtrado   : out std_logic_vector(7 downto 0) := (others => '0'));
 end FiltroGaussiana;
@@ -53,14 +53,14 @@ begin
   mascara_gaussiana(2,1) <= x"15";
   mascara_gaussiana(2,2) <= x"03";
 
-process(in_janela,in_clock)
+process(FVAL,in_clock)
 begin
   
   if(rising_edge(in_clock)) then
     buffer_filtro((2 * numcols + 1) downto 1) <= buffer_filtro((2 * numcols) downto 0);
     buffer_filtro(0) <= pixel_entrada;
 
-    if(in_janela = '1') then
+    if(FVAL = '1') then
       coluna <= 0;
       linha <= 0;
       -- no primeiro pixel, copiar para bordas

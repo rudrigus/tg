@@ -32,7 +32,7 @@ Para implementação em uma FPGA, devem-se separar blocos da imagem para serem pro
 
 
 
-\section{Implementação em Matlab}
+\section{Implementação em Matlab}\label{section-implementacao-matlab}
 
 
 O primeiro algoritmo foi desenvolvido para funcionamento de forma sequencial, pois seria implementado com o software Matlab. A sequência de operações foi definida de acordo com a descrição abaixo. As descrições entre parênteses indicam os parâmetros utilizados em testes que obtiveram bons resultados.
@@ -107,6 +107,8 @@ Este módulo foi chamada de ''deserializer'' na configuração.
 Por fim, os módulos ''PLL'' e ''deserializer'' foram instancializados em uma entidade chamada ''ReceptorDados'' que fornece os dados corretamente para o resto do sistema.
 
 \subsection{Retirada de scanlines}
+
+Assim que os dados estejam corretamente disponíveis para processamento começam a passar por etapas semelhantes às descritas na seção \ref{section-implementacao-matlab}. A primeira etapa é a retirada de \textit{scanlines}.
 
 Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
 

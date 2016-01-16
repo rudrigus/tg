@@ -9,7 +9,7 @@ entity MedidasArame is
   meioVert      : in unsigned(7 downto 0);
   meioImagem    : in unsigned(7 downto 0);
   in_clock      : in std_logic;
-  in_janela     : in std_logic;
+  FVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
@@ -51,11 +51,11 @@ begin
   -- guardar os vetores somaHor e derivadaHor, para então subtrair do vetor os valores antigos de (bloco_atual -3)
   -- se der certo dá para usar tranquilamente quantas imagens eu quiser, pelo menos no cálculo de topo e base
 
-process(in_janela,in_clock)
+process(FVAL,in_clock)
 begin
   if(rising_edge(in_clock)) then
     
-    if(in_janela = '1') then
+    if(FVAL = '1') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
       -- Adiantar endereço de memória pois sempre há o atraso de um ciclo para leitura e um para a subtração em soma_linha
       endereco_leitura <= (bloco_atual - "10") & ("000000000000" + "000000000010");
