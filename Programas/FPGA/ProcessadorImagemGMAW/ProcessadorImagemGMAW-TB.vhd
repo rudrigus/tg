@@ -280,15 +280,19 @@ ARCHITECTURE ProcessadorImagemGMAW_arch OF ProcessadorImagemGMAW_TB IS
  (X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03"),
  (X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"02", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"03", X"02", X"03", X"03"));
 
--- signals                                                   
+-- signals
+CONSTANT LinePause : integer := 5;
+CONSTANT IntegrationCPRE : integer := 107;
 SIGNAL ENDSIM : STD_LOGIC := '0';
+SIGNAL temp : STD_LOGIC := '0';
 SIGNAL clk_count : natural := 0;
 SIGNAL brilho_maximo : UNSIGNED(24 DOWNTO 0);
 SIGNAL threshold1    : std_logic_vector(7 downto 0);
 SIGNAL meioVert      : unsigned(7 downto 0);
 SIGNAL meioImagem    : unsigned(7 downto 0);
 SIGNAL in_clock : STD_LOGIC;
-SIGNAL in_janela : STD_LOGIC;
+SIGNAL FVAL_teste : STD_LOGIC;
+SIGNAL LVAL_teste : STD_LOGIC;
 SIGNAL RX : STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');
 SIGNAL pixel_entrada : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
 SIGNAL bloco_atual : natural range qtd_imagens downto 0 := 0;
@@ -298,14 +302,19 @@ SIGNAL reset : STD_LOGIC;
 SIGNAL start_stop :  STD_LOGIC;
 SIGNAL contador12b : STD_LOGIC_VECTOR(11 DOWNTO 0);
 SIGNAL qtd_imagens : UNSIGNED(1 DOWNTO 0) := "11";
---SIGNAL fim_imagem : STD_LOGIC := '0';
 SIGNAL frequencia_camera : real := 85.000E6;
+SIGNAL periodo : real := 12.000E-8;
+
+SIGNAL after_line : integer range 0 to LinePause := 0;
+--SIGNAL inicio_imagem : STD_LOGIC := '0';
+SIGNAL inicio_imagem : integer range 0 to IntegrationCPRE := 0;
 
 
 COMPONENT ProcessadorImagemGMAW
-	PORT (
-	in_clock      : in std_logic;                                       -- clock gerado pela camera
+  PORT (
+  in_clock      : in std_logic;                                       -- clock gerado pela camera
   FVAL_teste    : in std_logic;                                       -- para simulacao
+  LVAL_teste    : in std_logic;                                       -- para simulacao
   RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
   brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
   threshold1    : in std_logic_vector(7 downto 0);
@@ -313,7 +322,7 @@ COMPONENT ProcessadorImagemGMAW
   meioImagem    : in unsigned(7 downto 0);
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";      -- para simulacao
   limEsqPoca    : out natural range numcols downto 0;
-  limDirPoca    : out natural range numcols downto 0);	
+  limDirPoca    : out natural range numcols downto 0);  
 END COMPONENT;
 
 
@@ -343,38 +352,53 @@ END COMPONENT;
 BEGIN
   -- Clock generation with concurrent procedure call
   clk_gen(in_clock, frequencia_camera);  -- 166.667 MHz clock
-
   -- Time resolution show
   assert FALSE report "Time resolution: " & time'image(time'succ(0 fs)) severity NOTE;
 
 
 
-	i1 : ProcessadorImagemGMAW
-	PORT MAP (
+  i1 : ProcessadorImagemGMAW
+  PORT MAP (
 -- list connections between master ports and signals
-	brilho_maximo => brilho_maximo,
+  brilho_maximo => brilho_maximo,
   threshold1 => threshold1,
   meioVert => meioVert,
   meioImagem => meioImagem,
   in_clock => in_clock,
-	RX => RX,
-	FVAL_teste => in_janela,
-	pixel_entrada => pixel_entrada
-	);
+  RX => RX,
+  FVAL_teste => FVAL_teste,
+  LVAL_teste => LVAL_teste,
+  pixel_entrada => pixel_entrada
+  );
 
 brilho_maximo <= to_unsigned(720000,25) after 0 ns;
 threshold1    <= "00001010" after 0 ns;
 meioVert      <= to_unsigned(30,8) after 0 ns;
 meioImagem    <= to_unsigned(31,8) after 0 ns;
 
-in_janela <= '1' after 0 ns,
-             '0' after 5 ns,
-             '1' after (1 sec / frequencia_camera) * (numcols * numlin)- 1 ns,
-             '0' after (1 sec / frequencia_camera) * (numcols * numlin + 1) - 1 ns,
-             '1' after (1 sec / frequencia_camera) * 2 * (numcols * numlin) - 1 ns,
-             '0' after (1 sec / frequencia_camera) * (2 *(numcols * numlin) + 1) - 1 ns,
-             '1' after (1 sec / frequencia_camera) * 3 * (numcols * numlin) - 1 ns,
-             '0' after (1 sec / frequencia_camera) * (3 *(numcols * numlin) + 1) - 1 ns;
+-- usando um line pause de 5 ciclos
+-- e tempos de integration + CPRE de 100 ciclos
+FVAL_teste <= '1' after 10 * (1 sec / frequencia_camera),   -- imagem 0
+             '0' after 4025 * (1 sec / frequencia_camera),
+             '1' after 4125 * (1 sec / frequencia_camera),  -- imagem 1
+             '0' after 8050 * (1 sec / frequencia_camera),
+             '1' after 8150 * (1 sec / frequencia_camera),  -- imagem 2
+             '0' after 12075 * (1 sec / frequencia_camera),
+             '1' after 12175 * (1 sec / frequencia_camera), -- imagem 3
+             '0' after 16090 * (1 sec / frequencia_camera);
+
+bloco_atual <= 0 after 10 * (1 sec / frequencia_camera),
+               1 after 4015 * (1 sec / frequencia_camera),
+               2 after 8030 * (1 sec / frequencia_camera),
+               3 after 12045 * (1 sec / frequencia_camera);
+
+
+             --'1' after (1 sec / frequencia_camera) * (numcols * numlin)- 1 ns,
+             --'0' after (1 sec / frequencia_camera) * (numcols * numlin + 1) - 1 ns,
+             --'1' after (1 sec / frequencia_camera) * 2 * (numcols * numlin) - 1 ns,
+             --'0' after (1 sec / frequencia_camera) * (2 *(numcols * numlin) + 1) - 1 ns,
+             --'1' after (1 sec / frequencia_camera) * 3 * (numcols * numlin) - 1 ns,
+             --'0' after (1 sec / frequencia_camera) * (3 *(numcols * numlin) + 1) - 1 ns;
 
 IN_process: process (in_clock) begin
   if(rising_edge(in_clock)) then
@@ -390,24 +414,83 @@ IN_process: process (in_clock) begin
     end case;
 
     -- marcacao de linhas, colunas e parada na simulacao
-    if (coluna = numcols - 1) then
-      coluna <= 0;
-      if (linha = numlin -1) then
-        linha <= 0;
-        --fim_imagem <= '1';
-        bloco_atual <= bloco_atual + 1;
+  --  if (coluna = numcols - 1) then
+  --    LVAL_teste <= '0';
+  --    if (after_line /= LinePause-1) and (after_imagem = 0) then
+  --      after_line <= after_line + 1;
+  --    else
+  --      if (linha = numlin -1) then
+  --        if (after_imagem /= IntegrationCPRE-1) then
+  --          after_imagem <= after_imagem + 1;
+  --        else 
+  --          after_imagem <= 0;
+  --          linha <= 0;
+  --          --fim_imagem <= '1';
+  --        end if;
+  --      else
+  --        coluna <= 0;
+  --        after_line <= 0;
+  --        LVAL_teste <= '1';
+  --        linha <= linha + 1;
+  --      end if;    
+  --    end if;
+  --  else
+  --    if (after_line = 0) then
+  --      coluna <= coluna + 1;
+  --    end if;
+  --  end if;
+
+  --  if (clk_count = 4 * (numlin * numcols)) then
+  --    ENDSIM <= '1';
+  --  end if;
+  --end if;
+  
+  -- durante imagem
+    clk_count <= clk_count + 1;
+    if (FVAL_teste = '1') then
+      if (inicio_imagem /= IntegrationCPRE - 1) then
+        inicio_imagem <= inicio_imagem + 1;
+      if (inicio_imagem < IntegrationCPRE - 2) then
+        LVAL_teste <= '0';
       else
-        linha <= linha + 1;
-      end if;    
+        LVAL_teste <= '1';
+      end if;
+      else
+        if (coluna = numcols - 1) then
+          LVAL_teste <= '0';
+          if (after_line /= LinePause-1) then
+            after_line <= after_line + 1;
+          else
+            after_line <= 0;
+            if (linha /= numlin -1) then
+              LVAL_teste <= '1';
+              coluna <= 0;
+              linha <= linha + 1;
+            else
+              linha <= 0;
+            end if;
+          end if;
+        else
+          if (after_line = 0) then
+            coluna <= coluna + 1;
+          end if;
+        end if;
+      end if;
     else
-      coluna <= coluna + 1;
+      if (inicio_imagem < IntegrationCPRE - 5) then
+        LVAL_teste <= '0';
+      --else
+      --  LVAL_teste <= '1';
+      end if;
+      inicio_imagem <= 0;
     end if;
 
-    if (clk_count = 4 * (numlin * numcols)) then
-      ENDSIM <= '1';
-    end if;
+
+
+    
   end if;
-  
+
+
 
 --when -label end_of_simulation {end_of_sim == '1'} {echo "End of simulation" ; stop ;}
 end process;

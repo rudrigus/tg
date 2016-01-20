@@ -1,0 +1,264 @@
+# vsim do simulation/modelsim/ProcessadorImagemGMAW_run_msim_rtl_vhdl.do 
+# Start time: 01:18:57 on Jan 09,2016
+# ** Error: (vsim-3170) Could not find '/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/rtl_work.do'.
+# Error loading design
+do simulation/modelsim/ProcessadorImagemGMAW_run_msim_rtl_vhdl.do
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Model Technology ModelSim LE vmap 10.3c Lib Mapping Utility 2014.09 Sep 20 2014
+# vmap -modelsim_quiet work rtl_work 
+# Modifying modelsim.ini
+# 
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Compiling package Common
+# -- Compiling package body Common
+# -- Loading package Common
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling entity pll
+# -- Compiling architecture SYN of pll
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity Multiplicador8B16B
+# -- Compiling architecture comportamental of Multiplicador8B16B
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity FiltroGaussiana
+# -- Compiling architecture comportamental of FiltroGaussiana
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling entity ImagensRAM
+# -- Compiling architecture SYN of imagensram
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity MedidasArame
+# -- Compiling architecture comportamental of MedidasArame
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity SeletorImagem
+# -- Compiling architecture comportamental of SeletorImagem
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Bordas.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Bordas.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity Bordas
+# -- Compiling architecture comportamental of Bordas
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity ProcessadorImagemGMAW
+# -- Compiling architecture comportamental of ProcessadorImagemGMAW
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW-TB.vhd}
+# Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+# Start time: 01:19:22 on Jan 09,2016
+# vcom -reportprogress 300 -93 -work work /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW-TB.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package Common
+# -- Compiling entity ProcessadorImagemGMAW_TB
+# -- Compiling architecture ProcessadorImagemGMAW_arch of ProcessadorImagemGMAW_TB
+# End time: 01:19:22 on Jan 09,2016, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# vsim -t 1ps -L altera -L lpm -L sgate -L altera_mf -L altera_lnsim -L cycloneiv_hssi -L cycloneiv_pcie_hip -L cycloneiv -L rtl_work -L work -voptargs="+acc"  ProcessadorImagemGMAW_TB
+# vsim 
+# Start time: 01:19:22 on Jan 09,2016
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.common(body)
+# Loading work.processadorimagemgmaw_tb(processadorimagemgmaw_arch)
+# Loading work.processadorimagemgmaw(comportamental)
+# Loading work.pll(syn)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.mf_pllpack(body)
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altpll(behavior)
+# Loading altera_mf.mf_cycloneiiigl_pll(vital_pll)
+# Loading altera_mf.mf_stingray_mn_cntr(behave)
+# Loading altera_mf.mf_stingray_post_divider(behave)
+# Loading altera_mf.mf_stingray_scale_cntr(behave)
+# Loading work.filtrogaussiana(comportamental)
+# Loading work.multiplicador8b16b(comportamental)
+# Loading work.imagensram(syn)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altsyncram(translated)
+# Loading work.seletorimagem(comportamental)
+# Loading work.medidasarame(comportamental)
+# Loading work.bordas(comportamental)
+# ** Warning: (vsim-3479) Time unit 'fs' is less than the simulator resolution (1ps).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/phase_lock/altpll_component/CYCLONEIIIGL_ALTPLL/M6 File: /home/rudrigus/altera/14.1/modelsim_ase/linuxaloem/../altera/vhdl/src/altera_mf/altera_mf.vhd
+# 
+# do {wave.do}
+# onerror {resume}
+# quietly WaveActivateNextPane {} 0
+# add wave -noupdate -radix unsigned -radixshowbase 0 /processadorimagemgmaw_tb/brilho_maximo
+# add wave -noupdate /processadorimagemgmaw_tb/in_clock
+# add wave -noupdate /processadorimagemgmaw_tb/in_janela
+# add wave -noupdate -radix unsigned -radixshowbase 0 /processadorimagemgmaw_tb/pixel_entrada
+# add wave -noupdate /processadorimagemgmaw_tb/I
+# ** Error: (vish-4014) No objects found matching '/processadorimagemgmaw_tb/I'.
+# Executing ONERROR command at macro ./wave.do line 7
+# add wave -noupdate /processadorimagemgmaw_tb/linha
+# add wave -noupdate /processadorimagemgmaw_tb/coluna
+# add wave -noupdate /processadorimagemgmaw_tb/end_of_simulation
+# ** Error: (vish-4014) No objects found matching '/processadorimagemgmaw_tb/end_of_simulation'.
+# Executing ONERROR command at macro ./wave.do line 10
+# add wave -noupdate /processadorimagemgmaw_tb/reset
+# add wave -noupdate /processadorimagemgmaw_tb/start_stop
+# add wave -noupdate /processadorimagemgmaw_tb/contador12b
+# TreeUpdate [SetDefaultTree]
+# WaveRestoreCursors {{Cursor 1} {280014 ps} 0}
+# quietly wave cursor active 1
+# configure wave -namecolwidth 150
+# configure wave -valuecolwidth 100
+# configure wave -justifyvalue left
+# configure wave -signalnamewidth 1
+# configure wave -snapdistance 10
+# configure wave -datasetprefix 0
+# configure wave -rowmargin 4
+# configure wave -childrowmargin 2
+# configure wave -gridoffset 0
+# configure wave -gridperiod 1
+# configure wave -griddelta 40
+# configure wave -timeline 0
+# configure wave -timelineunits ns
+# update
+# WaveRestoreZoom {0 ps} {4270457 ps}
+# view wave
+# .main_pane.wave.interior.cs.body.pw.wf
+# view structure
+# .main_pane.structure.interior.cs.body.struct
+# view signals
+# .main_pane.objects.interior.cs.body.tree
+# run 100 us
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m9
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m9
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m8
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m8
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m7
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m7
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m6
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m6
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m5
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m5
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m4
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m4
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m3
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m3
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m2
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m2
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m1
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb/i1/filtro_gaussiana/m1
+# ** Note: Time resolution: 1 ps
+#    Time: 0 ps  Iteration: 0  Instance: /processadorimagemgmaw_tb
+# ** Note: Cyclone IV GX PLL locked to incoming clock
+#    Time: 35295 ps  Iteration: 3  Instance: /processadorimagemgmaw_tb/i1/phase_lock/altpll_component/CYCLONEIIIGL_ALTPLL/M6
+# Break key hit
+# Break in ForLoop loop at /home/rudrigus/altera/14.1/modelsim_ase/linuxaloem/../altera/vhdl/src/altera_mf/altera_mf.vhd line 16893
+# End time: 01:19:31 on Jan 09,2016, Elapsed time: 0:00:09
+# Errors: 6, Warnings: 19

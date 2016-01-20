@@ -8,6 +8,7 @@ entity ProcessadorImagemGMAW is
   port (
   in_clock      : in std_logic;                                       -- clock gerado pela camera
   FVAL_teste    : in std_logic;                                       -- para simulacao
+  LVAL_teste    : in std_logic;                                       -- para simulacao
   RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
   brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
   threshold1    : in std_logic_vector(7 downto 0);
@@ -111,7 +112,7 @@ begin
                   pixel_entrada;
 
   
-  filtro_gaussiana: FiltroGaussiana port map(strobe, FVAL_teste, pixel_filtrado0, pixel_filtrado1);
+  --filtro_gaussiana: FiltroGaussiana port map(strobe, FVAL_teste, pixel_filtrado0, pixel_filtrado1);
   ram : ImagensRAM port map(strobe, pixel_filtrado0, std_logic_vector(endereco_leitura), std_logic_vector(endereco_escrita), strobe, q); -- Entrada está sempre indo para a memoria
   seletor_imagem : SeletorImagem port map(brilho_maximo, threshold1, strobe, FVAL_teste, pixel_filtrado0, bloco_atual, endereco_escrita);
   medidas_arame : MedidasArame port map(meioVert, meioImagem, strobe, FVAL_teste, pixel_filtrado0, bloco_atual, endereco_leitura, q, posArameTopo, posArameBase);

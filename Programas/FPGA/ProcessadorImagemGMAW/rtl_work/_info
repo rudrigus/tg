@@ -1,0 +1,439 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW
+Ebordas
+Z1 w1451502278
+Z2 DPx4 work 6 common 0 22 de[AYTaM]N?e21D9BjRzi3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z5 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+R0
+Z6 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Bordas.vhd
+Z7 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Bordas.vhd
+l0
+L7
+VD_C2Y49WAbYB6R_7;kC;81
+!s100 Icz3MKMXX5J[PHHRN_a[F3
+Z8 OV;C;10.3c;59
+31
+Z9 !s110 1452309562
+!i10b 1
+Z10 !s108 1452309562.543809
+Z11 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Bordas.vhd|
+Z12 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Bordas.vhd|
+!i113 1
+Z13 o-93 -work work
+Z14 tExplicit 1
+Acomportamental
+R2
+R3
+R4
+R5
+DEx4 work 6 bordas 0 22 D_C2Y49WAbYB6R_7;kC;81
+l30
+L18
+ViLEDA6SnXdc_hC0ReRWiO0
+!s100 =nc@?PBhkco=B[VB]MncF1
+R8
+31
+R9
+!i10b 1
+R10
+R11
+R12
+!i113 1
+R13
+R14
+Pcommon
+R3
+R4
+R5
+Z15 w1451506204
+R0
+Z16 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd
+Z17 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd
+l0
+L5
+Vde[AYTaM]N?e21D9BjRzi3
+!s100 V@oFLmnE>khS1`@EWl?NM2
+R8
+31
+R9
+!i10b 1
+Z18 !s108 1452309562.270640
+Z19 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd|
+Z20 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd|
+!i113 1
+R13
+R14
+Bbody
+R2
+R3
+R4
+R5
+l0
+L23
+VL<24U9j]nLod6O9a65gh70
+!s100 ?4b[?fLdcID4Sb>;1feL52
+R8
+31
+R9
+!i10b 1
+R18
+R19
+R20
+!i113 1
+R13
+R14
+nbody
+Efiltrogaussiana
+Z21 w1451530038
+R5
+R2
+Z22 DPx4 ieee 18 std_logic_unsigned 0 22 ;eZjO2D4ZDz<]0>8AL<ne1
+Z23 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
+R4
+R3
+R0
+Z24 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd
+Z25 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd
+l0
+L7
+V[KHUnZ?ER:A6KzZmz=od50
+!s100 FY9MajX3bjEeW6Y1<[QO80
+R8
+31
+R9
+!i10b 1
+Z26 !s108 1452309562.385421
+Z27 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd|
+Z28 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd|
+!i113 1
+R13
+R14
+Acomportamental
+R5
+R2
+R22
+R23
+R4
+R3
+DEx4 work 15 filtrogaussiana 0 22 [KHUnZ?ER:A6KzZmz=od50
+l40
+L16
+VGoHF4a6L:X[Te>og[>l4[0
+!s100 ec729fd0FD^Q:S4o=DFgW0
+R8
+31
+R9
+!i10b 1
+R26
+R27
+R28
+!i113 1
+R13
+R14
+Eimagensram
+Z29 w1450144059
+R4
+R3
+R0
+Z30 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd
+Z31 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd
+l0
+L42
+V95RFHYR1EfdQGG<Th:d870
+!s100 9;?PRhd]nlbKQ8@TPmD8V0
+R8
+31
+R9
+!i10b 1
+Z32 !s108 1452309562.428193
+Z33 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd|
+Z34 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd|
+!i113 1
+R13
+R14
+Asyn
+R4
+R3
+DEx4 work 10 imagensram 0 22 95RFHYR1EfdQGG<Th:d870
+l93
+L55
+VfJP?2UeDg@]KDDi2kN6a@2
+!s100 m=APX0m8n>;VTb:Q>6NCK2
+R8
+31
+R9
+!i10b 1
+R32
+R33
+R34
+!i113 1
+R13
+R14
+Emedidasarame
+Z35 w1451498931
+R2
+R3
+R4
+R5
+R0
+Z36 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd
+Z37 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd
+l0
+L7
+V?SMdI2nzJVT`NZnB;L8hV1
+!s100 ;1BLF<g=o_?kVDfHJOAGK3
+R8
+31
+R9
+!i10b 1
+Z38 !s108 1452309562.461425
+Z39 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd|
+Z40 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd|
+!i113 1
+R13
+R14
+Acomportamental
+R2
+R3
+R4
+R5
+DEx4 work 12 medidasarame 0 22 ?SMdI2nzJVT`NZnB;L8hV1
+l45
+L21
+VK6gVg`G;SIDj7<bCaMzD81
+!s100 ZWWWNIMPTVg8O5?9dOPId2
+R8
+31
+R9
+!i10b 1
+R38
+R39
+R40
+!i113 1
+R13
+R14
+Emultiplicador8b16b
+Z41 w1451526618
+R5
+R2
+R22
+R23
+R4
+R3
+R0
+Z42 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd
+Z43 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd
+l0
+L7
+VWXZVkon>FM;Jk`N;JHPGJ3
+!s100 OABaQfJ[`dK^1S410GI6`3
+R8
+31
+R9
+!i10b 1
+Z44 !s108 1452309562.346519
+Z45 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd|
+Z46 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd|
+!i113 1
+R13
+R14
+Acomportamental
+R5
+R2
+R22
+R23
+R4
+R3
+DEx4 work 18 multiplicador8b16b 0 22 WXZVkon>FM;Jk`N;JHPGJ3
+l16
+L15
+V@0lkCHN6k58`7V_f6@D9M3
+!s100 M3_UDRa9:QdV>10G8n8Gf1
+R8
+31
+R9
+!i10b 1
+R44
+R45
+R46
+!i113 1
+R13
+R14
+Epll
+Z47 w1452308197
+R4
+R3
+R0
+Z48 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd
+Z49 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd
+l0
+L42
+V[TQHX?0Q;LLKNKcHFkjPY3
+!s100 NVkD@^BmL7NHl5M>@]n8=3
+R8
+31
+R9
+!i10b 1
+Z50 !s108 1452309562.311160
+Z51 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd|
+Z52 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd|
+!i113 1
+R13
+R14
+Asyn
+R4
+R3
+DEx4 work 3 pll 0 22 [TQHX?0Q;LLKNKcHFkjPY3
+l131
+L52
+V5l8WCkXbUV60>_2aLfZc=2
+!s100 n4_LnA2d2RH?hFhn9<j<=0
+R8
+31
+R9
+!i10b 1
+R50
+R51
+R52
+!i113 1
+R13
+R14
+Eprocessadorimagemgmaw
+Z53 w1452308361
+R2
+R3
+R4
+R5
+R0
+Z54 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd
+Z55 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd
+l0
+L7
+Vc]o]fmH6U4X2Pi`g^zY;G2
+!s100 9J9=Dc48]GJWlEMcIRU=k2
+R8
+31
+R9
+!i10b 1
+Z56 !s108 1452309562.582285
+Z57 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd|
+Z58 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd|
+!i113 1
+R13
+R14
+Acomportamental
+R2
+R3
+R4
+R5
+DEx4 work 21 processadorimagemgmaw 0 22 c]o]fmH6U4X2Pi`g^zY;G2
+l101
+L22
+V7XZ?UeIZTfMgDM]c]iG5K2
+!s100 0F4V_MNji@1;VnI0TWUC?0
+R8
+31
+R9
+!i10b 1
+R56
+R57
+R58
+!i113 1
+R13
+R14
+Eprocessadorimagemgmaw_tb
+Z59 w1452299386
+R2
+R5
+R4
+R3
+R0
+Z60 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW-TB.vhd
+Z61 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW-TB.vhd
+l0
+L33
+VbkMEQFTn@JR5Ef=@TbDS@1
+!s100 Ik:e8::4A3lZB^lD3K<GF2
+R8
+31
+R9
+!i10b 1
+Z62 !s108 1452309562.633153
+Z63 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW-TB.vhd|
+Z64 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW-TB.vhd|
+!i113 1
+R13
+R14
+Aprocessadorimagemgmaw_arch
+R2
+R5
+R4
+R3
+DEx4 work 24 processadorimagemgmaw_tb 0 22 bkMEQFTn@JR5Ef=@TbDS@1
+l340
+L35
+V[hBbRzcgPVb0BSz@7V?A22
+!s100 SZYi@4R1[8JQAzUWmVQ:=2
+R8
+31
+R9
+!i10b 1
+R62
+R63
+R64
+!i113 1
+R13
+R14
+Eseletorimagem
+Z65 w1451498990
+R2
+R3
+R4
+R5
+R0
+Z66 8/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd
+Z67 F/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd
+l0
+L6
+VV_BIDgW<:N1]fU6L@P6CS1
+!s100 =2ZU10iN5gig8Z_YZK4h]2
+R8
+31
+R9
+!i10b 1
+Z68 !s108 1452309562.501162
+Z69 !s90 -reportprogress|300|-93|-work|work|/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd|
+Z70 !s107 /home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd|
+!i113 1
+R13
+R14
+Acomportamental
+R2
+R3
+R4
+R5
+DEx4 work 13 seletorimagem 0 22 V_BIDgW<:N1]fU6L@P6CS1
+l33
+L19
+VGj5^L>W9lZ2;lS<h:=Tef0
+!s100 fk4BZ^1kilz5^1f7g_>b`1
+R8
+31
+R9
+!i10b 1
+R68
+R69
+R70
+!i113 1
+R13
+R14
