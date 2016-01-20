@@ -379,10 +379,11 @@ meioImagem    <= to_unsigned(31,8) after 0 ns;
 -- usando um line pause de 5 ciclos
 -- e tempos de integration + CPRE de 100 ciclos
 FVAL_teste <= '1' after 10 * (1 sec / frequencia_camera),   -- imagem 0
-             '0' after 4025 * (1 sec / frequencia_camera),
-             '1' after 4125 * (1 sec / frequencia_camera),  -- imagem 1
-             '0' after 8050 * (1 sec / frequencia_camera),
-             '1' after 8150 * (1 sec / frequencia_camera),  -- imagem 2
+             --'0' after 4025 * (1 sec / frequencia_camera),
+             '0' after 3955 * (1 sec / frequencia_camera),
+             '1' after 4055 * (1 sec / frequencia_camera),  -- imagem 1
+             '0' after 8000 * (1 sec / frequencia_camera),
+             '1' after 8100 * (1 sec / frequencia_camera),  -- imagem 2
              '0' after 12075 * (1 sec / frequencia_camera),
              '1' after 12175 * (1 sec / frequencia_camera), -- imagem 3
              '0' after 16090 * (1 sec / frequencia_camera);
@@ -449,12 +450,15 @@ IN_process: process (in_clock) begin
     clk_count <= clk_count + 1;
     if (FVAL_teste = '1') then
       if (inicio_imagem /= IntegrationCPRE - 1) then
+        coluna <= 0;
+        linha <= 0;
+        after_line <= 0;
         inicio_imagem <= inicio_imagem + 1;
-      if (inicio_imagem < IntegrationCPRE - 2) then
-        LVAL_teste <= '0';
-      else
-        LVAL_teste <= '1';
-      end if;
+        if (inicio_imagem < IntegrationCPRE - 2) then
+          LVAL_teste <= '0';
+        else
+          LVAL_teste <= '1';
+        end if;
       else
         if (coluna = numcols - 1) then
           LVAL_teste <= '0';
@@ -462,9 +466,9 @@ IN_process: process (in_clock) begin
             after_line <= after_line + 1;
           else
             after_line <= 0;
+            coluna <= 0;
             if (linha /= numlin -1) then
               LVAL_teste <= '1';
-              coluna <= 0;
               linha <= linha + 1;
             else
               linha <= 0;
@@ -477,11 +481,7 @@ IN_process: process (in_clock) begin
         end if;
       end if;
     else
-      if (inicio_imagem < IntegrationCPRE - 5) then
-        LVAL_teste <= '0';
-      --else
-      --  LVAL_teste <= '1';
-      end if;
+      LVAL_teste <= '0';
       inicio_imagem <= 0;
     end if;
 
