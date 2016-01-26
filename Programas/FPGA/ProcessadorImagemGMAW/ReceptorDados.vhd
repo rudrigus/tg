@@ -8,8 +8,8 @@ entity ReceptorDados is
   port (
   in_clock : in std_logic;                                       -- clock gerado pela camera
   RX       : in std_logic_vector(3 downto 0);                    -- canais de dados seriais
-  FVAL     : out std_logic;
-  LVAL     : out std_logic;
+  FVAL     : buffer std_logic;
+  LVAL     : buffer std_logic;
   pixel    : out std_logic_vector(7 downto 0) := "00000000"
   );
 end ReceptorDados;
@@ -19,6 +19,8 @@ architecture comportamental of ReceptorDados is
 signal strobe           : std_logic;
 signal clock_7          : std_logic;
 signal dados_palavra    : STD_LOGIC_VECTOR (27 DOWNTO 0); -- Dados desserializados
+signal coluna : natural range (numcols - 1) downto 0 := 0;
+signal linha  : natural range (numlin  - 1) downto 0 := 0;
 
 component pll IS
   PORT
@@ -46,6 +48,19 @@ begin
   FVAL  <= dados_palavra(15);
   LVAL  <= dados_palavra(16);
   pixel <= dados_palavra(27 downto 26) & dados_palavra(6 downto 1);
+
+
+process(FVAL, LVAL, strobe) begin
+  if FVAL =  '1' then
+    if(rising_edge(LVAL)) then
+      coluna <= 0;
+      linha <= linha + 1;
+    end if;
+  else
+      linha <= 0;
+      coluna <= 0;
+  end if;
+end process;
 
 
 end comportamental;

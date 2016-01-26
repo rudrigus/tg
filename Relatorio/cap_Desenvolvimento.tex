@@ -4,17 +4,17 @@
 \chapter{Desenvolvimento}\label{CapDesenvolvimento}
 
 % Resumo opcional. Comentar se não usar.
-\resumodocapitulo{Resumo opcional.}
+% \resumodocapitulo{Resumo opcional.}
 
 \section{Introdução}
 
-
-
 \section{Arquitetura geral}
 
-O sistema devera implementar um controlador em malha fechada, que teoricamente será superior ao controle de malha aberta comumente utilizado em sistemas soldas automatizadas. Ou seja, o sinal de entrada deve ser o resultado da soma do sinal de referência, que será o trajeto definido na programação de um robô, e do sinal de controle, que será calculado por um computador.
+O sistema devera fazer parte de um controlador em malha fechada, que teoricamente será superior ao controle de malha aberta comumente utilizado em sistemas soldas automatizadas. Ou seja, o sinal de entrada deve ser o resultado da soma do sinal de referência, que será o trajeto definido na programação de um robô, e do sinal de controle, que será calculado por um computador.
 
-Para que o sistema seja realimentado é necessário obter medidas da saída do sistema e, se possível, outros estados. O estado de saída no caso será obtido através de um algoritmo que irá processar fotos do processo e retornar valores numéricos relevantes à operação. Esta etapa é feita com o uso de uma câmera de alta taxa de captura de imagens, capaz de fotografar o arame e a poça de soldagem no instante em que há um curto circuito. O algoritmo processa as imagens e obtém valores numéricos de tamanho da poça, desvio e inclinação do arame. Finalmente, o algoritmo calcula e fornece um sinal de controle para corrigir o posicionamento da tocha de soldagem ou parâmetros como velocidade de alimentação do arame e corrente elétrica.
+Para que o sistema seja realimentado é necessário obter medidas da saída do sistema e, se possível, outros estados. O estado de saída no caso será obtido através de um algoritmo que irá processar fotos do processo e retornar valores numéricos relevantes à operação. Esta etapa é feita com o uso de uma câmera de alta taxa de captura de imagens, capaz de fotografar o arame e a poça de soldagem no instante em que há um curto circuito. O algoritmo processa as imagens e obtém valores numéricos de tamanho da poça, desvio e inclinação do arame.
+
+% Finalmente, o algoritmo calcula e fornece um sinal de controle para corrigir o posicionamento da tocha de soldagem ou parâmetros como velocidade de alimentação do arame e corrente elétrica.
 
 \section{Identificação do ângulo da câmera e distorção de perspectiva}
 
@@ -32,11 +32,14 @@ Para implementação em uma FPGA, devem-se separar blocos da imagem para serem pro
 
 
 
-\section{Implementação em Matlab}\label{section-implementacao-matlab}
+\section{Implementação em Matlab}\label{section:implementacao-matlab}
 
 
 O primeiro algoritmo foi desenvolvido para funcionamento de forma sequencial, pois seria implementado com o software Matlab. A sequência de operações foi definida de acordo com a descrição abaixo. As descrições entre parênteses indicam os parâmetros utilizados em testes que obtiveram bons resultados.
 
+\subsection{Algoritmo Base}
+
+Os passos abaixo demonstram a sequencia de instruções criadas no Matlab para processar as imagens:
 
 \begin{enumerate}
 \item Limpar memória e fechar figuras
@@ -73,34 +76,48 @@ O primeiro algoritmo foi desenvolvido para funcionamento de forma sequencial, po
 Esses passos com os valores para os parâmetros definidos acima obtiveram bons resultados para uma grande quantidade de imagens (imagens antigas). O algoritmo demonstrou certa robustez à ruídos, porém quando a imagem foge muito ao padrão esperado, o algoritmo fornece valores equivocados. Um exemplo é quando há uma grande gota de solda fora da área da poça. 
 % Mencionar que deve ser usado um filtro de Kalman?
 
+% mostrar exemplo
+
+\subsection{Filtros}
+
+\subsection{Perfis Verticais e Horizontais}
+
+\subsection{Regressão Robusta}
+
+\subsection{Distorção de perspectiva}
+
+Implementar no matlab (não ficou pronto com os cálculos do processamento)
+
+
+
 \section{Implementação do processamento em FPGA}
 
 O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa FPGA, utilizando-se a linguagem VHDL. Boa parte dos procedimentos continuou com a característica sequencial, pois as imagens são obtidas desta forma. Alguns procedimentos utilizaram do paralelismo para economia de tempo e recursos. Por exemplo: a obtenção de topo e base do arame e largura da poça de soldagem ocorrem simultaneamente. A seguir é demonstrado como foi feita a implementação de cada item do algoritmo.
 
-\subsection{Aquisição de imagens}
+\subsection{Aquisição de imagens}\label{section:aquisicao-imagens}
 % falar da camera link na revisão bibliografica
 
 Diferentemente do projeto em matlab, o algoritmo para a FPGA engloba faz captura de dados diretamente da câmera. Os dados fornecidos serialmente foram desserializados e disponibilizados em apenas um \textit{std\_logic\_vector} pois apenas eram necessários níveis de cinza.
 
-A implementação em FPGA desenvolvida apenas recebe imagens para a função \textit{Freerunning Mode} da câmera. A princípio, o algoritmo não precisa de nenhum gatilho de sincronia enviado à câmera pois deve selecionar as imagens por conta própria como descrito em \ref{subsec:filtro_media_imagens}.
+A implementação em FPGA desenvolvida apenas recebe imagens para a função \textit{Freerunning Mode} da câmera. A princípio, o algoritmo não precisa de nenhum gatilho de sincronia enviado à câmera pois deve selecionar as imagens por conta própria como descrito em \ref{section:filtro_media_imagens}.
 
 O primeiro passo para o recebimento do vídeo pela placa é a sincronização com o clock da câmera. Apesar deste clock ser fornecido pelo \textit{Channel Link}, as palavras de dados não são sincronizadas com a subida do clock. Também é necessario um sinal com 7 vezes a frequencia do clock fornecido para fazer a leitura dos 7 bits de cada palavra transmitida por ciclo. 
 
-\subsubsection{PLL}\label{section-PLL-desenv}
+\subsubsection{PLL}\label{section:PLL-desenv}
 
 Foi utilizado um PLL (\textit{Phase-locked loop}) para esta função, pois cria tanto o clock sincronizado com as palavras de dados quanto o clock para a leitura dos bits dessas palavras. O Quartus II permite a configuração de PLLs através do \textit{MegaWizard Plugin Manager} com o Plug-in chamado ''ALTPLL''.
 
 Foi utilizado um PLL com um sinal de entrada e dois de saída. O primeiro sinal de saída tem a mesma frequência do sinal de entrada e uma defasagem de 102º. Além disso foi configurado o \textit{duty cycle} deste sinal como 57\% para manter a mesma proporção de 4:3 do clock do \textit{Camera Link}. Este sinal foi automáticamente denominado $c0$ pelo \textit{MegaWizard Plugin Manager}.
 
-o segundo sinal de saída tem um fator de multiplicação de 7 e um fator de divisão de 2, sendo assim 3,5 vezes mais rápido que o primeiro sinal. Esta frequência foi escolhida dessa forma pois o módulo desserializador descrito em \ref{section-LVDS-desenv} aceita a sincronização tanto com subida quanto descida do sinal. Este sinal foi automáticamente denominado $c1$ pelo \textit{MegaWizard Plugin Manager}.
+o segundo sinal de saída tem um fator de multiplicação de 7 e um fator de divisão de 2, sendo assim 3,5 vezes mais rápido que o primeiro sinal. Esta frequência foi escolhida dessa forma pois o módulo desserializador descrito em \ref{section:LVDS-desenv} aceita a sincronização tanto com subida quanto descida do sinal. Este sinal foi automáticamente denominado $c1$ pelo \textit{MegaWizard Plugin Manager}.
 
 Este módulo foi chamada simplesmente de ''PLL'' na configuração.
 
-\subsubsection{Desserializador LVDS}\label{section-LVDS-desenv}
+\subsubsection{Desserializador LVDS}\label{section:LVDS-desenv}
 
-Os dados seriais são transformados em uma única palavra de 28 bits com ajuda do Plug-in ''ALTLVDS_RX'' do Quartus II. Este módulo possui tem como entrada os quatro canais do \textit{Camera Link}, $c0$ e $c1$. O vetor de 28 bits que compõe a saída, foi denominado $rx_out$ pelo \textit{MegaWizard Plugin Manager}. Infelizmente, os bits não saem deste módulo na ordem desejada, portanto foram necessários alguns roteamentos para separar os oito bits necessários para processamento e os bits de validação.
+Os dados seriais são transformados em uma única palavra de 28 bits com ajuda do Plug-in ''ALTLVDS\_RX'' do Quartus II. Este módulo possui tem como entrada os quatro canais do \textit{Camera Link}, $c0$ e $c1$. O vetor de 28 bits que compõe a saída, foi denominado $rx\_out$ pelo \textit{MegaWizard Plugin Manager}. Infelizmente, os bits não saem deste módulo na ordem desejada, portanto foram necessários alguns roteamentos para separar os oito bits usados para processamento e os bits de validação.
 
-Este módulo foi configurado sem um PLL interno pois não seria possível satisfazer todas as especificações do protocolo, como o atraso de fase. Por esse motivo foi utilizado o PLL descrito em \ref{section-PLL-desenv}
+Este módulo foi configurado sem um PLL interno pois não seria possível satisfazer todas as especificações do protocolo, como o atraso de fase. Por esse motivo foi utilizado o PLL descrito em \ref{section:PLL-desenv}
 
 Este módulo foi chamada de ''deserializer'' na configuração.
 
@@ -108,7 +125,7 @@ Por fim, os módulos ''PLL'' e ''deserializer'' foram instancializados em uma ent
 
 \subsection{Retirada de scanlines}
 
-Assim que os dados estejam corretamente disponíveis para processamento começam a passar por etapas semelhantes às descritas na seção \ref{section-implementacao-matlab}. A primeira etapa é a retirada de \textit{scanlines}.
+Assim que os dados estejam corretamente disponíveis para processamento começam a passar por etapas semelhantes às descritas na seção \ref{section:implementacao-matlab}. A primeira etapa é a retirada de \textit{scanlines}.
 
 Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
 
@@ -133,7 +150,7 @@ Para agilizar o desenvolvimento do projeto foi criada um pacote com valores e ti
 \end{itemize}
 \end{enumerate}
 
-\subsection{Filtro de imagem média e seleção de imagens propícias} \label{subsec:filtro_media_imagens}
+\subsection{Filtro de imagem média e seleção de imagens propícias} \label{section:filtro_media_imagens}
 
 Para que fosse implementado este filtro foi utilizado um bloco de memória subdividido em quatro blocos, cada um dimensionado para receber uma imagem. A placa recebe sequencialmente os dados da câmera e armazena três imagens em memória. A imagem média não necessita ser armazenada pois cada pixel pode ser obtido através da média dos pixels das imagens armazenadas à medida que for necessário. 
 
@@ -145,7 +162,7 @@ Para que isto fosse possível durante a simulação, foi implementado um bloco de R
 
 O interessante dessa implementação é que o endereçamento de leitura e escrita pode utilizar diretamente o sinal $ bloco\_atual $ com uma simples concatenação, o que poupa operações na implementação em VHDL e recursos na placa.
 
-Como será visto mais detalhadamente abaixo em \ref{subsec:topo_base}, os cálculos e operações são feitos a cada novo pixel durante o carregamento de uma imagem. Assim, a média de cada pixel das últimas três imagens válidas deve ser calculada a cada ciclo de \textit{clock}. Como os valor absoluto não são de interesse durante os cálculos ficou decidido que a soma das três imagens seria suficiente, o que evita uma divisão desnecessária.
+Como será visto mais detalhadamente abaixo em \ref{section:topo_base}, os cálculos e operações são feitos a cada novo pixel durante o carregamento de uma imagem. Assim, a média de cada pixel das últimas três imagens válidas deve ser calculada a cada ciclo de \textit{clock}. Como os valor absoluto não são de interesse durante os cálculos ficou decidido que a soma das três imagens seria suficiente, o que evita uma divisão desnecessária.
 
 Durante a implementação foi constatado que fazer a leitura de diversos pixels em diferentes endereços de memória podeira consumir muito tempo e talvez se tornar proibitivo caso se deseje uma quantidade maior de imagens no filtro de média. A solução para este problema foi utilizar uma espécie de média móvel nos sinais que são utilizados para os cálculos. Em vez de se fazer a leitura de dois endereços de memória mais recentes para somá-los com o novo pixel recebido ($dado\_escrita$), foi feita apenas a leitura do mais antigo par ser subtraído da soma. Por exemplo: quando era feito o recebimento de um pixel da linha $linha$, coluna $coluna$ o valor do elemento $somaHor(linha)$ era atualizado da seguinte forma:
 
@@ -155,16 +172,74 @@ $$
 
 Onde $q$ é o byte armazenado no endereço de memória dado por $bloco\_atual$ concatenado com $linha \times numcols + coluna$,  sendo $numcols$ a largura da imagem.
 
-\subsection{Cálculo de topo e base do arame} \label{subsec:topo_base}
+\subsection{Cálculo de topo e base do arame} \label{section:topo_base}
 
 Os dados de topo e base do arame foram obtidos com a mesma lógica criada para Matlab e de forma sequencial. Foi utilizado um processo que tem $in_janela$ e $in_clock$ como \textit{sensitivity list}. O sinal $in_janela$ foi utilizado para sincronização de final de imagem e o $in_clock$ era o \textit{clock} de entrada da câmera e define o fim e o começo da transmissão de cada pixel.
 
-Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{subsec:filtro_media_imagens} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
+Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{section:filtro_media_imagens} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
 
 Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com simples testes ao final de cada linha. Ao final da imagem estes valores já estão devidamente definidos.
 
 % apresentar resultados a cada imagem lida
 
+\subsection{Laterais do arame}
+
+\section{Simulações}
+
+A maior parte do projeto foi desenvolvida sem a utilização de placas FPGA e câmeras reais, portanto foi essencial o uso de simulações. Cada criação ou alteração de código foi testada com auxílio das simulações a fim de evitar excessivo retrabalho em correções de erros.
+
+O desenvolvimento em Matlab, utilizou arquivos de imagens como entrada, pois o \textit{software} tem diversas funções que facilitam a leitura de arquivos. A implementação em FPGA, por sua vez é bem mais complexa e utilizou o \textit{software} externo Modelsim com arquivos de texto como entrada.
+
+
+\subsection{Simulações em Matlab}
+
+
+
+\subsection{Simulações em FPGA}
+
+Inicialmente, o algoritmo foi desenvolvido como se os dados de entrada (pixels) e clock viessem de alguma forma já desserializados para a placa. Ou seja, havia apenas a entrada de um clock e um byte, além dos outros sinais de configuração. As entidades de processamento foram todas feitas de forma a receber informações desta forma genérica, o que se mostrou eficiente após serem criados os blocos descritos em \ref{section:aquisicao-imagens}.
+
+Dessa forma foram utilizadas imagens previamente capturadas em outro trabalho \cite{luciano}, da mesma forma que as simulações em Matlab. Porém, as imagens foram transformadas em blocos de texto para poderem ser usadas em um arquivo \textit{testbench}. 
+
+\subsubsection{Conversão de Imagens para Simulação}
+Este processo foi feito com a ajuda de um programa bastante simples disponível em distribuições Linux, chamado ''od''. Este programa traduz qualquer tipo de arquivo, inclusive imagens, para códigos hexadecimais. Um pequeno script foi criado para facilitar a utilização do programa. O resultado é um arquivo com palavras hexadecimais separadas por espaços, com a mesma quantidade de linhas e colunas que a imagem fornecida.
+
+O texto deste arquivo é então inserido no arquivo de \textit{testbench} a ser carregado pelo Modelsim. Abaixo segue um trecho de imagem em formato de texto hexadecimal.
+
+\begin{center}
+\begin{tabular}{c c c c c c c c c}
+03 & 03 & 03 & 07 & 07 & 07 & 31 & 31 & 31 \\
+04 & 04 & 04 & 1c & 1c & 1c & 5b & 5b & 5b \\
+0b & 0b & 0b & 49 & 49 & 49 & 7d & 7d & 7d \\
+26 & 26 & 26 & 7f & 7f & 7f & 89 & 89 & 89 \\
+47 & 47 & 47 & 93 & 93 & 93 & 6c & 6c & 6c \\
+\end{tabular}
+\end{center}
+
+Note que em cada linha os valores são repetidos três a três. Isso acontece pois as imagens estavam armazenadas em arquivos do tipo \textit{bitmab} de três cores RGB, apesar de serem imagens em escala de cinza. Ou seja, cada um dos três valores repetidos representa uma cor de vermelho, verde ou azul. Apenas retirando dois de cada três desses valores tem-se o desejado. Esta etapa é facilmente feita com o uso de uma expressão regular, ou \textit{Regex}.
+
+O resultado final dentro do \textit{testbench} é uma matriz com os valores desejados. Esses valores podem ser lidos por indexação de linha e coluna. Abaixo, segue o exemplo do começo e final de uma dessas matrizes:
+
+\begin{verbatim}
+constant imagem_teste0 : MatrizImagem :=
+\end{verbatim}
+
+\begin{center}
+\begin{tabular}{c c c c c c c c c}
+(( X"03", & X"02", & X"03", ... & X"03", & X"02", & X"03", ... & X"02", & X"03", & X"03"), \\
+ ( X"03", & X"02", & X"03", ... & X"da", & X"f5", & X"fe", ... & X"09", & X"03", & X"03"), \\
+ ( X"03", & X"02", & X"03", ... & X"03", & X"02", & X"03", ... & X"02", & X"03", & X"03")); \\
+
+
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Sincronização}
+
+A primeira versão do \textit{testbench} foi feita de forma a fornecer os pixels sequencialmente, sem um sinal de início de imagem ou de linhas. Isso obrigava os blocos que funcionavam em paralelo a fazer uma contagem para saber quando uma imagem ou linhas acabavam ou iniciavam. Cada entidade possuía um valor de $linha$ e um de $coluna$ para fazer essa contagem. Essa redundância gerava um custo desnecessário de recursos.
+
+Logo chegou-se a conclusão que essa abordagem se tornaria um problema no caso real onde se deseja processar durante a captura de imagens. Então foram implementados os sinais $FVAL$ e $LVAL$ do padrão \textit{Camera Link} para simular a sincronia da captura e também evitar problemas futuros. 
 
 
 

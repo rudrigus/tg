@@ -13,11 +13,12 @@ add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/limEsqPoca
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/limDirPoca
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_bordas/max_derivada_arame
 add wave -noupdate /processadorimagemgmaw_tb/i1/bloco_bordas/min_derivada_arame
-add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/filtro_gaussiana/pixel_filtrado
 add wave -noupdate /processadorimagemgmaw_tb/FVAL_teste
 add wave -noupdate /processadorimagemgmaw_tb/LVAL_teste
 add wave -noupdate /processadorimagemgmaw_tb/after_line
 add wave -noupdate /processadorimagemgmaw_tb/inicio_imagem
+add wave -noupdate /processadorimagemgmaw_tb/i1/receptor/coluna
+add wave -noupdate /processadorimagemgmaw_tb/i1/receptor/linha
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {99755332 ps} 0}
 quietly wave cursor active 1

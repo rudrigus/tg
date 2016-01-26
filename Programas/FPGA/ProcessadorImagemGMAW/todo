@@ -1,16 +1,30 @@
-Programar uma placa no GRACO 
+Programar uma placa no GRACO
+Arranjar interface camera link para FPGA 
 
-Criar receptor para camera na fpga
-  Precisa de um clock 7x mais rápido que o da câmera (7x85MHz)
-  Deserializador para 8 bits. 7 em uma porta e 1 em outra
-  Tem que arrumar a sincronia do primeiro bit no meio do clock high
-  Arrumar sinais de fim de janela e linha
-  Prestar atenção no bit de "data check"
+ok Criar receptor para camera na fpga
+ok    Precisa de um clock 7x mais rápido que o da câmera (7x85MHz)
+ok    Deserializador para 8 bits. 7 em uma porta e 1 em outra
+ok    Tem que arrumar a sincronia do primeiro bit no meio do clock high
+ok    Arrumar sinais de fim de janela e linha
+??    Prestar atenção no bit de "data check"
 
-Colocar segundo threshold depois do filtro gaussiano. Verificar no Matlab se a imagem fica Binária da 0 e 1 ou 0 e 20 a 255
+Arrumar os blocos para receberem dados se baseando em FVAL e LVAL
+->Criar valores de linha e coluna no bloco ReceptorDados e passar para outros blocos
+    provavelmente isso vai causar um atraso de um ciclo
+ok  Leitura só acontece com FVAL e LVAL em high
+    Uma imagem começa quando FVAL sobe.
+    A leitura de uma linha acontece quando LVAL sobe. Depois...
+    Contar clocks até a quantidade de colunas, então a linha acaba e não são gravados mais dados (coluna deve permanecer constante e igual a numcols)
+  Criar valores teste p/ entrada
+    usar as imagens já no TB
+
+
+
+Colocar segundo threshold depois do filtro gaussiano.
+  Verificar no Matlab se a imagem fica Binária da 0 e 1 ou 0 e 20 a 255
 
 OK Implementar filtro gaussiano no Matlab e testar 
-  Ficou bom: manter na FPGA
+OK   Ficou bom: manter na FPGA. não é tão bom quanto o de mediana, mas é fácil de implementar
 
 OFF Implementar filtro de mediana na fpga
   não vale a pena
@@ -19,3 +33,59 @@ OFF Implementar filtro de mediana na fpga
   Linearização tem complexidade da ordem n, onde n é o número de observações. Algoritmos com robustez tem alto nível de paralelismo!
   Cálculos matriciais (olhar arquivo quadrados_minimos.pdf)
   ou os somatórios (no wikipedia), que usam menos multiplicaões
+  OU usar linearização robusta
+
+
+-----------------------------------------------------------------------------------------------
+RELATÓRIO
+
+Revisão bibliográfica
+  Processamento de Imagens
+    Perfis verticais e horizontais
+    Derivadas de perfis verticais e horizontais
+    Distorção de perspectiva
+    -Mostrar meu exemplo com o papel
+  FPGA
+    Simulação
+      Modelsim
+      Testbenches
+
+
+
+Desenvolvimento
+  Arquitetura Geral
+  Identificação do ângulo da câmera e distorção de perspectiva
+    -Ou eu coloco algo decente aqui ou isso some
+  Desenvolvimento em matlab
+    Algoritmo Base
+    Filtros
+      -Descrever os detalhes de cada um e falar o porque foram utilizados
+    Perfis verticais e horizontais
+    Regressão robusta
+    Distorção de perspectiva
+      -Medir ângulo da câmera
+    Simulação (talvez colocar nos resultados)
+
+  Desenvolvimento em FPGA
+    Aquisição de imagens
+      -falar que talvez fosse possível fazer sem uma interface(ligação com fios)
+      -explicar a interface
+    Seleção de imagens
+    Filtros
+      -Explicar que o filtro de mediana é mais complexo que o de gaussiana
+    Medições
+    Linearização
+      -tentativa com linearização robusta vs linearização comum
+    Distorção de perspectiva
+    Simulação (talvez colocar nos resultados)
+    Testes reais
+
+
+Resultados
+  Mostrar resultados do matlab
+    -Mostrar resultados de diferentes filtros: Mediana vs Gaussiana
+    -Mostrar resultado com distorção de perspectiva
+  Mostrar resultados da FPGA
+    -Limitação de memória
+
+
