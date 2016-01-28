@@ -15,7 +15,7 @@ fim    = 153;
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%M�dia de imagens para reduzir ru�dos
+%%Media de imagens para reduzir ruidos
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 quantidadeImagens = 3;
 ImTemp = imread(strcat(Diretorio_leitura,'Img',int2str(inicio),'.bmp'));
@@ -30,6 +30,7 @@ for j = inicio:1:fim
     Im(:,:,quantidadeImagens) = ImTemp;
     I = mean(Im,3);
     
+    % processamento eh chamado para calcular valores
     [ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame] = processamento(I,tamanho);
     
 %     hold on;
@@ -38,6 +39,10 @@ for j = inicio:1:fim
 %     plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) tamanho(1)*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo tamanho(1)],'r')
 %     hold off
 end
+
+%% Correcao de valores com distorcao de perspectiva
+% O que estamos buscando aqui é a matriz de transformação gerada a partir
+% da imagem.
 
 
 %%

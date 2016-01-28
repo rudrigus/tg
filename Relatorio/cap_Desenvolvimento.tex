@@ -16,21 +16,6 @@ Para que o sistema seja realimentado é necessário obter medidas da saída do sist
 
 % Finalmente, o algoritmo calcula e fornece um sinal de controle para corrigir o posicionamento da tocha de soldagem ou parâmetros como velocidade de alimentação do arame e corrente elétrica.
 
-\section{Identificação do ângulo da câmera e distorção de perspectiva}
-
-A câmera de ser posicionada obliquamente em relação à poça de soldagem não apenas por questões físicas mas também para que inclua tanto poça de soldagem quanto arame. Isso significa que os elementos (poça e arame) ficam em diagonal com o plano da imagem, o que causa uma distorção de perspectiva do que seria a imagem ideal para processamento. Dessa forma, a distorção de perspectiva da imagem deve ser conhecida para que seja possível obter valores corretos no processamento. Uma forma de obter essa informação seria por inserção de dados como ângulo, distância entre câmera e tocha, e distância focal da lente por um operador no sistema. Mas considerando que o sistema possa ser utilizado  com câmeras, atuadores e posicionamentos diferentes, inclusive com a possibilidade de alteração de alguma variável entre dois \textit{setups} diferentes, há a possibilidade de erros e aumento do tempo de \textit{setup}.
-
-%IMAGEM da posicao da camera AQUI!!!
-
-Portanto o sistema deve obter esses dados através de uma pré-calibração simples e rápida. Esta pré calibração é feita com o processamento de  uma imagem inicial. A imagem deve conter o mínimo de quatro pontos conhecidos, como descrito em \ref{section:CalculoMatrizTransf} no espaço tridimensional para que seja possível calcular a matriz de transformação.
-
-A pré calibração é feita utilizando-se um objeto quadrado de dimensões conhecidas no plano paralelo à peça que será soldada. Isso pode ser feito colocando-se uma pequena chapa metálica quadrada sobre o plano de soldagem. Apenas uma imagem é necessária para se obter a matriz de transformação, desde que o resto do ambiente contido na imagem seja bem controlado no momento da calibração. Os algoritmo gerado com Matlab para gerar a matriz de transformação se mostrou eficiente, mas pode apresentar erros caso haja na imagem cantos mais definidos que os cantos do quadrado.
-
-Esse algoritmo utiliza o método de detecção de cantos de Harris descrito em \ref{section:DeteccaoCanto}
-
-Para implementação em uma FPGA, devem-se separar blocos da imagem para serem processados paralelamente. Dessa forma uma imagem separada em e
-
-
 
 \section{Implementação em Matlab}\label{section:implementacao-matlab}
 
@@ -86,7 +71,30 @@ Esses passos com os valores para os parâmetros definidos acima obtiveram bons re
 
 \subsection{Distorção de perspectiva}
 
-Implementar no matlab (não ficou pronto com os cálculos do processamento)
+A câmera deve ser posicionada obliquamente em relação à poça de soldagem não apenas por questões físicas mas também para que inclua tanto poça de soldagem quanto arame. Isso significa que os elementos (poça e arame) ficam em diagonal com o plano da imagem, o que causa uma distorção de perspectiva do que seria a imagem ideal para processamento. Dessa forma, a distorção de perspectiva da imagem deve ser conhecida para que seja possível obter valores corretos no processamento. Uma forma de obter essa informação seria por inserção de dados como ângulo, distância entre câmera e tocha, e distância focal da lente por um operador no sistema. Mas considerando que o sistema possa ser utilizado  com câmeras, atuadores e posicionamentos diferentes, inclusive com a possibilidade de alteração de alguma variável entre dois \textit{setups} diferentes, há a possibilidade de erros e aumento do tempo de \textit{setup}.
+
+IMAGEM da posição da câmera AQUI!!!
+
+A princípio, desejava-se calcular a distorção de perspectiva e fazer os ajustes necessários durante o processamento das imagens do processo de solda. A ideia seria utilizar os cantos do eletrodo de solda (dois formados entre o topo do eletrodo e o bocal da tocha e dois entre a base do eletrodo e a poça de soldagem) para identificar os pontos necessários para este cálculo. No entanto, alguns fatos foram observados:
+
+\begin{enumerate}
+\item O eletrodo pode, em dado momento, estar em uma posição oblíqua à peça de soldagem.
+
+Independente do motivo, à partir de imagens sabe-se que isso acontece no plano ortogonal à direção da soldagem. Presume-se que o mesmo ocorre também no plano que é paralelo à direção de soldagem e perpendicular à peça. Isso significa que o eletrodo pode estar mais à frente ou atrás do centro da tocha de solda, aproximando-se ou afastando-se da câmera. Ou seja, os pontos que deveriam ser conhecidos na base do eletrodo movem-se para locais desconhecidos, impossibilitando o cálculo correto da matriz de transformação.
+
+\item O tamanho do eletrodo varia.
+
+Fato também observado em imagens, tem o mesmo efeito que a variação de direção do eletrodo. A ponta do eletrodo está hora mais perto hora mais longe da peça de soldagem, mesmo quando em regime estável da soldagem. Isso também muda a posição de pontos que deveriam ser conhecidos.
+\end{enumerate}
+
+
+Devido aos motivos listados o sistema deve obter a matriz de transformação através de uma pré-calibração. Pensou-se em uma forma simples e rápida: esta pré calibração é feita com o processamento de uma imagem inicial e a matriz de transformação fica armazenada no sistema até que seja feito um novo \textit{setup}. A imagem deve conter o mínimo de quatro pontos conhecidos, como descrito em \ref{section:CalculoMatrizTransf} no espaço tridimensional para que seja possível calcular a matriz de transformação.
+
+A pré calibração é feita utilizando-se um objeto quadrado de dimensões conhecidas no plano paralelo à peça que será soldada. Isso pode ser feito colocando-se uma pequena chapa metálica quadrada sobre o plano de soldagem. Apenas uma imagem é necessária para se obter a matriz de transformação, desde que o resto do ambiente contido na imagem seja bem controlado no momento da calibração. Os algoritmo gerado com Matlab para gerar a matriz de transformação se mostrou eficiente, mas pode apresentar erros caso haja na imagem cantos mais definidos que os cantos do quadrado.
+
+Esse algoritmo utiliza o método de detecção de cantos de Harris descrito em \ref{section:DeteccaoCanto}.
+
+DESCREVER O PRCEDIMENTO DO ARQUIVO programas/Matlab/quadrilatero.m 
 
 
 
@@ -218,22 +226,19 @@ O texto deste arquivo é então inserido no arquivo de \textit{testbench} a ser ca
 
 Note que em cada linha os valores são repetidos três a três. Isso acontece pois as imagens estavam armazenadas em arquivos do tipo \textit{bitmab} de três cores RGB, apesar de serem imagens em escala de cinza. Ou seja, cada um dos três valores repetidos representa uma cor de vermelho, verde ou azul. Apenas retirando dois de cada três desses valores tem-se o desejado. Esta etapa é facilmente feita com o uso de uma expressão regular, ou \textit{Regex}.
 
-O resultado final dentro do \textit{testbench} é uma matriz com os valores desejados. Esses valores podem ser lidos por indexação de linha e coluna. Abaixo, segue o exemplo do começo e final de uma dessas matrizes:
+O resultado final dentro do \textit{testbench} é uma matriz com os valores desejados. Esses valores podem ser lidos por indexação de linha e coluna. Abaixo, segue o exemplo do começo, meio e final de uma dessas matrizes:
 
-\begin{verbatim}
-constant imagem_teste0 : MatrizImagem :=
-\end{verbatim}
+\begin{lstlisting}[language=VHDL]
+CONSTANT imagem_teste0 : MatrizImagem :=
+\end{lstlisting}
 
 \begin{center}
 \begin{tabular}{c c c c c c c c c}
 (( X"03", & X"02", & X"03", ... & X"03", & X"02", & X"03", ... & X"02", & X"03", & X"03"), \\
  ( X"03", & X"02", & X"03", ... & X"da", & X"f5", & X"fe", ... & X"09", & X"03", & X"03"), \\
  ( X"03", & X"02", & X"03", ... & X"03", & X"02", & X"03", ... & X"02", & X"03", & X"03")); \\
-
-
 \end{tabular}
 \end{center}
-
 
 \subsubsection{Sincronização}
 
@@ -245,6 +250,11 @@ Logo chegou-se a conclusão que essa abordagem se tornaria um problema no caso re
 
 
 
+
+
+\section{Identificação do ângulo da câmera e distorção de perspectiva}
+
+Para implementação em uma FPGA, devem-se separar blocos da imagem para serem processados paralelamente. Dessa forma uma imagem pode ser separada em setores para a aplicação do algoritmo.
 
 
 

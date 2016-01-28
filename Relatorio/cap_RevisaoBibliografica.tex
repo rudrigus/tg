@@ -360,7 +360,7 @@ Muitas tarefas em processamento de imagens requerem a identificação de elementos
 
 \subsubsection{Detector de Moravec}
 
-O algorítimo parte do princípio de diferenciação intensidade em porções de imagens usado no detector de imagens de Moravec \cite{article:Moravec}. O detector de Moravec funciona considerando uma janela na imagem, e determina a mudança de intensidade da imagem que resulta do deslocamento dessa janela em várias direções. São feitas as seguintes considerações:
+O algorítimo parte do princípio de diferenciação de intensidade em porções de imagens usado no detector de imagens de Moravec \cite{article:Moravec}. O detector de Moravec funciona considerando uma janela na imagem, e determina a mudança de intensidade da imagem que resulta do deslocamento dessa janela em várias direções. São feitas as seguintes considerações:
 
 \begin{enumerate}
 \item Se a imagem na janela é plana, (aproximadamente constante em intensidade), então todas os deslocamentos resultam em uma mudança pequena;
@@ -480,7 +480,7 @@ As FPGAs foram desenvolvidas como uma evolução dos PLDs, mais especificamente do
 Contudo, foi durante a década de 1990 que esses dispositivos ficaram famosos e assumiram diversas aplicações.
 %citação xilinx
 
-Atualmente os sistemas reconfiguráveis continuam em alta, principalmente agora que as tecnologias de fabricação estão próximas do limite de miniatuzação. O poder de processamento de arquiteturas convencionais (Arquitetura de von Neumann), baseadas em um \textit{hardware} genérico que recebe fluxos de instruções, demonstra desaceleramento. 
+Atualmente os sistemas reconfiguráveis continuam em alta, principalmente agora que as tecnologias de fabricação estão próximas do limite de miniatuzação. O poder de processamento de arquiteturas convencionais (Arquitetura de Von Neumann), baseadas em um \textit{hardware} genérico que recebe fluxos de instruções, demonstra desaceleramento. 
 % citar Gordon moore at Intel Developer Forum
 Com o esperado limite da Lei de Moore 
 % citar Gordon_Moore, Cramming more components onto integrated circuits
@@ -589,7 +589,7 @@ O comportamento de uma entidade é definido pela arquitetura e precisa ser declar
 
 O exemplo abaixo mostra uma entidade que utiliza a instância de outras em seu código:
 
-\begin{verbatim}
+\begin{lstlisting}[language=VHDL]
 LIBRARY ieee ;
 USE ieee.std_logic_1164.all ;
 USE ieee.std_logic_arith.all;
@@ -629,7 +629,7 @@ conta1 : CONTADOR port map (CLOCK, start_stop, up_down, binario12bits);
 conv1 : BIN_7SEG port map (binario4bits, D1A, D1B, D1C, D1D, D1E, D1F, D1G, DP1);
 END ESTRUTURA;
 
-\end{verbatim}
+\end{lstlisting}
 
 
 
@@ -654,14 +654,14 @@ Existem diversos pacotes padrões, muitos dos quais distribuídos pelo IEEE, mas t
 
 Cada pacote utilizado precisa ser declarado no início do documento para se ter acesso aos elementos definidos no mesmo ao longo do código. É necessário declarar de antemão a biblioteca em que o pacote está contido, caso não esteja nas bibliotecas ''std'' ou ''work''. O exemplo abaixo permite acesso aos tipos e operações do pacote 1164 da IEEE:
 
-\begin{verbatim}
+\begin{lstlisting}[language=VHDL]
 LIBRARY ieee;
 USE ieee.std_logic_1164;
-\end{verbatim}
+\end{lstlisting}
 
 Pacotes definidos pelo usuário precisam ser claramente identificados pela palavra chave ''package'' e ficam disponíveis para seus documentos dentro da biblioteca ''work'', a não ser que sejam explicitamente declaradas dentro de outra biblioteca definida pelo usuário. O exemplo abaixo mostra a declaração e utilização de um pacote:
 
-\begin{verbatim}
+\begin{lstlisting}[language=VHDL]
 PACKAGE meu_pacote IS
   TYPE \textbf{meu_inteiro} IS range -127 to 127;
 END meu_pacote;
@@ -673,7 +673,7 @@ PORT(
     entrada : in \textbf{meu_inteiro};
     saida: out \textbf{meu_inteiro} );
 END minha_entidade;
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{Sintetização}
 
@@ -710,6 +710,50 @@ Com a descrição de componentes e ligações entre os mesmos, o sintetizador faz o 
 
 \subsection{Simulação}
 
+Uma das ferramentas mais úteis para o desenvolvimento de qualquer sistema é o simulador que dá ao projetista a possibilidade de simular o projeto em suas várias etapas. Com as linguagens de descrição de hardware não é diferente. Geralmente os sintetizadores de VHDL ou Verilog também são vendidos ou distribuídos com algum simulador.
+
+A princípio pode-se pensar que um simulador rodando em uma arquitetura de Von Neumann não será útil pois não tem a capacidade de processar na mesma velocidade que um \textit{hardware} de aplicação específica. Porém, o processo de compilação e escrita em uma placa FPGA tem um alto custo de tempo e o simulador normalmente é capaz de dar resultados satisfatórios apenas com uma sintetização a nível de RTL. Dessa forma é possível testar e corrigir rapidamente alterações no projeto.
+
+A seguir serão descritos alguns aspectos de simuladores de forma sucinta.
+
+\subsubsection{Funcionamento}
+
+O simulador considera um circuito como uma coleção de sinais e processos. Sinais podem mudar de valor com o tempo sob o impacto de processos. Uma mudança de sinal é chamada de transação. \cite{manual:VHDL-simulation}
+
+O que um simulador deve fazer em um determinado momento é indicado por uma lista de ações classificadas por tempo. Esta é a \textbf{lista de eventos}. Evento é a designação para uma mudança de sinal ou ativação de um processo em um momento específico. Por exemplo, se um processo que está ativo no momento $t = t_0$ tem o comando $a <= ?1? after 10 ns$, então a transação $a <= ?1?$ é colocada na lista de eventos no momento $t = t_0 + 10 ns$. \cite{manual:VHDL-simulation}
+
+Uma transação nunca ocorre imediatamente, mesmo quando se o código não especificar nenhum atraso(\textit{after}). Portanto, uma transação é colocada na lista de eventos no momento $t = t_0 + \Delta$, em que $\Delta$ é zero (ou infinitesimalmente pequeno). Isso permite que processos que ocorrem simultaneamente sejam ordenados no tempo. Isto é possível porque $0 < \Delta < 2\Delta$ para o simulador. O conceito de infinitesimalmente pequeno é chamado de \textbf{atraso delta}. \cite{manual:VHDL-simulation}
+
+A simulação começa com a criação da lista de eventos. Todos os processos da descrição VHDL são colocados na posição correta da lista. Durante a simulação a lista de eventos é processada em ordem temporal. Novos eventos que resultantes de transações são colocados na posição correta da lista. A simulação acaba quando a lista de eventos está vazia, quando é forçada a terminar(restrição de tempo) ou encontra um erro. \cite{manual:VHDL-simulation}
+
+Este processo é chamado de simulação orientada a eventos (\textit{event-driven}) e é utilizada por praticamente todos os simuladores digitais. \cite{manual:VHDL-simulation}
+
+\subsubsection{Estímulos de entrada}
+
+Alem da descrição de \textit{hardware}, um simulador precisa dos sinais de entrada que influenciarão os processos.
+
+Alguns softwares tem funções que ajudam o projetista a criar estímulos para o simulador, como um arquivo de formas de onda (\textit{waveform}). Esses arquivos são facilmente editáveis com funções simples para vetores de ondas como: clock, contadores, valores aleatórios, textos ou edição manual feita visualmente. Estes arquivos são bastante úteis para o teste de blocos mais simples.
+
+Porém, simulações mais detalhadas e extensas é mais comum o uso de \textit{testbenches}. Os \textit{testbenches} são arquivos criados em VHDL e aproveitam a própria estrutura e os elementos da linguagem para fornecer os valores desejados ao simulador. 
+
+O mais comum é se construir um \textit{testbench} com uma entidade de projeto sem entradas ou saídas e apenas um componente que é a entidade de projeto a ser testada. Este componente costuma ser chamado de \textit{Design Under Test} (DUT), ou \textit{Design Under Verification} (DUV). Dessa forma é possível criar valores para todos os sinais de entrada do DUT dentro da arquitetura do \textit{testbench}.
+
+Para alterar os valores de entrada com o tempo, podem ser utilizados os comandos ''after'' e ''wait''. Estes comandos, em conjunto com a estrutura do VHDL, os procedimentos e processos, permitem criar sinais síncronos ou assíncronos para fornecer dados de entrada a um \textit{testbench}. Pode-se criar um clock, por exemplo.
+
+\subsubsection{Apresentação de resultados}
+
+Os simuladores costumam apresentar os resultados da simulação em uma janela com as formas de onda dos sinais de saída do DUT. Para facilitar a leitura, os simuladores apresentam os valores sobre as ondas, ou ao lado destas. Se um vetor é representado, podem ser visualizadas as palavras binárias ou alguma decodificação destas, como valores decimais, hexadecimais, ou mesmo caracteres.
+
+Em geral, pode-se remover ou adicionar outros sinais internos ao DUT, como saídas e entradas de entidades instanciadas no DUT ou mesmo sinais internos a estas instâncias. Esta funcionalidade é extremamente poderosa pois permite testar o funcionamento de todas as partes do projeto, independente do nível de hierarquia.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/exemplo-simulacao-VHDL.jpg}
+\caption{Resultado de uma simulação em VHDL}
+\label{fig:exemplo_simulacao_VHDL}
+\end{figure}
+
+A figura \ref{fig:exemplo_simulacao_VHDL} demonstra a variação de diversos sinais ao longo do tempo em uma simulação. Pode-se ver na coluna mais à esquerda a lista de sinais escolhidos para se visualizar os resultados. A coluna à direita mostra as formas de onda desses sinais ao final da simulação. A coluna do meio mostra os valor assumido por cada sinal no momento marcado pela linha amarela na coluna à direita.
 
 
 

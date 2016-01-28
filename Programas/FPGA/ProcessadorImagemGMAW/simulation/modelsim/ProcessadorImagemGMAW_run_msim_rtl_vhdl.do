@@ -9,11 +9,10 @@ vlog -vlog01compat -work work +incdir+/home/rudrigus/UNB/TG/Programas/FPGA/Proce
 vlog -vlog01compat -work work +incdir+/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/db {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/db/deserializer_lvds_rx.v}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd}
+vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/imagensteste.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/pll.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/deserializer.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ReceptorDados.vhd}
-vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/Multiplicador8B16B.vhd}
-vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/FiltroGaussiana.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/MedidasArame.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/SeletorImagem.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ProcessadorImagemGMAW.vhd}
