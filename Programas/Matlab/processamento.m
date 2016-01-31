@@ -1,6 +1,6 @@
-function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame] = processamento (I, tamanho)
+function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame] = processamento (I, tamanho, filtrar)
 
-
+if filtrar==1 
 %%Retirar scanlines
 a = I>10;
 %c = cast(a,'uint8');
@@ -18,18 +18,21 @@ I2 = imfilter(I,H,'replicate');
 
 B  = I2>20;
 I2 = I2.*B;
-
+else
+  
+  B  = I>20;
+  I2 = I.*B;
+end
 ImagemTratada = I2;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % limites verticais do arame
 
 % perfil horizontal, de cima para baixo
 somaHor     = sum(B,2);
-derivadaHor = diff(somaHor);
+derivadaHor = diff(somaHor)
 
 % limiar entre inicio e final do arame (meio do arame)
-meioVert = 125;
+meioVert = tamanho(2)/2;
 % limites verticais do arame
 [M,posArameTopo] = max(derivadaHor(1:1:meioVert-1));
 [M,posArameBase] = max(derivadaHor(meioVert:1:tamanho(1)-1));

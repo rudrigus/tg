@@ -92,17 +92,38 @@ Devido aos motivos listados o sistema deve obter a matriz de transformação atrav
 
 A pré calibração é feita utilizando-se um objeto quadrado de dimensões conhecidas no plano paralelo à peça que será soldada. Isso pode ser feito colocando-se uma pequena chapa metálica quadrada sobre o plano de soldagem. Apenas uma imagem é necessária para se obter a matriz de transformação, desde que o resto do ambiente contido na imagem seja bem controlado no momento da calibração. Os algoritmo gerado com Matlab para gerar a matriz de transformação se mostrou eficiente, mas pode apresentar erros caso haja na imagem cantos mais definidos que os cantos do quadrado.
 
-Esse algoritmo utiliza o método de detecção de cantos de Harris descrito em \ref{section:DeteccaoCanto}.
+O algoritmo da pré-calibração em Matlab é razoavelmente simples pois utiliza as funções prontas no software. Abaixo seguem os passos utilizados:
 
-DESCREVER O PRCEDIMENTO DO ARQUIVO programas/Matlab/quadrilatero.m 
+\begin{enumerate}
+\item Filtragem da imagem
 
+Basicamente são retirados os pixels abaixo de um threshold e depois passado um filtro de gaussiana para retirada de ruídos.
 
+\item Detecção de cantos
+
+A função ''corner'' do Matlab é chamada e utiliza o método de Harris (seção \ref{section:DeteccaoCanto}) para a detecção. Os cantos são ordenados descendentemente.
+
+\item Cálculo da matriz de transformação
+
+As coordenadas reais dos cantos são utilizadas em conjunto com as coordenadas obtidas na detecção do passo anterior para o cálculo. (seção \ref{section:CalculoMatrizTransf})
+
+\item Transformação da imagem
+
+Aqui o algoritmo apresenta a imagem transformada com a matriz de transformação.
+
+\item Correção de valores calculados em etapas anteriores
+
+As distâncias e posições encontradas anteriormente são corrigidas e sofrem menos influência da distorção.
+
+\end{enumerate}
+
+O interessante de se fazer a correção desta forma, é que também so torna possível estimar desvios do arame na direção do eixo de avanço. Considerando-se uma imagem corrigida após as distorção, observa-se o seguinte: Caso a largura da base do eletrodo tenha a mesma medida horizontal que o topo do eletrodo, este está corretamente alinhado. Caso a base seja menor, o eletrodo só pode estar mais distante do que o topo. Ou seja, está mais longe da câmera, o que significa que o eletrodo está em diagonal, com a ponta mais atrás do que o centro da tocha de soldagem. A mesma lógica aplica-se caso a base tenha uma medida maior que o topo, o que significa que o eletrodo está com a ponta à frente da tocha.
 
 \section{Implementação do processamento em FPGA}
 
 O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa FPGA, utilizando-se a linguagem VHDL. Boa parte dos procedimentos continuou com a característica sequencial, pois as imagens são obtidas desta forma. Alguns procedimentos utilizaram do paralelismo para economia de tempo e recursos. Por exemplo: a obtenção de topo e base do arame e largura da poça de soldagem ocorrem simultaneamente. A seguir é demonstrado como foi feita a implementação de cada item do algoritmo.
 
-\subsection{Aquisição de imagens}\label{section:aquisicao-imagens}
+\subsection{Aquisição de imagens}\label{section:desenv-aquisicao-imagens}
 % falar da camera link na revisão bibliografica
 
 Diferentemente do projeto em matlab, o algoritmo para a FPGA engloba faz captura de dados diretamente da câmera. Os dados fornecidos serialmente foram desserializados e disponibilizados em apenas um \textit{std\_logic\_vector} pois apenas eram necessários níveis de cinza.
@@ -174,9 +195,9 @@ Como será visto mais detalhadamente abaixo em \ref{section:topo_base}, os cálcul
 
 Durante a implementação foi constatado que fazer a leitura de diversos pixels em diferentes endereços de memória podeira consumir muito tempo e talvez se tornar proibitivo caso se deseje uma quantidade maior de imagens no filtro de média. A solução para este problema foi utilizar uma espécie de média móvel nos sinais que são utilizados para os cálculos. Em vez de se fazer a leitura de dois endereços de memória mais recentes para somá-los com o novo pixel recebido ($dado\_escrita$), foi feita apenas a leitura do mais antigo par ser subtraído da soma. Por exemplo: quando era feito o recebimento de um pixel da linha $linha$, coluna $coluna$ o valor do elemento $somaHor(linha)$ era atualizado da seguinte forma:
 
-$$
+\begin{equation}
 somaHor(linha) = somaHor(linha) + dado\_escrita - q(bloco\_atual - 3,linha,coluna)
-$$
+\end{equation}
 
 Onde $q$ é o byte armazenado no endereço de memória dado por $bloco\_atual$ concatenado com $linha \times numcols + coluna$,  sendo $numcols$ a largura da imagem.
 
@@ -192,6 +213,11 @@ Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com si
 
 \subsection{Laterais do arame}
 
+
+
+
+
+
 \section{Simulações}
 
 A maior parte do projeto foi desenvolvida sem a utilização de placas FPGA e câmeras reais, portanto foi essencial o uso de simulações. Cada criação ou alteração de código foi testada com auxílio das simulações a fim de evitar excessivo retrabalho em correções de erros.
@@ -201,13 +227,54 @@ O desenvolvimento em Matlab, utilizou arquivos de imagens como entrada, pois o \
 
 \subsection{Simulações em Matlab}
 
+A simulação em Matlab ocorre de forma bastante simples: basta rodar o programa gerado. Foi possível aproveitar das facilidades do software para imprimir as imagens de entrada processadas, ou seja, após a passagem dos filtros e com os valores calculados representados graficamente.
+
+Os programas desenvolvidos em Matlab utilizaram de imagens previamente obtidas em outro trabalho \cite{luciano}. A câmera utilizada foi uma DALSA citada em \ref{section:rev-aquisicao-imagens} e foi montada conforme a figura \ref{fig:posicao-camera-luciano}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/posicao-camera-luciano.png}
+\caption{Posição da câmera}
+\label{fig:posicao-camera-luciano}
+\end{figure}
+
+O experimento utilizou um eletrodo de $r_{eletrodo} = 1mm$ de diâmetro, com $standoff = 15mm$. Parte do eletrodo fica coberta pelo bocal na captura das imagens, mas sabe-se que a câmera estava posicionada a $\alpha = 30^\circ$ em relação ao plano horizontal. Considerando o bocal da tocha de soldagem com \textbf{$ r_{bocal} = 10mm$} de diâmetro, a altura da $h$ parte visível do eletrodo é dada por:
+
+\begin{eqnarray}
+h = standoff - (r_{bocal} - r_{eletrodo}) \cdot sen(\alpha) \\
+h = 15 - (10-0,5) \cdot sen(30) = 10,25mm
+\end{eqnarray}
+
+Os valores de $r_{eletrodo}$ e  $h$ foram utilizados para calcular a distorção de perspectiva à partir das próprias imagens. Apesar de essa não ser a opção desejada (o ideal seria uma calibração em separado) é suficiente para o propósito de simulação.
+
+
+
+
+
+OU OU OU OU OU OU OU OU OU OU OU OU OU OU OU OU OU OU OU OU 
+
+Esta câmera foi posicionada a $30^\circ$ em relação ao plano horizontal, o plano da poça de soldagem. Com esse conhecimento foi gerada a matriz de transformação correspondente, \ref{eq:matriz-30graus}. Também se assumiu que a câmera estava perfeitamente alinhada no plano formado entre a direção de avanço da solda e a direção do eletrodo.
+
+DESCREVER QUAL EIXO É QUAL
+
+\begin{equation}\label{eq:matriz-30graus}
+\begin{bmatrix}
+a & b & c \\
+a & b & c \\
+a & b & c \\
+\end{bmatrix}
+\end{equation}
+
+
+
+
 
 
 \subsection{Simulações em FPGA}
 
-Inicialmente, o algoritmo foi desenvolvido como se os dados de entrada (pixels) e clock viessem de alguma forma já desserializados para a placa. Ou seja, havia apenas a entrada de um clock e um byte, além dos outros sinais de configuração. As entidades de processamento foram todas feitas de forma a receber informações desta forma genérica, o que se mostrou eficiente após serem criados os blocos descritos em \ref{section:aquisicao-imagens}.
+Inicialmente, o algoritmo foi desenvolvido como se os dados de entrada (pixels) e clock viessem de alguma forma já desserializados para a placa. Ou seja, havia apenas a entrada de um clock e um byte, além dos outros sinais de configuração. As entidades de processamento foram todas feitas de forma a receber informações desta forma genérica, o que se mostrou eficiente após serem criados os blocos descritos em \ref{section:desenv-aquisicao-imagens}.
 
-Dessa forma foram utilizadas imagens previamente capturadas em outro trabalho \cite{luciano}, da mesma forma que as simulações em Matlab. Porém, as imagens foram transformadas em blocos de texto para poderem ser usadas em um arquivo \textit{testbench}. 
+Dessa forma foram utilizadas imagens previamente capturadas no trabalho de \cite{luciano}, da mesma forma que as simulações em Matlab. Porém, as imagens foram transformadas em blocos de texto para poderem ser usadas em um arquivo \textit{testbench}. 
 
 \subsubsection{Conversão de Imagens para Simulação}
 Este processo foi feito com a ajuda de um programa bastante simples disponível em distribuições Linux, chamado ''od''. Este programa traduz qualquer tipo de arquivo, inclusive imagens, para códigos hexadecimais. Um pequeno script foi criado para facilitar a utilização do programa. O resultado é um arquivo com palavras hexadecimais separadas por espaços, com a mesma quantidade de linhas e colunas que a imagem fornecida.
@@ -245,12 +312,6 @@ CONSTANT imagem_teste0 : MatrizImagem :=
 A primeira versão do \textit{testbench} foi feita de forma a fornecer os pixels sequencialmente, sem um sinal de início de imagem ou de linhas. Isso obrigava os blocos que funcionavam em paralelo a fazer uma contagem para saber quando uma imagem ou linhas acabavam ou iniciavam. Cada entidade possuía um valor de $linha$ e um de $coluna$ para fazer essa contagem. Essa redundância gerava um custo desnecessário de recursos.
 
 Logo chegou-se a conclusão que essa abordagem se tornaria um problema no caso real onde se deseja processar durante a captura de imagens. Então foram implementados os sinais $FVAL$ e $LVAL$ do padrão \textit{Camera Link} para simular a sincronia da captura e também evitar problemas futuros. 
-
-
-
-
-
-
 
 \section{Identificação do ângulo da câmera e distorção de perspectiva}
 

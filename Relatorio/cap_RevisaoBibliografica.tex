@@ -207,7 +207,7 @@ Para eliminar o problema de distorção existem dois métodos comumente utilizados:
 \includegraphics[scale = 0.7]{Figuras/ModeloPlanoCamera.jpg}}
 \subfigure[\label{fig:Modelo1DimCamera}]{
 \includegraphics[scale = 0.7]{Figuras/Modelo1DimCamera.jpg}}
-\caption{ (a) Modelo de câmera plana. (b) Modelo de câmera unidimensional.}\label{fig:ModeloCamera}
+\caption{ \cite{article:Criminisi} (a) Modelo de câmera plana. (b) Modelo de câmera unidimensional.}\label{fig:ModeloCamera}
 \end{center}
 \end{figure}
 
@@ -245,7 +245,7 @@ O modelo da câmera é completamente especificado pela matriz $T$, que pode ser ca
 
 A equação \ref{eq:ModeloCamera} pode ser melhor visualizada a seguir:
 
-\begin{equation*}
+\begin{equation}
 \begin{bmatrix} 
 x_1 \\
 x_2 \\
@@ -262,12 +262,12 @@ X_1 \\
 X_2 \\
 X_3
 \end{bmatrix} 
-\end{equation*}
+\end{equation}
 
 
 A escala $\lambda$ da matriz não afeta a equação, portanto apenas os oito graus de liberdade correspondentes à razão dos elementos da matriz são significantes.
 
-À partir da equação \ref{eq:ModeloCamera},cada correspondência entre pontos reais e pontos da imagem gera duas equações de coordenada cartesianas $\textbf{H}$. Para $n$ correspondências obtém-se um sistema com $2n$ equações com $8$ variáveis. Se $n = 4$, obtém-se a solução exata \cite{chapter:Zisserman:23}. Se $n > 4$, a matriz  é super-determinada e estima-se $\textbf{H}$ por minimização \cite{article:Criminisi}.%
+À partir da equação \ref{eq:ModeloCamera}, cada correspondência entre pontos reais e pontos da imagem gera duas equações de coordenada cartesianas $\textbf{H}$. Para $n$ correspondências obtém-se um sistema com $2n$ equações com $8$ variáveis. Se $n = 4$, obtém-se a solução exata \cite{chapter:Zisserman:23}. Se $n > 4$, a matriz  é super-determinada e estima-se $\textbf{H}$ por minimização \cite{article:Criminisi}.%
 % % MUITO IMPORTANTE!!! Significa que são necessários 4 pontos conhecidos no mundo real. Posso colocar uma escala sobre a peça para obter o modelo da câmera e fazer uma pré calibração
 
 A representação em coordenadas cartesianas demonstra a natureza não linear da transformação:
@@ -279,7 +279,7 @@ y = \frac{x_2}{x_3} = \frac{t_{21}X + t_{22}Y + t_{23}}{t_{31}X + t_{32}Y + t_{3
 
 Para definir os elementos da matriz de transformação deve-se ter quatro correspondências de pontos entre plano real e projeção. Com a escala de $\textbf{T}$ arbitrária, e $t_{33}=1$, temos os pontos representados por $(\lambda_i x_i, \lambda_i y_i, lambda_i)^T = T(X_i,Y_i,1)^T$. O sistema de equações lineares resultantes é:
 
-\begin{equation}
+\begin{equation}\label{eq:SistEqZisserman}
 \begin{bmatrix}
 X_1 & Y_1 & 1 & 0 & 0 & 0 & -x_1 X_1 & -x_1 Y_1 \\
 0 & 0 & 0 & X_1 & Y_1 & 1 & -y_1 X_1 & -y_1 Y_1 \\
@@ -311,9 +311,51 @@ y_3\\
 x_4\\
 y_4\\
 \end{bmatrix}
-\end{equation}\label{eq:SistEqZisserman}
+\end{equation}
 
 Esse sistema linear garante a solução para a matriz $\textbf{T}$, desde que nenhum grupo de três pontos sejam colineares.
+
+Finalmente, para determinar a matriz de transformação deve-se resolver a equação \ref{eq:SistEqZisserman} para $t_{11}$ a $t_{32}$. O sistema é do formato $ A \cdot T = B $, e pode ser calculado com a regra da matriz inversa. A solução segue-se na equação \ref{eq:solucao-transformada} abaixo:
+
+\begin{equation}
+T = A^{-1} \cdot B
+\end{equation}
+
+\begin{equation}\label{eq:solucao-transformada}
+\begin{bmatrix}
+t_{11}\\
+t_{12}\\
+t_{13}\\
+t_{21}\\
+t_{22}\\
+t_{23}\\
+t_{31}\\
+t_{32}\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+X_1 & Y_1 & 1 & 0 & 0 & 0 & -x_1 X_1 & -x_1 Y_1 \\
+0 & 0 & 0 & X_1 & Y_1 & 1 & -y_1 X_1 & -y_1 Y_1 \\
+X_2 & Y_2 & 1 & 0 & 0 & 0 & -x_2 X_2 & -x_2 Y_2 \\
+0 & 0 & 0 & X_2 & Y_2 & 1 & -y_2 X_2 & -y_2 Y_2 \\
+X_3 & Y_3 & 1 & 0 & 0 & 0 & -x_3 X_3 & -x_3 Y_3 \\
+0 & 0 & 0 & X_3 & Y_3 & 1 & -y_3 X_3 & -y_3 Y_3 \\
+X_4 & Y_4 & 1 & 0 & 0 & 0 & -x_4 X_4 & -x_4 Y_4 \\
+0 & 0 & 0 & X_4 & Y_4 & 1 & -y_4 X_4 & -y_4 Y_4 \\
+\end{bmatrix}
+^{-1}
+\cdot
+\begin{bmatrix}
+x_1\\
+y_1\\
+x_2\\
+y_2\\
+x_3\\
+y_3\\
+x_4\\
+y_4\\
+\end{bmatrix}
+\end{equation}
 
 \subsubsection{Minimização de erros da transformação}
 
@@ -757,7 +799,7 @@ A figura \ref{fig:exemplo_simulacao_VHDL} demonstra a variação de diversos sinai
 
 
 
-\section{Aquisição de imagens}
+\section{Aquisição de imagens}\label{section:rev-aquisicao-imagens}
 
 As imagens necessárias para o processamento devem ser obtidas adequadamente à velocidade do processo em questão. Apesar do processo de soldagem não ser muito rápido se comparado à velocidade de circuitos digitais, a obtenção das informações úteis não é trivial. As melhores imagens para identificação de parâmetros só são visíveis por curtos períodos de tempo durante o momento de curto-circuito da solda, não mais que alguns milissegundos.
 

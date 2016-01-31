@@ -2,50 +2,53 @@ clc
 %clear
 close all
 
-cd d:/trabaio/TG
-% I = imread('./Imagens/Teste/ImagemTeste4.jpg');
-% I = rgb2gray(I);
+% cd d:/trabaio/TG
+cd ~/UNB/TG
+I = imread('./Imagens/Teste/ImagemTeste5.jpg');
+I = rgb2gray(I);
 
 
 % retirar informacoes desnecessarias para o calculo da matriz de
 % transformacao
-% a = cast(I>100,'uint8');
-% J = I.*a;
+a = cast(I>100,'uint8');
+J = I.*a;
 
-% filtro de mediana
-% H = fspecial('average',3);
-% J = imfilter(J,H,'replicate');
+% filtro de gaussiana
+H = fspecial('gaussian',3);
+J = imfilter(J,H,'replicate');
 
 
 imshow(I)
 hold on
-Canto = corner(J,4,'QualityLevel',.01,'SensitivityFactor',0.02);
-plot(Canto(:,1),Canto(:,2),'rx')
+CantosImagem = corner(J,'Harris',4,'QualityLevel',.01,'SensitivityFactor',0.02);
+plot(CantosImagem(:,1),CantosImagem(:,2),'rx')
 
-%%Ordenar elementos de Canto
-[A,B] = sort(Canto,'descend');
+%%Ordenar elementos de CantosImagem
+[A,B] = sort(CantosImagem(:,1),'descend');
+temp=zeros(4,2);
+temp(:,1)=A;
 for i=1:1:4
-    A(i,2) = Canto(B(:,1)==i,2);
-    
+    temp(i,2)= CantosImagem(B(i),2);
 end
-Canto = A;
+CantosImagem = temp;
 
-X = Canto(:,1);
-Y = Canto(:,2);
-plot([X;X(1)],[Y;Y(1)],'r')
+x = CantosImagem(:,1);
+y = CantosImagem(:,2);
+plot([x;x(1)],[y;y(1)],'r')
 
 %imprimir quadrado, em azul
-% plot([100 100 500 500 100], [100 500 500 100 100],'b')
-plot([150 150 350 350 150], [300 500 500 300 300],'b')
+plot([150 150 550 550 150], [100 500 500 100 100],'b')
+% plot([150 150 350 350 150], [300 500 500 300 300],'b')
 
-%coordenadas "reais" dos ponto contidos em Canto
-Xp=[2000; 2000; 500; 500];
-Yp=[3000; 1500; 1500; 3000];
+%coordenadas "reais" dos ponto contidos em CantosImagem
+X=[2000; 2000; 500; 500];
+Y=[3000; 1500; 1500; 3000];
 
-B = [ X Y ones(size(X)) zeros(4,3)        -X.*Xp -Y.*Xp ...
-      zeros(4,3)        X Y ones(size(X)) -X.*Yp -Y.*Yp ];
+%Calculo da transformada
+B = [ x y ones(size(X)) zeros(4,3)        -x.*X -y.*X ...
+      zeros(4,3)        x y ones(size(X)) -x.*Y -y.*Y ];
 B = reshape (B', 8 , 8 )';
-D = [ Xp , Yp ];
+D = [ X , Y ];
 D = reshape (D', 8 , 1 );
 l = inv(B) * D;
 A = reshape([l(1:6)' 0 0 1 ],3,3)';
@@ -61,12 +64,13 @@ C = [l(7:8)' 1];
 %end
 
 
-hold off
+% matriz de transformacao: A
 A = reshape([l(1:8)' 1 ],3,3)';
-tform = maketform('projective',A')
+tform = maketform('projective',A');
 
 % Imagem corrigida
-I2 = imtransform(I,tform);
+hold off
+I2 = imtransform(I,tform,'XYScale',1);
 figure;
-imshow(I2,mapaCor);
+imshow(I2);
 
