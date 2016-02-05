@@ -1,35 +1,32 @@
-function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame] = processamento (I, tamanho, filtrar)
+function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento (I, tamanho, filtrar)
 
 if filtrar==1 
-%%Retirar scanlines
-a = I>10;
-%c = cast(a,'uint8');
-I = I.*a;
-%image(I);colormap(gray(256));
+  %% Retirar scanlines
+  a = I>10;
+  %c = cast(a,'uint8');
+  I = I.*a;
 
+  %% Filtro de gaussiana
+  H = fspecial('gaussian',3);
+  I2 = imfilter(I,H,'replicate');
+  %I2=I;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Encontrar posicao do arame (algoritmo 3)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% filtro de mediana
-H = fspecial('gaussian',3);
-I2 = imfilter(I,H,'replicate');
-%I2=I;
-
-B  = I2>20;
-I2 = I2.*B;
+  B  = I2>40;
+  I2 = I2.*B;
 else
-  
-  B  = I>20;
-  I2 = I.*B;
+    B  = I>20;
+    I2 = I.*B;
 end
+
 ImagemTratada = I2;
+% figure;image(ImagemTratada);colormap(gray(256))
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% limites verticais do arame
+%% Limites verticais do arame
 
 % perfil horizontal, de cima para baixo
-somaHor     = sum(B,2);
-derivadaHor = diff(somaHor)
+somaHor     = sum(ImagemTratada,2);
+derivadaHor = diff(somaHor);
 
 % limiar entre inicio e final do arame (meio do arame)
 meioVert = tamanho(2)/2;
@@ -43,7 +40,7 @@ posArameBase     = posArameBase + meioVert;
 %%
 % limites horizontais do arame
 % perfil vertical, da esquerda para a direita
-somaVert     = sum(B,1);
+somaVert     = sum(ImagemTratada,1);
 derivadaVert = diff(somaVert);
 
 %%
@@ -73,8 +70,8 @@ fimArame = zeros(n,1);
 derivadaArame = zeros(n,tamanho(2)-1);
 for i = 1:1:n+1
     derivadaArame(i,:) = diff(B(posArameTopo + afastamento1 + round(intervalo*(i-1)),:));
-    [M,inicioArame(i)] = min(derivadaArame(i,:));
-    [M fimArame(i)] = max(derivadaArame(i,inicioArame(i):1:tamanho(2)-1));
+    [M, inicioArame(i)] = min(derivadaArame(i,:));
+    [M, fimArame(i)] = max(derivadaArame(i,inicioArame(i):1:tamanho(2)-1));
     fimArame(i) = fimArame(i) + inicioArame(i);
 end
 ladoEsqArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1,inicioArame);

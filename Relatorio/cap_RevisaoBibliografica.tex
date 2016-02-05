@@ -189,7 +189,11 @@ A seguir são detalhados os métodos de processamento utilizados neste trabalho.
 
 \subsubsection{Limiarização}
 
-Esta é um método espacial que consiste em separar uma imagem em diferentes níveis de cinza. O comum é ter apenas um limiar e dois níveis, o que constitui em uma binarização da imagem. A binarização pode ser feita de duas formas: transformar todos os pixels abaixo de um limiar em zero (preto) ou transfomar todos os acima do limiar no nível máximo (branco). 
+Esta é um método espacial que consiste em separar uma imagem em diferentes níveis de cinza. O comum é ter apenas um limiar e dois níveis, o que constitui em uma binarização da imagem. A binarização pode ser feita de duas formas: transformar todos os pixels abaixo de um limiar em zero (preto) ou transformar todos os acima do limiar no nível máximo (branco).
+
+O mais comum é a limiarização que transforma todos os pixels abaixo do limiar em preto e todos acima em branco, ou seja uma imagem binária.
+
+A limiarização por ser feita com um limiar pré definido ou de forma automática. Um exemplo de limiarização automática é a de equilíbrio de histograma, onde um algoritmo é utilizado para separar equilibradamente os dois grupos de pixels mais claros e mais escuros.
 
 
 
@@ -493,7 +497,21 @@ Com essa formulação, pode-se definir o tipo da região localizada em $(u,v)$:
 \item Região plana, se $R$ é pequeno.
 \end{Bitemize}
 
-Como $R$ pode assumir uma grande gama de valores, positivos e negativos, usa-se um limite inferior e um limite superior 
+Como $R$ pode assumir uma grande gama de valores para diferente regiões da imagens utiliza-se limiares para definição dessas regiões. Isto gera a identificação de cinco regiões diferentes: fundo, duas classes de canto e duas de bordas. Quando o objetivo é apenas encontrar cantos, somente dois limiares são necessários.
+
+\subsection{Perfis Verticais e Horizontais}\label{section:rev-perfis}
+
+Uma das formas de se encontrar elementos em imagens é os perfis verticais e horizontais da imagem, ou perfis X e Y \cite{book:galbiati}. Esses perfis consistem basicamente na soma dos valores de pixels de linhas (perfil horizontal) ou colunas (perfil vertical) de uma imagem.
+
+Esses perfis normalmente são armazenados em vetores para  comparação, visualização ou extração de informações. Por exemplo: o valor máximo de um perfil horizontal pode identificar a linha onde se encontra a maior largura de um objeto na imagem.
+
+Com os vetores de perfis também pode-se utilizar suas derivadas. Como esses vetores são discretos, as derivadas são apenas o resultado da subtração de um elemento pelo elemento consecutivo.
+
+AQUI AQUI
+
+
+
+
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 

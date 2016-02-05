@@ -5,19 +5,27 @@ clear;
 clc;
 close all;
  
-%%
-%%Carregar imagens
+%% Config iniciais
+% diretorios imagens
 cd ~/UNB/TG
 Diretorio_leitura = './Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/';
 Diretorio_escrita = './Img_alteradas/';
 inicio = 150;
 fim    = 153;
 
+% parametros
+diametroArame = 1;
+% Medidas reais do arame: h=10,25mm r=0,5mm (d=1mm)
+% X=[100; 100; 0; 0];
+% Y=[1025; 0; 0; 1025];
+X=[250; 250; 150; 150];
+Y=[1185; 160; 160; 1185];
+
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%Media de imagens para reduzir ruidos
+%% Media de imagens para reduzir ruidos
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-quantidadeImagens = 3;
+quantidadeImagens = 3; 
 ImTemp = imread(strcat(Diretorio_leitura,'Img',int2str(inicio),'.bmp'));
 tamanho = size(ImTemp);
 Im = zeros(tamanho(1),tamanho(2),quantidadeImagens);
@@ -31,7 +39,7 @@ for j = inicio:1:fim
     I = mean(Im,3);
     
     % processamento eh chamado para calcular valores
-    [ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame] = processamento(I,tamanho,1);
+    [ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I,tamanho,1);
     
 %     hold on;
 %     plot(1:1:tamanho(2),posArameTopo,'--r',1:1:tamanho(2),posArameBase,'--r',limEsqPoca(j-inicio+1),1:1:tamanho(1),'--y',limDirPoca(j-inicio+1),1:1:tamanho(1),'--y');
@@ -57,9 +65,7 @@ plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b');
 %% Correcao de valores com distorcao de perspectiva
 % O que estamos buscando aqui é a matriz de transformação gerada a partir
 % da imagem.
-% Medidas reais do arame: h=10,25mm r=0,5mm (d=1mm)
-X=[100; 100; 0; 0];
-Y=[1025; 0; 0; 1025];
+
 
 CantosImagem = [posArameBase*ladoDirArame(2)+ladoDirArame(1) posArameBase; ...
          posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameTopo; ...
@@ -88,9 +94,12 @@ I2 = imtransform(I,tform,'XYScale',1);
 % image(I2);colormap(gray(256))
 tamanho2 = size(I2);
 
-[I2,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame] = processamento(I2,tamanho2,0);
 
+% Obtencao de calculos na imagem corrigida
+[I2,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I2,tamanho2,0);
+  
 
+% impressão de imagem corrigida
 figure;image(I2);colormap(gray(256))
 hold on;
 %bordas laterais
@@ -101,6 +110,9 @@ plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+
 %topo e base do arame
 plot(1:1:tamanho2(2),ones(tamanho2(2))*posArameTopo,'b');
 plot(1:1:tamanho2(2),ones(tamanho2(2))*posArameBase,'b');
+
+LarguraPoca = diametroArame * (limDirPoca - limEsqPoca)/pixelsArameBase;
+
 
 
 %%
