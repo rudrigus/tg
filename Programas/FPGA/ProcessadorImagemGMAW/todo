@@ -1,3 +1,15 @@
+Matlab
+
+=>Usar uma imagem boa para a calibração
+  Calcular medidas nas outras imagens
+  Fazer para muitas imagens e plotar gráficos
+  Vamos fazer o filtro de Kalman?
+
+
+
+-----------------------------------------------------------------------------------------------
+FPGA
+
 Programar uma placa no GRACO
 Arranjar interface camera link para FPGA 
 
@@ -7,6 +19,19 @@ ok    Deserializador para 8 bits. 7 em uma porta e 1 em outra
 ok    Tem que arrumar a sincronia do primeiro bit no meio do clock high
 ok    Arrumar sinais de fim de janela e linha
 ??    Prestar atenção no bit de "data check"
+
+Criar bloco calibrador na FPGA
+  Programa separado ou junto com o principal?
+  1. Detector de cantos
+  2. Cálculo matricial
+  3. Apresentar matriz caso o programa seja separado
+
+Criar receptor para a câmera
+  Usar placa receptora com driver
+    Confirmar com Llanos se será comprada
+    Ler manual antes da placa chegar
+    Arrumar problema da sincronização
+
 
 Arrumar os blocos para receberem dados se baseando em FVAL e LVAL
 ->Criar valores de linha e coluna no bloco ReceptorDados e passar para outros blocos
