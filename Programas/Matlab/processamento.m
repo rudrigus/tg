@@ -4,7 +4,7 @@ if filtrar==1
   %% Retirar scanlines
   a = I>10;
   %c = cast(a,'uint8');
-  I = I.*a;
+  I = single(I).*a;
 
   %% Filtro de gaussiana
   H = fspecial('gaussian',3);
@@ -74,6 +74,8 @@ for i = 1:1:n+1
     [M, fimArame(i)] = max(derivadaArame(i,inicioArame(i):1:tamanho(2)-1));
     fimArame(i) = fimArame(i) + inicioArame(i);
 end
+% X = size(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1)
+% Y = size(inicioArame)
 ladoEsqArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1,inicioArame);
 ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1,fimArame);
 
