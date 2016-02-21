@@ -1,26 +1,26 @@
-function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento (I, tamanho, filtrar)
-
-if filtrar==1 
+function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento (I, tamanho, filtrar,j)
+Threshold1 = 7;
+Threshold2 = 40;
+Threshold3 = 100;
+% if filtrar==1 
   %% Retirar scanlines
-  a = I>10;
+  a = I > Threshold1;
   %c = cast(a,'uint8');
   I = single(I).*a;
 
   %% Filtro de gaussiana
   H = fspecial('gaussian',3);
-  I2 = imfilter(I,H,'replicate');
-  %I2=I;
+  I = imfilter(I,H,'replicate');
+  
+% end
 
-  B  = I2>40;
-  I2 = I2.*B;
-else
-    B  = I>20;
-    I2 = I.*B;
-end
+B  = I > Threshold2;
+I2 = I.*B;
 
-ImagemTratada = I2;
+ImagemTratada = min(I2,Threshold3);
+
 % figure;image(ImagemTratada);colormap(gray(256))
-
+% title(j)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Limites verticais do arame
 
@@ -28,8 +28,10 @@ ImagemTratada = I2;
 somaHor     = sum(ImagemTratada,2);
 derivadaHor = diff(somaHor);
 
-% limiar entre inicio e final do arame (meio do arame)
-meioVert = tamanho(2)/2;
+% limiares tamanhos uteis
+meioVert = floor(tamanho(1)/2);
+meioHor =  floor(tamanho(2)/2);
+
 % limites verticais do arame
 [M,posArameTopo] = max(derivadaHor(1:1:meioVert-1));
 [M,posArameBase] = max(derivadaHor(meioVert:1:tamanho(1)-1));
@@ -45,16 +47,16 @@ derivadaVert = diff(somaVert);
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Borda esquerda da po�a
+% Borda esquerda da poca
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[M, limEsqPoca] = max(derivadaVert(1:1:tamanho(2)/2));
+[M, limEsqPoca] = max(derivadaVert(1:1:meioHor));
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Borda direita da po�a
+% Borda direita da poca
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[M, limDirPoca] = min(derivadaVert(tamanho(2)/2:1:tamanho(2)-1));
-limDirPoca = limDirPoca + tamanho(2)/2;
+[M, limDirPoca] = min(derivadaVert(meioHor:1:tamanho(2)-1));
+limDirPoca = limDirPoca + meioHor;
 
 
 
@@ -62,22 +64,25 @@ limDirPoca = limDirPoca + tamanho(2)/2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Laterais do arame, inicioArame (esquerda) e fimArame (direita)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-afastamento1 = 5;
-n = posArameBase - posArameTopo - 2*afastamento1; % Usar n valor menor (como n = 15) para diminuir processamento
-intervalo = 1;% correcao caso se diminua valor de n(posArameBase - posArameTopo - afastamento1*2)/(n-1)
+afastamento1 = floor(0.01*tamanho(1));
+afastamento2 = floor(0.01*tamanho(1));
+n = posArameBase - posArameTopo - afastamento1 - afastamento2; % Usar n valor menor (como n = 15) para diminuir processamento
+intervalo = 1;% correcao caso se diminua valor de n(posArameBase - posArameTopo - afastamento1 - afastamento2)/(n-1)
 inicioArame = zeros(n,1);
 fimArame = zeros(n,1);
 derivadaArame = zeros(n,tamanho(2)-1);
 for i = 1:1:n+1
     derivadaArame(i,:) = diff(B(posArameTopo + afastamento1 + round(intervalo*(i-1)),:));
-    [M, inicioArame(i)] = min(derivadaArame(i,:));
-    [M, fimArame(i)] = max(derivadaArame(i,inicioArame(i):1:tamanho(2)-1));
-    fimArame(i) = fimArame(i) + inicioArame(i);
+    [M, inicioArame(i)] = min(derivadaArame(i,floor(meioHor/2):1:meioHor));
+    inicioArame(i) = inicioArame(i) + floor(meioHor/2);
+    [M, fimArame(i)] = max(derivadaArame(i,meioHor:1:tamanho(2)-1));
+    fimArame(i) = fimArame(i) + meioHor;
 end
-% X = size(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1)
+% X = size(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2)
 % Y = size(inicioArame)
-ladoEsqArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1,inicioArame);
-ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento1,fimArame);
+
+ladoEsqArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,inicioArame);
+ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,fimArame);
 
 % % topo
 % derivadaArameTopo = diff(a(posArameTopo+afastamento1,:));
@@ -90,18 +95,28 @@ ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afasta
 % [M,inicioArameBase] = min(derivadaArameBase);
 % [M fimArameBase] = max(derivadaArameBase(inicioArameBase:1:tamanho(2)-1));
 % fimArameBase = fimArameBase + inicioArameBase;
-% 
-% % calculo do desvio angular do arame
-% centroTopo = (inicioArameTopo + fimArameTopo)/2;
-% centroBase = (inicioArameBase + fimArameBase)/2;
 
-centroTopo = (ladoEsqArame(2)*posArameTopo + ladoEsqArame(1) + ladoDirArame(2)*posArameTopo + ladoDirArame(1))/2;
-centroBase = (ladoEsqArame(2)*posArameBase + ladoEsqArame(1) + ladoDirArame(2)*posArameBase + ladoDirArame(1))/2;
+
 pixelsArameBase = (ladoDirArame(2)*posArameBase + ladoDirArame(1)) - (ladoEsqArame(2)*posArameBase + ladoEsqArame(1));
 
-anguloDesvio = atan((centroTopo-centroBase)/(posArameTopo-posArameBase));
-anguloDesvio = anguloDesvio*180/pi;
-
+% if ((pixelsArameBase < 85) || (pixelsArameBase > 105)) && tamanho(1) > 1000
+  
+%   % impressão de imagem corrigida
+%   figure;image(ImagemTratada);colormap(gray(256))
+%   title(j)
+%   hold on;
+%   %bordas laterais
+%   plot(ones(1,tamanho(1))*limEsqPoca,1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca,1:1:tamanho(1),'--y')
+%   %lados esquerdo e direito do arame
+%   plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'w')
+%   plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'w')
+%   %topo e base do arame
+%   plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b');
+%   plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b');
+%   plot(inicioArame,posArameTopo+afastamento1:1:posArameBase-afastamento2,'r');
+%   plot(fimArame,posArameTopo+afastamento1:1:posArameBase-afastamento2,'g');
+% end
+robustfit(
 %%
 % calcular angulo da camera em relacao ao arame
 %  x  da imagem corresponde a primeira dimensao (cima->baixo)

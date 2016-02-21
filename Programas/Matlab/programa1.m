@@ -12,7 +12,7 @@ Diretorio_leitura = './Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/';
 Diretorio_escrita = './Img_alteradas/';
 % inicio = 150;
 % fim    = 153;
-inicio = 100;
+inicio = 166;
 fim    = 250;
 
 % parametros
@@ -28,7 +28,7 @@ Y=[1185; 160; 160; 1185];
 ImagemBase = './Imagens/Capturas/1000 fps/Resultados 2 Livre com valores de trigger muito baixos 70 150/Img300.bmp';
 I = imread(ImagemBase);
 tamanho = size(I);
-[ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento(I,tamanho,1);
+[ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento(I,tamanho,1,300);
 
 
 
@@ -76,77 +76,103 @@ LarguraPoca = zeros(fim-inicio+1,1);
 limEsqPoca = zeros(fim-inicio+1,1);
 limDirPoca = zeros(fim-inicio+1,1);
 pixelsArameBase = zeros(fim-inicio+1,1);
+posArameTopo = zeros(fim-inicio+1,1);
+posArameBase = zeros(fim-inicio+1,1);
+CentroArameTopo = zeros(fim-inicio+1,1);
+CentroArameBase = zeros(fim-inicio+1,1);
+% AnguloDesvio = zeros(fim-inicio+1,1);
+
 for j = inicio:1:fim
-    imagemInicial = j;
-    for i = 1:1:quantidadeImagens
-        Im(:,:,i) = imread(strcat(Diretorio_leitura,'Img',int2str(imagemInicial+i-1),'.bmp'));
-    end
-    Im(:,:,quantidadeImagens) = ImTemp;
-    I = mean(Im,3);
+  imagemInicial = j;
+  for i = 1:1:quantidadeImagens
+      Im(:,:,i) = imread(strcat(Diretorio_leitura,'Img',int2str(imagemInicial+i-1),'.bmp'));
+  end
+  Im(:,:,quantidadeImagens) = ImTemp;
+  I = mean(Im,3);
+
+  % % processamento eh chamado para calcular valores
+  % [ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I,tamanho,1,j);
     
-    % processamento eh chamado para calcular valores
-    [ImagemTratada,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I,tamanho,1);
-    
-%     hold on;
-%     plot(1:1:tamanho(2),posArameTopo,'--r',1:1:tamanho(2),posArameBase,'--r',limEsqPoca(j-inicio+1),1:1:tamanho(1),'--y',limDirPoca(j-inicio+1),1:1:tamanho(1),'--y');
-%     plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) tamanho(1)*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo tamanho(1)],'r')
-%     plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) tamanho(1)*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo tamanho(1)],'r')
-%     hold off
-%end
+  %     hold on;
+  %     plot(1:1:tamanho(2),posArameTopo,'--r',1:1:tamanho(2),posArameBase,'--r',limEsqPoca(j-inicio+1),1:1:tamanho(1),'--y',limDirPoca(j-inicio+1),1:1:tamanho(1),'--y');
+  %     plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) tamanho(1)*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo tamanho(1)],'r')
+  %     plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) tamanho(1)*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo tamanho(1)],'r')
+  %     hold off
+  %end
 
 
-%%
-% % mostrar imagem com medidas
-% figure;image(ImagemTratada);colormap(gray(256))
-% title(j)
-% hold on;
-% %bordas laterais
-% plot(ones(1,tamanho(1))*limEsqPoca(j-inicio+1),1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca(j-inicio+1),1:1:tamanho(1),'--y')
-% %lados esquerdo e direito do arame
-% plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'r')
-% plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'r')
-% %topo e base do arame
-% plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b');
-% plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b');
+  %%
+  % % mostrar imagem com medidas
+  % figure;image(ImagemTratada);colormap(gray(256))
+  % title(j)
+  % hold on;
+  % %bordas laterais
+  % plot(ones(1,tamanho(1))*limEsqPoca(j-inicio+1),1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca(j-inicio+1),1:1:tamanho(1),'--y')
+  % %lados esquerdo e direito do arame
+  % plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'r')
+  % plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'r')
+  % %topo e base do arame
+  % plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b');
+  % plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b');
 
 
 
 
-%% Imagem corrigida
-I2 = imtransform(I,tform,'XYScale',1);
-% image(I2);colormap(gray(256))
-tamanho2 = size(I2);
+  %% Imagem corrigida
+  I2 = imtransform(I,tform,'XYScale',1);
+  % image(I2);colormap(gray(256))
+  tamanho2 = size(I2);
 
 
-% Obtencao de calculos na imagem corrigida
-[I2,posArameTopo,posArameBase,limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I2,tamanho2,0);
+  % Obtencao de calculos na imagem corrigida
+  [I2,posArameTopo(j-inicio+1),posArameBase(j-inicio+1),limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I2,tamanho2,0,j);
+  LarguraPoca(j-inicio+1) = diametroArame * (limDirPoca(j-inicio+1) - limEsqPoca(j-inicio+1))/pixelsArameBase(j-inicio+1);
+  CentroArameTopo(j-inicio+1) = (posArameTopo(j-inicio+1)*ladoEsqArame(2)+ladoEsqArame(1) + posArameTopo(j-inicio+1)*ladoDirArame(2)+ladoDirArame(1))/2;
+  CentroArameBase(j-inicio+1) = (posArameBase(j-inicio+1)*ladoEsqArame(2)+ladoEsqArame(1) + posArameBase(j-inicio+1)*ladoDirArame(2)+ladoDirArame(1))/2;
   
-% % impressão de imagem corrigida
-% figure;image(I2);colormap(gray(256))
-% hold on;
-% %bordas laterais
-% plot(ones(1,tamanho2(1))*limEsqPoca(fim-inicio+1),1:1:tamanho2(1),'--y',ones(1,tamanho2(1))*limDirPoca(fim-inicio+1),1:1:tamanho2(1),'--y')
-% %lados esquerdo e direito do arame
-% plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'r')
-% plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'r')
-% %topo e base do arame
-% plot(1:1:tamanho2(2),ones(tamanho2(2))*posArameTopo,'b');
-% plot(1:1:tamanho2(2),ones(tamanho2(2))*posArameBase,'b');
-
-LarguraPoca(j-inicio+1) = diametroArame * (limDirPoca(j-inicio+1) - limEsqPoca(j-inicio+1))/pixelsArameBase(j-inicio+1);
+  
+  
+  
+%   % impressão de imagem corrigida
+%   figure;image(I2);colormap(gray(256))
+%   title(j)
+%   hold on;
+%   %bordas laterais
+%   plot(ones(1,tamanho2(1))*limEsqPoca(j-inicio+1),1:1:tamanho2(1),'--y',ones(1,tamanho2(1))*limDirPoca(j-inicio+1),1:1:tamanho2(1),'--y')
+%   %lados esquerdo e direito do arame
+%   plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'r')
+%   plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'r')
+%   %topo e base do arame
+%   plot(1:1:tamanho2(2),ones(tamanho2(2))*posArameTopo,'b');
+%   plot(1:1:tamanho2(2),ones(tamanho2(2))*posArameBase,'b');
+%   
+ 
 
 end
-%%
+
+
+%% Resultados
+
+AnguloDesvio = atan((CentroArameTopo-CentroArameBase)/(posArameTopo-posArameBase));
+AnguloDesvio = AnguloDesvio*180/pi;
+  
+
+figure;
+hold on;
+title(strcat('Medidas da poça de soldagem. Imagens ',int2str(inicio),' a ',int2str(fim)))
+plot(LarguraPoca);
+legend('Largura da poça');
+
+figure;
+hold on;
+title(strcat('Medidas do arame. Imagens ',int2str(inicio),' a ',int2str(fim)))
+plot(CentroArameTopo);
+plot(CentroArameBase);
+legend('Centro do topo do arame','Centro da base do arame')
+
 % figure;plot([inicioArameTopo,fimArameTopo],posArameTopo);
 %%perfil horizontal
 %figure;plot(somaHor,1:1:tamanho(1),derivadaHor,1:1:tamanho(1)-1);
 
 %set(gca,'YDir','reverse')
 
-
-% J = imadjust(I,[.15 .5],[.00 .99]);
-% imshow(I);
-% figure;imshow(J);
-% H = fspecial('average',3);
-% K = imfilter(I,H,'replicate');
-% figure;imshow(K);

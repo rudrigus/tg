@@ -33,7 +33,7 @@ Os passos abaixo demonstram a sequencia de instruções criadas no Matlab para pro
 
 \item Retirar pixels abaixo de threshold1 para retirar scanlines (threshold1 = 10)
 \item Filtro de mediana em I para retirar ruído -> I2
-\item Retirar pixels abaixo de threshold2  de I2 -> B (threshold2 = 20)
+\item Retirar pixels abaixo de threshold2  de I2 -> B (threshold2 = 40)
 
 \item Encontrar topo e base do arame
 \subitem  Criar vetor de soma do perfil horizontal de B -> somaHor
@@ -65,15 +65,291 @@ Esses passos com os valores para os parâmetros definidos acima obtiveram bons re
 
 \subsection{Filtros}
 
-\subsection{Perfis Verticais e Horizontais}
+A escolha dos filtros utilizados foi baseada nas características do processo e das próprias imagens, já conhecidas. Abaixo segue a sequência de filtro utilizados.
+
+\begin{enumerate}
+\item Média de imagens
+
+Não é um filtro muito comumente utilizado, mas se provou útil neste trabalho. Observou-se em várias imagens objetos brilhosos que aparecem aleatoriamente, provavelmente respingos de solda e fagulhas. São ruídos muito grandes para serem retirados com filtros de janela. O interessante é que estes objetos não costumam estar presentes em mais de uma imagem. As características do processo favorecem o uso da média, pois as imagens as formas a serem identificadas mudam pouco de \textit{frame} a \textit{frame}.
+
+A média de imagens reduz bastante este efeito e quanto maior o número de imagens utilizadas, menor o efeito de deste tipo de ruído. Em contrapartida, o uso de muitas imagens pode propagar o ruído durante muitas leituras, o que comprometeria a eficácia do processamento de sinais mais tarde. Portanto, deve-se escolher uma quantidade razoável de imagens a serem utilizadas na média. Durante as simulações observou-se que três a cinco imagens são o suficiente para atenuar consideravelmente estes ruídos.
+
+\begin{figure}[h!]
+\centering
+\subfigure[\label{fig:media-imagens-3}]{
+	\includegraphics[width=\textwidth]{./Figuras/ExImagemMedia3.jpg}}
+\subfigure[\label{fig:media-imagens-5}]{
+	{\includegraphics[width=\textwidth]{./Figuras/ExImagemMedia5.jpg}}}
+\caption{Média de três imagens (a). Média de cinco imagens(b)}
+\label{fig:media-imagens}
+\end{figure}
+
+\item Binarização
+
+Esta binarização retira as \textit{scanlines} verticais que estão presentes em todas as imagens. Essas \textit{scanlines} são pouco mais claras que o preto total (geralmente menor que 6/255), portanto é utilizado um filtro de binarização simples. Quase nenhuma informação útil é perdida neste passo. Pois a maior parte das informações úteis estão contidas em pixels com brilho médio a alto (acima de 100/255).
+
+\begin{figure}[h!]
+	
+\begin{minipage}[t]{.6\textwidth}
+\vspace{0pt}
+\centering
+\includegraphics[width=\textwidth]{./Figuras/Img150-detalhe.jpg}
+\end{minipage}
+\begin{minipage}[t]{.4\textwidth}
+\vspace{0pt}
+\begin{tabular}{c c c c c c c c}
+ 6 &  5 &  3 &  0 &  6 &  5 &  3 &  0\\
+ 6 &  5 &  3 &  0 &  6 &  5 &  3 &  0\\
+ 7 &  5 &  3 &  0 &  6 &  5 &  3 &  0\\
+ 7 & 11 &  5 &  2 &  6 &  9 &  3 &  5\\
+20 & 25 & 21 & 13 & 13 & 25 & 23 & 30\\
+53 & 50 & 38 & 36 & 42 & 41 & 35 & 47\\
+65 & 66 & 57 & 66 & 60 & 63 & 63 & 69\\
+78 & 70 & 75 & 66 & 71 & 75 & 65 & 79\\
+
+\end{tabular}
+\end{minipage}\hfill
+\caption{Detalhe de imagem e valores numéricos dos pixels}
+\label{fig:detalhe-scanlines}
+\end{figure}
+
+A figura \ref{fig:detalhe-scanlines} demonstra um pedaço da imagem onde podem-se ver as \textit{scanlines} e como a parte mais brilhosa não sofre este efeito. Ao lado os valores numéricos são mostrados. Concluiu-se que o valor de $threshold1 = 7$ para a retirada das scanlines era mais que suficiente, sem afetar informações úteis.
+
+\item Gaussiana
+
+Este filtro é de gaussiana com janela 3x3 para tirar pequenos ruídos. Também contribui para suavizar as bordas antes do próximo filtro.
+
+\item Binarização
+
+O segundo filtro de binarização tem o objetivo de retirar mais ruídos e acentuar as bordas da imagem. Usado depois do filtro de gaussiana tem-se a impressão de bordas mais definidas. Por exemplo, o perfil fica mais reto onde deveria haver uma reta. Ambos os filtros de binarização são parciais  e mantêm o brilho dos pixels com valor acima do $threshold2 = 40$ e abaixo do $threshold3 = 100$.
+
+É importante ressaltar que a ordem de utilização dos filtros afeta o resultado final, por isso foi feita a primeira binarização antes do filtro de gaussiana para que as \textit{scanlines} não interferissem nas bordas com informações úteis.
+
+\end{enumerate}
+
+\subsection{Perfis Verticais e Horizontais}\label{section:desenv-matlab-perfis}
+
+Uma das ferramentas essenciais neste trabalho foi o uso de perfis verticais e horizontais e suas derivadas. A escolha deste método levou em consideração algumas características particulares do processo em questão:
+
+\begin{enumerate}
+\item As imagens são em tons de cinza, portanto apenas há apenas um valor numérico a ser lido em cada píxel;
+\item O objeto de interesse nas imagens é bastante definido em relação ao fundo e é único;
+\item Este método permite uma comparação relativamente precisa entre imagens seguidas.
+\end{enumerate}
+
+São gerados dois vetores de perfis, o $somaHor$ e o $somaVert$ e suas derivadas $derivadaHor$ e $derivadaVert$, respectivamente.
+
+O vetor $somaHor$ representa a luminosidade somada em cada linha (horizontal) da imagem analisada. Analogamente O vetor $somaVert$ representa a luminosidade somada em cada coluna (vertical) da imagem analisada.
+
+O vetor $derivadaHor$ representa as variações de luminosidade a cada linha (horizontal) da imagem e é utilizado para encontrar as coordenadas $Y$ do topo ($posArameTopo$) e da base ($posArameBase$) do eletrodo na imagem. Essas posições são encontradas nos máximos locais de $derivadaHor$. É possível perceber na imagem \ref{fig:perfil-vert} 
+
+
+% gerar imagens para este relatório
+%I = imread('/home/rudrigus/UNB/TG/Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/Img167.bmp');
+%tamanho = size(I);
+%Threshold1 = 7;
+%Threshold2 = 40;
+%Threshold3 = 100;
+%% if filtrar==1
+%%% Retirar scanlines
+%a = I > Threshold1;
+%%c = cast(a,'uint8');
+%I = single(I).*a;
+%%% Filtro de gaussiana
+%H = fspecial('gaussian',3);
+%I = imfilter(I,H,'replicate');
+%% end
+%B  = I > Threshold2;
+%I2 = I.*B;
+%ImagemTratada = min(I2,Threshold3);
+%somaHor     = sum(ImagemTratada,2);
+%derivadaHor = diff(somaHor);
+%figure;image(ImagemTratada);colormap(gray(256));hold on;
+%plot(somaHor(:,1,1)/(max(somaHor)/tamanho(2)),1:1:tamanho(1));
+%plot(tamanho(2)/2 + derivadaHor(:,1)/(-min(derivadaHor)/tamanho(2)),1:1:th(1));
+%plot(derivadaHor(:,1)/(max(derivadaHor)/tamanho(1)),1:1:th(1));
+%
+%somaVert     = sum(ImagemTratada,1);
+%derivadaVert = diff(somaVert);
+%figure;image(ImagemTratada);colormap(gray(256));hold on;
+%plot(tamanho(1)-somaVert(1,:,1)/(max(somaVert)/tamanho(1)));
+%plot(tamanho(1)/2-derivadaVert(1,:,1)/(-2*min(derivadaVert)/tamanho(1)));
+
+
+
+\begin{figure}[h!]
+\centering
+{\includegraphics[width=\textwidth]{./Figuras/imagem+perfilHorizontal+derivada.jpg}}
+\caption{Imagem com perfil horizontal(verde) e derivada do perfil(vermelho)}
+\label{fig:im-ex-perfil-hor}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+{\includegraphics[width=\textwidth]{./Figuras/imagem+perfilVertical+derivada.jpg}}
+\caption{Imagem com perfil vertical(verde) e derivada do perfil(vermelho)}
+\label{fig:im-ex-perfil-vert}
+\end{figure}
+
 
 \subsection{Regressão Robusta}
 
+Um dos passos do algoritmo é encontrar os pontos de interesse do eletrodo. Para simplificação dos cálculos considerou-se o perfil do eletrodo em cada imagem como um trapézio. Desta forma apenas são necessários encontrar quatro pontos para se determinar a posição, comprimento e desvio angular do eletrodo. Estes pontos são definidos pelas intersecções entre base e topo do eletrodo e suas laterais.
+
+A princípio pensou-se em identificar apenas os pontos das laterais do eletrodo mais próximos ao topo e à base do mesmo para se definir esses pontos. Esta identificação seria pelo método dos perfis verticais (\ref{section:rev-perfis}). Contudo, verificou-se que é comum haverem objetos brilhosos sobre alguma parte do eletrodo e inclusive sobre parte de suas bordas. Também, a ponta (base) do eletrodo geralmente está deformada por conta da fusão do material neste ponto. Esses objetos ou deformações sobre os pontos desejados causam grandes erros de medição ao simplesmente se utilizar este método.
+
+Portanto, considerou-se decidiu-se que estes pontos deveriam ser encontrados de forma mais robusta. A primeira tentativa foi obter diversos pontos ao longo do arame e se fazer uma regressão linear de tais pontos com a função $polyfit$ do Matlab. Essas retas foram definidas como vetores de dois elementos que representam os coeficientes das equações de reta, armazenados em $ladoEsqArame$ e $ladoDirArame$. Com esses coeficientes, seriam calculadas as coordenadas no eixo $X$ onde as retas encontradas se cruzavam com as medidas $Y$ da base e topo do eletrodo.
+
+A regressão linear comum reduziu alguns dos erros mas ainda não estava satisfatória. Portanto, foi utilizada uma regressão robusta em vez de uma de mínimos quadrados para se obter a equação da reta de cada lateral do eletrodo.
+
+A função utilizada para essa tarefa foi a $robustfit$ do Matlab, com a configuração padrão "bisquare". Esta função retorna o mesmo formato de coeficientes da equação de reta que a função $polyfit$. Dessa forma, as coordenadas dos pontos de interesse são obtidos com o mesmo procedimento.
+
+% gerar imagens 
+%I0 = imread('/home/rudrigus/UNB/TG/Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/Img149.bmp');
+% I1 = imread('/home/rudrigus/UNB/TG/Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/Img150.bmp');
+% I2 = imread('/home/rudrigus/UNB/TG/Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/Img151.bmp');
+% tamanho = size(I0);
+% Im = zeros(tamanho(1),tamanho(2),3);
+% Im(:,:,1) = I0;
+% Im(:,:,2) = I1;
+% Im(:,:,3) = I2;
+% I = mean(Im,3);
+% Threshold1 = 7;
+% Threshold2 = 40;
+% Threshold3 = 100;
+% % if filtrar==1
+% %% Retirar scanlines
+% a = I > Threshold1;
+% %c = cast(a,'uint8');
+% I = single(I).*a;
+% %% Filtro de gaussiana
+% H = fspecial('gaussian',3);
+% I = imfilter(I,H,'replicate');
+% % end
+% B  = I > Threshold2;
+% I2 = I.*B;
+% 
+% ImagemTratada = min(I2,Threshold3);
+% 
+% %%
+% % perfil horizontal, de cima para baixo
+% somaHor     = sum(ImagemTratada,2);
+% derivadaHor = diff(somaHor);
+% 
+% % limiares tamanhos uteis
+% meioVert = floor(tamanho(1)/2);
+% meioHor =  floor(tamanho(2)/2);
+% 
+% % limites verticais do arame
+% [M,posArameTopo] = max(derivadaHor(1:1:meioVert-1));
+% [M,posArameBase] = max(derivadaHor(meioVert:1:tamanho(1)-1));
+% posArameBase     = posArameBase + meioVert;
+
+% %%
+% % limites horizontais do arame
+% % perfil vertical, da esquerda para a direita
+% somaVert     = sum(ImagemTratada,1);
+% derivadaVert = diff(somaVert);
+% 
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Borda esquerda da poca
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [M, limEsqPoca] = max(derivadaVert(1:1:meioHor));
+% 
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Borda direita da poca
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [M, limDirPoca] = min(derivadaVert(meioHor:1:tamanho(2)-1));
+% limDirPoca = limDirPoca + meioHor;
+% 
+% 
+% 
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Laterais do arame, inicioArame (esquerda) e fimArame (direita)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% afastamento1 = floor(0.01*tamanho(1));
+% afastamento2 = floor(0.01*tamanho(1));
+% n = posArameBase - posArameTopo - afastamento1 - afastamento2; % Usar n valor menor (como n = 15) para diminuir processamento
+% intervalo = 1;% correcao caso se diminua valor de n(posArameBase - posArameTopo - afastamento1 - afastamento2)/(n-1)
+% inicioArame = zeros(n,1);
+% fimArame = zeros(n,1);
+% derivadaArame = zeros(n,tamanho(2)-1);
+% for i = 1:1:n+1
+%     derivadaArame(i,:) = diff(B(posArameTopo + afastamento1 + round(intervalo*(i-1)),:));
+%     [M, inicioArame(i)] = min(derivadaArame(i,floor(meioHor/2):1:meioHor));
+%     inicioArame(i) = inicioArame(i) + floor(meioHor/2);
+%     [M, fimArame(i)] = max(derivadaArame(i,meioHor:1:tamanho(2)-1));
+%     fimArame(i) = fimArame(i) + meioHor;
+% end
+% % X = size(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2)
+% % Y = size(inicioArame)
+% 
+% 
+% % bordas com regressão comum
+% 
+% ladoEsqArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,inicioArame,'ols');
+% ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,fimArame,'ols');
+% 
+%   figure;image(I2);colormap(gray(256))
+% %   title(j)
+%   hold on;
+%   %pontos encontrados
+%   plot(inicioArame,[posArameTopo + afastamento1:1:posArameBase-afastamento2],'.g');
+%   plot(fimArame,[posArameTopo + afastamento1:1:posArameBase-afastamento2],'.g');
+%   %lados esquerdo e direito do arame
+%   plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'r')
+%   plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'r')
+%   %topo e base do arame
+%   plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b');
+%   plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b');
+% 
+%   
+% % bordas com regressão robusta
+% 
+% ladoEsqArameRobusto = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,inicioArame);
+% ladoDirArameRobusto = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,fimArame);
+% 
+%   figure;image(I2);colormap(gray(256))
+% %   title(j)
+%   hold on;
+%   %pontos encontrados
+%   plot(inicioArame,[posArameTopo + afastamento1:1:posArameBase-afastamento2],'.g');
+%   plot(fimArame,[posArameTopo + afastamento1:1:posArameBase-afastamento2],'.g');
+%   %lados esquerdo e direito do arame
+%   plot([posArameTopo*ladoEsqArameRobusto(2)+ladoEsqArameRobusto(1) posArameBase*ladoEsqArameRobusto(2)+ladoEsqArameRobusto(1)],[posArameTopo posArameBase],'r')
+%   plot([posArameTopo*ladoDirArameRobusto(2)+ladoDirArameRobusto(1) posArameBase*ladoDirArameRobusto(2)+ladoDirArameRobusto(1)],[posArameTopo posArameBase],'r')
+%   %topo e base do arame
+%   plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b');
+%   plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b');
+
+\begin{figure}[h!]
+\subfigure[\label{fig:regressao-linear}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem-regressao-quadrados.jpg}}
+\subfigure[\label{fig:regressao-robusta}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem-regressao-robusta.jpg}}
+\caption{Regressão por mínimos quadrados (a) versus regressão robusta (b)}
+\label{fig:regressao-linear+robusta}
+\end{figure}
+
+A figura \ref{fig:regressao-linear} demonstra como a regressão por mínimos quadrados foi capaz de corrigir encontrar corretamente os pontos do eletrodo no lado direito mas falhou para o lado esquerdo. Já a figura \ref{fig:regressao-robusta} demonstra a vantagem da regressão robusta.
+
 \subsection{Distorção de perspectiva}
 
-A câmera deve ser posicionada obliquamente em relação à poça de soldagem não apenas por questões físicas mas também para que inclua tanto poça de soldagem quanto arame. Isso significa que os elementos (poça e arame) ficam em diagonal com o plano da imagem, o que causa uma distorção de perspectiva do que seria a imagem ideal para processamento. Dessa forma, a distorção de perspectiva da imagem deve ser conhecida para que seja possível obter valores corretos no processamento. Uma forma de obter essa informação seria por inserção de dados como ângulo, distância entre câmera e tocha, e distância focal da lente por um operador no sistema. Mas considerando que o sistema possa ser utilizado  com câmeras, atuadores e posicionamentos diferentes, inclusive com a possibilidade de alteração de alguma variável entre dois \textit{setups} diferentes, há a possibilidade de erros e aumento do tempo de \textit{setup}.
+A câmera deve ser posicionada obliquamente em relação à poça de soldagem não apenas por questões físicas mas também para que inclua tanto poça de soldagem quanto arame. Isso significa que os elementos (poça e arame) ficam em diagonal com o plano da imagem, o que causa uma distorção de perspectiva do que seria a imagem ideal para processamento. A posição da câmera que capturou as imagens utilizadas nesta parte do experimento pode ser vista na figura \ref{fig:posicao-camera-luciano}.
 
-IMAGEM da posição da câmera AQUI!!!
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/posicao-camera-luciano.png}
+\caption{Posição da câmera}
+\label{fig:posicao-camera-luciano}
+\end{figure}
+
+Dessa forma, a distorção de perspectiva da imagem deve ser conhecida para que seja possível obter valores corretos no processamento. Uma forma de obter essa informação seria por inserção de dados como ângulo, distância entre câmera e tocha, e distância focal da lente por um operador no sistema. Mas considerando que o sistema possa ser utilizado  com câmeras, atuadores e posicionamentos diferentes, inclusive com a possibilidade de alteração de alguma variável entre dois \textit{setups} diferentes, há a possibilidade de erros e aumento do tempo de \textit{setup}.
 
 A princípio, desejava-se calcular a distorção de perspectiva e fazer os ajustes necessários durante o processamento das imagens do processo de solda. A ideia seria utilizar os cantos do eletrodo de solda (dois formados entre o topo do eletrodo e o bocal da tocha e dois entre a base do eletrodo e a poça de soldagem) para identificar os pontos necessários para este cálculo. No entanto, alguns fatos foram observados:
 
@@ -118,6 +394,8 @@ As distâncias e posições encontradas anteriormente são corrigidas e sofrem menos
 \end{enumerate}
 
 O interessante de se fazer a correção desta forma, é que também so torna possível estimar desvios do arame na direção do eixo de avanço. Considerando-se uma imagem corrigida após as distorção, observa-se o seguinte: Caso a largura da base do eletrodo tenha a mesma medida horizontal que o topo do eletrodo, este está corretamente alinhado. Caso a base seja menor, o eletrodo só pode estar mais distante do que o topo. Ou seja, está mais longe da câmera, o que significa que o eletrodo está em diagonal, com a ponta mais atrás do que o centro da tocha de soldagem. A mesma lógica aplica-se caso a base tenha uma medida maior que o topo, o que significa que o eletrodo está com a ponta à frente da tocha.
+
+O programa em Matlab utilizou uma imagem definida como um padrão aceitável para calcular a matriz de transformação. Em seguida, o algoritmo passa a obter os valores à partir de imagens transformadas com esta matriz.
 
 \section{Implementação do processamento em FPGA}
 
@@ -230,13 +508,6 @@ O desenvolvimento em Matlab, utilizou arquivos de imagens como entrada, pois o \
 A simulação em Matlab ocorre de forma bastante simples: basta rodar o programa gerado. Foi possível aproveitar das facilidades do software para imprimir as imagens de entrada processadas, ou seja, após a passagem dos filtros e com os valores calculados representados graficamente.
 
 Os programas desenvolvidos em Matlab utilizaram de imagens previamente obtidas em outro trabalho \cite{luciano}. A câmera utilizada foi uma DALSA citada em \ref{section:rev-aquisicao-imagens} e foi montada conforme a figura \ref{fig:posicao-camera-luciano}.
-
-\begin{figure}[h!]
-\centering
-\includegraphics[width=\textwidth]{./Figuras/posicao-camera-luciano.png}
-\caption{Posição da câmera}
-\label{fig:posicao-camera-luciano}
-\end{figure}
 
 O experimento utilizou um eletrodo de $r_{eletrodo} = 1mm$ de diâmetro, com $standoff = 15mm$. Parte do eletrodo fica coberta pelo bocal na captura das imagens, mas sabe-se que a câmera estava posicionada a $\alpha = 30^\circ$ em relação ao plano horizontal. Considerando o bocal da tocha de soldagem com \textbf{$ r_{bocal} = 10mm$} de diâmetro, a altura da $h$ parte visível do eletrodo é dada por:
 
