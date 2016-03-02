@@ -14,12 +14,12 @@ O princípio da soldagem GMAW é a união de peças metálicas é devido ao aqueciment
 
 O arame de soldar desempenha duas funções: por um lado é o eletrodo que conduz corrente, por outro, é também, em simultâneo, o material de adição a ser inserido na poça de soldagem. Este arame é introduzido mecanicamente através de um alimentador motorizado o que caracteriza o processo como semi-automático quando operado por humanos. \cite{book:modenesi}
 
-A imagem \ref{fig:solda_gmaw} \cite{book:intro_soldagem}  demonstra o processo de formação do cordão de solda e seus elementos principais.
+A imagem \ref{fig:solda_gmaw} demonstra o processo de formação do cordão de solda e seus elementos principais.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{./Figuras/solda_gmaw}
-\caption{Elementos básicos da soldagem GMAW.}
+\caption{Elementos básicos da soldagem GMAW \cite{book:intro-soldagem}.}
 \label{fig:solda_gmaw}
 \end{figure}
 
@@ -38,20 +38,27 @@ Além disto, o gás também tem influência nas perdas de elementos químicos, na tem
 
 O processo GMAW tem um conjunto específico de equipamentos. Por ser um processo semi-automático (ou completamente automático), possui mais componentes que métodos mais convencionais de soldagem como o eletrodo revestido e o oxiacetileno. % Essa necessidade de um equipamento mais completo tem o custo compensado pela grande produtividade.
 
-Os equipamentos necessários para esse tipo de solda são \cite{book:modenesi}:
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/esquematico-GMAW}
+\caption{Esquemático dos equipamentos da soldagem GMAW \cite{book:ivanguerra}.}
+\label{fig:TochaEsquematico}
+\end{figure}
+
+Os equipamentos necessários para esse tipo de solda são \cite{book:modenesi} \cite{book:ivanguerra}:
 \begin{itemize}
 \item Fonte de energia
 
 Este processo utiliza sempre corrente contínua. Dependendo do modo em que é feito o controle, pode ser necessário controlar a corrente ou a tensão fornecida pela fonte. É comum usar corrente constante ou tensão constante durante o processo;
+
 \item Alimentador de arame
 
 Existem diversos tipos de alimentadores com diferentes tipos de controle. O controle de alimentação do arame devem estar alinhados com o método de controle elétrico. Por exemplo: é possível usar alimentação constante de arame com tensão constante ou corrente constante e alimentação variável \cite{book:modenesi};
 \item Fonte de gás protetor
 
 Normalmente um cilindro de gás (ou gases) e reguladores de pressão e/ou vazão
+
 \item Tocha de soldagem
-
-
 
 Existem diferentes tipos de tocha para proporcionar o desempenho máximo na soldagem para diferentes tipos de aplicações. Elas variam desde tochas para ciclos de trabalho pesados para atividades envolvendo altas correntes até tochas leves para baixas correntes e soldagem fora de posição. Em ambos os casos estão disponíveis tochas refrigeradas a água ou secas (refrigeradas pelo gás de proteção), e tochas com extremidades retas ou curvas.
 
@@ -61,39 +68,36 @@ A tocha consiste em todo a aparato que é levado até o local de união das peças, 
 \item Bico de contato: faz o contato elétrico com o eletrodo, feito de cobre;
 \item Alavanca de comando ou Gatilho: Ativa a energização do circuito de soldagem, o alimentador de arame e o fluxo de gás.
 \end{itemize}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{./Figuras/TochaEsquematico}
-\caption{Esquemático da tocha da soldagem GMAW.}
-\label{fig:TochaEsquematico}
-\end{figure}
-
 \end{itemize}
 
 
-%Explicar e falar por que é necessária o Monitoramento e realimentação.
 
 \subsection{Monitoramento dos parâmetros de soldagem}
 
 Diversas variáveis do processo GMAW podem ser ajustadas para uma boa soldagem do metal. Estas variáveis são a velocidade de alimentação do eletrodo, a distância do bocal à peça, o \textit{stickout}, a inclinação de trabalho do eletrodo, e o fluxo de gás. Essas variáveis requerem um monitoramento constante por parte do operador, ou por um equipamento automático, que é o escopo deste trabalho. A velocidade de soldagem, a posição de soldagem e o diâmetro do eletrodo também influenciam consideravelmente na geometria do cordão de solda.
 
+Quando a soldagem é feita por um soldador, a posição em relação à poça de soldagem e às peças sendo soldadas é constantemente verificada e corrigida. Dessa forma é possível manter uma qualidade boa da solda mesmo com as limitações mecânicas do ser humano. Este processo de ajuste que o soldador faz durante o processo de soldagem tem a característica de um sistema de controle em malha fechada.
+
+Quando o processo é automatizado alguns parâmetros podem ser avaliados em tempo real, como corrente e tensão do arco para se inferir sobre variações na qualidade da solda. Outras abordagens como métodos baseados em inteligência artificial foram utilizadas para determinar uma metodologia para selecionar parâmetros de soldagem. Esses métodos apresentam a inconveniência de serem aplicáveis apenas em configurações específicas de soldagem e de funcionarem em malha aberta. Uma alternativa é utilizar um sistema de visão computacional para obter medidas geométricas durante a formação da solda. \cite{article:balfour}
+
+
 
 
 \section{Processamento de imagens}
-%Filtros para seleção.
 
-As imagens obtidas no trabalho anterior de Luciano Duarte \cite{luciano},
 
-As imagens capturadas do processo de soldagem necessitam passar por um processamento para que os valores necessários sejam obtidos. Nesta seção será explicado como é feito esse processamento.
 
+As imagens capturadas em um processo de soldagem necessitam passar por um processamento para que os valores necessários sejam obtidos. Nesta seção será explicado como é feito esse processamento.
+
+% usar mota, ze mauricio, Jones para 
+% segundo J mota o processamento de imagens é blablabla
 
 A área de processamento de imagens desperta interesse de estudiosos por ter diversas aplicações em duas principais categorias: (1) aprimoramento de informações pictóricas para interpretação humana; e (2) extração automática de dados relevantes à partir de uma cena \cite{oge}. A segunda categoria, que será utilizada neste trabalho, também pode ser designada como ''análise de imagens'', ''visão por computador'' ou ''reconhecimento de padrões''.
 
 Diversas áreas se beneficiam de técnicas de processamento de imagens. Na medicina procedimentos computacionais melhoram o contraste, codificam níveis de intensidade para melhor interpretação e podem até mesmo calcular a quantidade de uma determinada célula em uma imagem. Geógrafos fazem uso de técnicas semelhantes e podem determinar áreas de vegetação, desmatamento, e poluição \cite{gonzalez}. Existem muitos outros exemplos, que vão até o controle de qualidade e de processos.
 
 \subsection{Elementos de sistemas de processamento de imagens}
-Um sistema de processamento de imagens consiste alguns elementos básicos mostrados a seguir:
+Um sistema de processamento de imagens consiste alguns elementos básicos mostrados a seguir\cite{citacao}:
 \begin{enumerate}
 \item {Aquisição:
 
@@ -154,7 +158,7 @@ g(x,y)=T[f(x,y)]
 
 em que $f(x,y)$ é a imagem de entrada, $g(x,y) $ é a imagem processada e $T$ é um operador sobre $f$, definido sobre alguma vizinhança de $(x,y)$. $T$ pode operar sobre um conjunto de imagens de entrada, como será explicado mais adiante.
 
-A estratégia é definir uma subimagem em torno de um pixel $(x,y)$ (quadrado, retângulo ou mesmo aproximação de um círculo) e aplicar a operação sobre essa subimagem para cada pixel da imagem e obter $g$ em cada posição correspondente. A vizinhança mais simples que pode ser definida tem tamanho $1\times 1$, e $T$ é uma \textit{trasformação de níveis de cinza} ou \textit{processamtento ponto-a-ponto} da forma:
+A estratégia é definir uma subimagem em torno de um pixel $(x,y)$ (quadrado, retângulo ou mesmo aproximação de um círculo) e aplicar a operação sobre essa subimagem para cada pixel da imagem e obter $g$ em cada posição correspondente. A vizinhança mais simples que pode ser definida tem tamanho $1\times 1$, e $T$ é uma \textit{transformação de níveis de cinza} ou \textit{processamento ponto-a-ponto} da forma:
 
 \begin{equation}
 s=T(r)
@@ -276,10 +280,10 @@ A escala $\lambda$ da matriz não afeta a equação, portanto apenas os oito graus 
 
 A representação em coordenadas cartesianas demonstra a natureza não linear da transformação:
 
-\begin{eqnarray}
+\begin{align}
 x = \frac{x_1}{x_3} = \frac{t_{11}X + t_{12}Y + t_{13}}{t_{31}X + t_{32}Y + t_{33}} \\
 y = \frac{x_2}{x_3} = \frac{t_{21}X + t_{22}Y + t_{23}}{t_{31}X + t_{32}Y + t_{33}}
-\end{eqnarray}
+\end{align}
 
 Para definir os elementos da matriz de transformação deve-se ter quatro correspondências de pontos entre plano real e projeção. Com a escala de $\textbf{T}$ arbitrária, e $t_{33}=1$, temos os pontos representados por $(\lambda_i x_i, \lambda_i y_i, lambda_i)^T = T(X_i,Y_i,1)^T$. O sistema de equações lineares resultantes é:
 
@@ -434,10 +438,10 @@ E_{x,y} = \sum\limits_{u}^{v} w_{u,v} [I_{x+u,y+v} - I_{u,v}] ^2
 \end{equation}
 
 onde os primeiros gradientes são aproximados por
-\begin{eqnarray*}
+\begin{align*}
 X = I \otimes (-1,0,1) \approx \delta I/\delta x
 \\Y = I \otimes (-1,0,1)^T \approx \delta I/\delta y
-\end{eqnarray*}
+\end{align*}
 
 Então para pequenas mudanças, $E$ pode ser escrito
 \begin{equation*}
@@ -445,11 +449,11 @@ E(x,y) = A x^2 + 2C x y + B y^2
 \end{equation*}
 
 onde
-\begin{eqnarray*}
+\begin{align*}
 A = X^2 \otimes w
 \\B = Y^2 \otimes w
 \\ C = (X Y) \otimes w
-\end{eqnarray*}
+\end{align*}
 
 \item \textbf{A resposta é ruidosa porque a janela é binária e retangular} - usar uma janela circular suave, por exemplo uma Gaussiana:
 \begin{equation*}
@@ -479,10 +483,10 @@ Os autovalores $\alpha$ e $\beta$ de $M$ correspondem à principais curvaturas da
 \end{enumerate}
 
 Com essas três considerações, se faz necessário uma medida também uma medida de qualidade de cantos. Calcula-se então uma medida $R$, função de $/alpha$ e  $/beta$. Para evitar a decomposição dos autovalores de $M$, usa-se o traço e a determinante da matriz, sendo que:
-\begin{eqnarray*}
+\begin{align*}
 Tr (M) = \alpha + \beta = A + B
 \\ Det (M) = \alpha \beta = A B - C^2
-\end{eqnarray*}
+\end{align*}
 
 Finalmente, Harris usou a seguinte formulação:
 \begin{equation}
@@ -510,9 +514,6 @@ Com os vetores de perfis também pode-se utilizar suas derivadas. Como esses veto
 Desta forma, podem ser criados pares de vetores com estes valores. As quantidades de elementos desses vetores correspondem a quantidade de linhas e colunas da imagem.
 
 
-
-
-
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 
@@ -521,40 +522,43 @@ Desta forma, podem ser criados pares de vetores com estes valores. As quantidade
 
 Os custos para se testar circuitos na indústria de eletrônicos são muito elevados, pois é necessário fazer todo o \textit{setup} do processo de produção para um novo circuito. Por esse motivo foi desenvolvida a FPGA, ou \textit{Field Programable Gate Array}, que é um circuito reconfigurável que pode rapidamente assumir as características de um circuito digital, com todas as suas ligações e portas lógicas.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{./Figuras/Cyclone-II-DE2-115.jpg}
+\caption{Placa Altera DE2, com FPGA Cyclone II \cite{online:terasic-de115}}
+\label{fig:Altera-DE2}
+\end{figure}
+
+
 \subsection{História}
 
-Os primeiro dispositivo programáveis foi o \textit{Programmable Read Only Memory}(PROM) , uma memória não volátil que podia ser do tipo fabricado em massa ou programável em campo pelo usuário. Por sua vez o tipo o PROM reconfigurável em campo tinha duas dubdivisões: EPROM (\textit{Erasable} PROM) e EEPROM (\textit{Electronic Erasable} PROM), que pode ser reprogramado múltiplas vezes. Em seguida foram criados os \textit{Programmable Logic Devices} (PLDs), em que o tipo mais comum implementa um conjunto fixo de portas OR precedido por uma matriz de portas AND programáveis. \cite{online:Wayback}
+Os primeiro dispositivo programáveis foi o \textit{Programmable Read Only Memory}(PROM) , uma memória não volátil que podia ser do tipo fabricado em massa ou programável em campo pelo usuário. Por sua vez o tipo o PROM reconfigurável em campo tinha duas subdivisões: EPROM (\textit{Erasable} PROM) e EEPROM (\textit{Electronic Erasable} PROM), que pode ser reprogramado múltiplas vezes. Em seguida foram criados os \textit{Programmable Logic Devices} (PLDs), em que o tipo mais comum implementa um conjunto fixo de portas OR precedido por uma matriz de portas AND programáveis. \cite{online:wayback}
 
-Em 1985, a empresa Altera criou o primeiro dispositivo reprogramável da indústria, o chip EP300, Os usuários poderiam apagar as células EPROM do EP300 ao emitir luz ultravioleta através de uma janela de quartzo acima do circuito. A opção meramente conveniente à época se mostraria um grande fator na indústria.
-%citar Altera - In The Begining, online
+Em 1985, a empresa Altera criou o primeiro dispositivo reprogramável da indústria, o chip EP300, Os usuários poderiam apagar as células EPROM do EP300 ao emitir luz ultravioleta através de uma janela de quartzo acima do circuito. A opção meramente conveniente à época se mostraria um grande elemento na indústria. \cite{online:altera-in-the-beginning}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{./Figuras/ep300.jpg}
-\caption{EP300 da Altera}
+\includegraphics[width=.5\textwidth]{./Figuras/ep300.jpg}
+\caption{EP300 da Altera \cite{online:altera-in-the-beginning}}
 \label{fig:ep300}
 \end{figure}
 
 
-As FPGAs foram desenvolvidas como uma evolução dos PLDs, mais especificamente dos PLAs \textit{Programmable Logic Arrays} (PLAs), como descrito em \cite{page1985re}. Em 1985 a empresa Xilinx criou a primeira FPGA comercial \cite{freeman1989configurable},  com portas e interconexões reprogramáveis.
+As FPGAs foram desenvolvidas como uma evolução dos PLDs, mais especificamente dos PLAs \textit{Programmable Logic Arrays} (PLAs), como descrito em \cite{page1985re}. Em 1985 a empresa Xilinx criou a primeira FPGA comercial \cite{periodic:xcell},  com portas e interconexões reprogramáveis.
 Contudo, foi durante a década de 1990 que esses dispositivos ficaram famosos e assumiram diversas aplicações.
-%citação xilinx
 
-Atualmente os sistemas reconfiguráveis continuam em alta, principalmente agora que as tecnologias de fabricação estão próximas do limite de miniatuzação. O poder de processamento de arquiteturas convencionais (Arquitetura de Von Neumann), baseadas em um \textit{hardware} genérico que recebe fluxos de instruções, demonstra desaceleramento. 
-% citar Gordon moore at Intel Developer Forum
-Com o esperado limite da Lei de Moore 
-% citar Gordon_Moore, Cramming more components onto integrated circuits
-, muitos projetistas recorrem ao uso de \textit{hardware} específico para solucionar diferentes problemas. 
+Atualmente os sistemas reconfiguráveis continuam em alta, principalmente agora que as tecnologias de fabricação estão próximas do limite de miniatuzação. A evolução do poder de processamento de arquiteturas convencionais (Arquitetura de Von Neumann), baseadas em um \textit{hardware} genérico que recebe fluxos de instruções, demonstra desaceleramento \cite{thesis:moore-law-limit}. Com o esperado limite da Lei de Moore  \cite{article:moore-cramming-components} , muitos projetistas recorrem ao uso de \textit{hardware} específico para solucionar diferentes problemas. 
 
 As FPGAs atuais são produzidas com uma série de facilidades que incluem: memória, entradas e saídas de alta velocidade e blocos lógicos. Elas podem tanto ser utilizadas para desenvolvimento e teste de circuits digitais (motivo pelo qual foram desenvolvidas) como podem ser implementadas no produto final. As aplicações vão desde processamento de imagens a mineração de \textit{bitcoins}
 
-\section{Aspectos Gerais}
+\subsection{Aspectos Gerais}
 
-De acordo com \cite{page1985re} os \textit{Programmable Gate Array} (PLAs) reconfiguráveis são descritos abaixo:
-%traduzir
-In general, a PLA is a logic circuit which receives a plurality of digital input signals and generates a plurality of digital output signals wherein each of the digital output signals is a programmable sum-of-product combination of the input signals. In conventional PLA?s, one circuit is provided for generating a plurality of terms which are the logical AND of selected input signals; and another circuit is provided to generate the output signals by selectively ORing the AND terms. A typical PLA may have a total of x input signals, generate a total of y AND terms from the input signals, and generate a total of 2 output signals by selectively ORing the y AND terms.
+De acordo com a patente de \textit{Re-programmable PLA} \cite{page1985re} os \textit{Programmable Gate Array} (PLAs) reconfiguráveis são descritos abaixo:
 
-
+\begin{quote}
+Em geral, um PLA é um circuito lógico que recebe uma pluralidade de sinais digitais de entrada e gera uma pluralidade de sinais digitais de saída onde cada um dos sinais de saída é uma combinação de soma-de-produto programável dos sinais de entrada. Em PLAs convencionais, um circuito é fornecido para gerar uma pluralidade de termos que são o E lógico de sinais de entrada selecionados; e um outro circuito é fornecido para gerar os sinais de saída ao operar seletivamente esses termos com OU ou E lógicos.
+Um PLA típico pode ter um total de $x$ sinais de entrada, gerar um total de $y$ termos ''E'' à partir dos sinais de entrada, e gerar um total de $2$ sinais de saída ao operar seletivamente os termos $y$ com um OU lógico.
+\end{quote}
 
 
 Outras tecnologias de semicondutores reprogramáveis também foram desenvolvidas, como os  \textit{Application Specific Integrated Circuits} (ASICs), onde o dispositivo é desenvolvido apenas para um tipo de aplicação. Ainda há uma subdivisão dentro das FPGAs:
@@ -564,16 +568,30 @@ Outras tecnologias de semicondutores reprogramáveis também foram desenvolvidas, 
 \item SRAM-\textit{based}, que pode ser reconfigurado múltiplas vezes e é o tipo mais utilizado.
 \end{Bitemize}
 
-O FPGA é um arranjo de CLBs (\textit{Configurable Logic Blocks}) e IOBs(\textit{In/Out Blocks}) ligados por chaves de interconexão, também reconfiguráveis. O CLB é a unidade básica do FPGA e consiste de uma matriz de seleção configurável com quatro ou seis entradas, um circuito de seleção (como um multiplexador), e Flip-Flops.
+Os elementos básicos de um FPGA são \cite{book:FPGA-system-design}:
+
+\begin{itemize}
+\item Combinação lógica
+\item Interconexão
+\item Blocos de entrada e saída
+\end{itemize}
+
+A arquitetura geral com os elementos básicos pode ser visto na figura \ref{fig:esquema-FPGA}. A lógica combinacional é dividida em blocos pequenos, chamados de CLBs (\textit{Combinational Logic Blocks}) ou LE (\textit{Logic Elements}). O CLB ou LE realiza operações simples com uso de portas lógicas e flip-flops.
+
+As interconexões são feitas entre elementos lógicos e/ou entre portas de entrada e saída por meio de conexões programáveis. A interconexão pode ser logicamente organizada em canais ou outras unidades. Sinais importantes como um clock podem ser ligados a vários (até mesmo a todos) elementos.
+
+Os pinos de entrada e saída são representados por blocos de entrada e saída, IOB (\textit{I/O Blocks}). Esses blocos podem ser configurados para receber ou fornecer sinais ao meio exterior.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{./Figuras/esquemaCLB_FPGA.jpg}
-\caption{Exemplo de esquema de ligação de CLBs e IOBs em uma FPGA}
-\label{fig:esquemaCLB_FPGA}
+\includegraphics[width=\textwidth]{./Figuras/esquema-FPGA.jpg}
+\caption{Arquitetura geral de uma FPGA \cite{book:FPGA-system-design}}
+\label{fig:esquema-FPGA}
 \end{figure}
 
 \subsection{Módulos especiais}
+
+% mostrar todos aqui
 
 Em caso geral, as FPGAs também vêm equipadas com módulos especiais que seriam de difícil implementação por parte do desenvolvedor ou mesmo impossíveis devido às restrições da própria arquitetura. A quantidade e variedade desses módulos varia bastante de placa para placa. Alguns dos mais comuns foram utilizados neste projeto e serão aqui descritos.
 
@@ -582,6 +600,7 @@ Em caso geral, as FPGAs também vêm equipadas com módulos especiais que seriam de
 A PLL, ou \textit{Phase-locked loop}, é um módulo capaz de sincronizar diferentes interfaces e um dos circuitos mais importantes na eletrônica de telecomunicações. Basicamente, uma PLL gera um sinal de saída que é proporcional a um sinal de entrada.
 
 % % % %        % % % %         % % % %       % % % %
+
 LER DESSES TEXTOS E EXPLICAR MAIS
 
 \begin{verbatim}
@@ -595,6 +614,8 @@ https://www.google.com.br/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8&cl
 
 
 \section{Linguagens de Descrição de Hardware e VHDL}
+% falar sobre varias linguagens aqui e da vhdl so no desenv
+% colocar imagens
 
 Uma linguagem de descrição de hardware, ou HDL (\textit{Hardware Description Language}) é semelhante a uma linguagem de programação em termos de sintaxe e estrutura, porém como o próprio nome diz ela serve mais para descrever do que para programar. Esse tipo de linguagem tem por objetivo facilitar o projeto de circuitos eletrônicos, com uma descrição formal e precisa. Uma HDL padronizada permite a intercambialidade de informações entre diferentes fabricantes e projetistas além da automatização de simulação e síntese de circuitos. Existem variadas HDLs, dentre as quais foi escolhida a VHDL para este trabalho por motivos a serem expostos adiante.
 
@@ -649,6 +670,7 @@ O comportamento de uma entidade é definido pela arquitetura e precisa ser declar
 
 O exemplo abaixo mostra uma entidade que utiliza a instância de outras em seu código:
 
+%colocar em uma folha só
 \begin{lstlisting}[language=VHDL]
 LIBRARY ieee ;
 USE ieee.std_logic_1164.all ;
@@ -774,6 +796,14 @@ Uma das ferramentas mais úteis para o desenvolvimento de qualquer sistema é o si
 
 A princípio pode-se pensar que um simulador rodando em uma arquitetura de Von Neumann não será útil pois não tem a capacidade de processar na mesma velocidade que um \textit{hardware} de aplicação específica. Porém, o processo de compilação e escrita em uma placa FPGA tem um alto custo de tempo e o simulador normalmente é capaz de dar resultados satisfatórios apenas com uma sintetização a nível de RTL. Dessa forma é possível testar e corrigir rapidamente alterações no projeto.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/exemplo-simulacao-VHDL.jpg}
+\caption{Resultado de uma simulação em VHDL}
+\label{fig:exemplo_simulacao_VHDL}
+\end{figure}
+
+
 A seguir serão descritos alguns aspectos de simuladores de forma sucinta.
 
 \subsubsection{Funcionamento}
@@ -806,12 +836,6 @@ Os simuladores costumam apresentar os resultados da simulação em uma janela com 
 
 Em geral, pode-se remover ou adicionar outros sinais internos ao DUT, como saídas e entradas de entidades instanciadas no DUT ou mesmo sinais internos a estas instâncias. Esta funcionalidade é extremamente poderosa pois permite testar o funcionamento de todas as partes do projeto, independente do nível de hierarquia.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{./Figuras/exemplo-simulacao-VHDL.jpg}
-\caption{Resultado de uma simulação em VHDL}
-\label{fig:exemplo_simulacao_VHDL}
-\end{figure}
 
 A figura \ref{fig:exemplo_simulacao_VHDL} demonstra a variação de diversos sinais ao longo do tempo em uma simulação. Pode-se ver na coluna mais à esquerda a lista de sinais escolhidos para se visualizar os resultados. A coluna à direita mostra as formas de onda desses sinais ao final da simulação. A coluna do meio mostra os valor assumido por cada sinal no momento marcado pela linha amarela na coluna à direita.
 
@@ -821,12 +845,18 @@ A figura \ref{fig:exemplo_simulacao_VHDL} demonstra a variação de diversos sinai
 
 As imagens necessárias para o processamento devem ser obtidas adequadamente à velocidade do processo em questão. Apesar do processo de soldagem não ser muito rápido se comparado à velocidade de circuitos digitais, a obtenção das informações úteis não é trivial. As melhores imagens para identificação de parâmetros só são visíveis por curtos períodos de tempo durante o momento de curto-circuito da solda, não mais que alguns milissegundos.
 
-% mostrar imagem de curto-circuito vs imagem normal
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.6\textwidth]{./Figuras/camera-dalsa.png}
+\caption{Câmera industrial}
+\label{fig:camera-industrial}
+\end{figure}
+
 
 Câmeras comuns não são capazes de registrar estas imagens, pois não conseguem transmitir os dados de forma suficientemente rápida. O curto-circuito começa e acaba antes que a câmera transmita um \textit{frame} inteiro. O mais comum nesse caso é uma imagem com brilho excessivo provindo do arco de solda que dura muito mais tempo que o curto-circuito.
 
 
-Algumas câmeras especiais, desenvolvidas para uso industrial ou pesquisa científica, são capazes de registrar \textit{frames} em períodos extremamente reduzidos de tempo. Estas possuem alta taxa de captura de imagens e consequentemente uma alta taxa de transmissão de dados. Este é o caso da câmera DALSA DS-21-0001M150, utilizada neste trabalho, que possui uma taxa máxima de amostragem de 150 fps com resolução de 1 \textit{megapixel}(1024 x 1024 pixels). Com cada pixel representado em 8 níveis de cinza, a taxa de transmissão desta câmera é de 1200 Mb/s, ou aproximadamente 1,2 Gb/s. \cite{luciano}
+Algumas câmeras especiais, desenvolvidas para uso industrial ou pesquisa científica, são capazes de registrar \textit{frames} em períodos extremamente reduzidos de tempo. Estas possuem alta taxa de captura de imagens e consequentemente uma alta taxa de transmissão de dados. Este é o caso da câmera DALSA DS-21-0001M150 (figura \ref{fig:camera-industrial}), utilizada neste trabalho, que possui uma taxa máxima de amostragem de 150 fps com resolução de 1 \textit{megapixel}(1024 x 1024 pixels). Com cada pixel representado em 8 níveis de cinza, a taxa de transmissão desta câmera é de 1200 Mb/s, ou aproximadamente 1,2 Gb/s. \cite{luciano}
 
 \subsection{Camera Link}
 

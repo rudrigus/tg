@@ -8,6 +8,9 @@
 
 \section{Introdução}
 
+% explicar passos do trabalho
+% fazer um diagrama, usar visage
+
 \section{Arquitetura geral}
 
 O sistema devera fazer parte de um controlador em malha fechada, que teoricamente será superior ao controle de malha aberta comumente utilizado em sistemas soldas automatizadas. Ou seja, o sinal de entrada deve ser o resultado da soma do sinal de referência, que será o trajeto definido na programação de um robô, e do sinal de controle, que será calculado por um computador.
@@ -57,6 +60,8 @@ Os passos abaixo demonstram a sequencia de instruções criadas no Matlab para pro
 \subitem  Valores máximos de derivadaArame -> vetor fimArame
 \subitem  Linearizar inicioArame e fimArame
 \end{enumerate}
+%fazer imagem disso
+
 
 Esses passos com os valores para os parâmetros definidos acima obtiveram bons resultados para uma grande quantidade de imagens (imagens antigas). O algoritmo demonstrou certa robustez à ruídos, porém quando a imagem foge muito ao padrão esperado, o algoritmo fornece valores equivocados. Um exemplo é quando há uma grande gota de solda fora da área da poça. 
 % Mencionar que deve ser usado um filtro de Kalman?
@@ -406,7 +411,7 @@ O algoritmo utilizado para implementação em Matlab foi adaptado para uma placa F
 
 Diferentemente do projeto em matlab, o algoritmo para a FPGA engloba faz captura de dados diretamente da câmera. Os dados fornecidos serialmente foram desserializados e disponibilizados em apenas um \textit{std\_logic\_vector} pois apenas eram necessários níveis de cinza.
 
-A implementação em FPGA desenvolvida apenas recebe imagens para a função \textit{Freerunning Mode} da câmera. A princípio, o algoritmo não precisa de nenhum gatilho de sincronia enviado à câmera pois deve selecionar as imagens por conta própria como descrito em \ref{section:filtro_media_imagens}.
+A implementação em FPGA desenvolvida apenas recebe imagens para a função \textit{Freerunning Mode} da câmera. A princípio, o algoritmo não precisa de nenhum gatilho de sincronia enviado à câmera pois deve selecionar as imagens por conta própria como descrito em \ref{section:desenv-fpga-filtro_media_imagens}.
 
 O primeiro passo para o recebimento do vídeo pela placa é a sincronização com o clock da câmera. Apesar deste clock ser fornecido pelo \textit{Channel Link}, as palavras de dados não são sincronizadas com a subida do clock. Também é necessario um sinal com 7 vezes a frequencia do clock fornecido para fazer a leitura dos 7 bits de cada palavra transmitida por ciclo. 
 
@@ -457,13 +462,26 @@ Para agilizar o desenvolvimento do projeto foi criada um pacote com valores e ti
 \end{itemize}
 \end{enumerate}
 
-\subsection{Filtro de imagem média e seleção de imagens propícias} \label{section:filtro_media_imagens}
+\subsection{Filtro de imagem média e seleção de imagens propícias} \label{section:desenv-fpga-filtro_media_imagens}
 
 Para que fosse implementado este filtro foi utilizado um bloco de memória subdividido em quatro blocos, cada um dimensionado para receber uma imagem. A placa recebe sequencialmente os dados da câmera e armazena três imagens em memória. A imagem média não necessita ser armazenada pois cada pixel pode ser obtido através da média dos pixels das imagens armazenadas à medida que for necessário. 
 
-A seleção de imagens propícias ao processamento foi feito no momento de obtenção da imagem. Uma nova imagem é armazenada no bloco marcado como $ bloco\_atual $. Ao final do recebimento desta, o sinal $ bloco\_atual $ permanece inalterado caso a imagem apresente brilho excessivo ou tem seu valor aumentado de 1 caso contrário. Se $ bloco\_atual $ permanece com o mesmo valor, a imagem mais recente recebida é sobrescrita pela nova imagem que será recebida em seguida. Se $ bloco\_atual $ for acrescido, a imagem mais antiga é sobrescrita. Desta forma, à partir da terceira imagem sempre há três imagens úteis carregadas e uma sendo recebida.
+A seleção de imagens propícias ao processamento foi feito no momento de obtenção da imagem. Uma nova imagem é armazenada no bloco marcado como $ bloco\_atual $. Ao final do recebimento desta, o sinal $ bloco\_atual $ permanece inalterado caso a imagem apresente brilho excessivo ou tem seu valor aumentado de 1 caso contrário. Se $ bloco\_atual $ permanece com o mesmo valor, a imagem recebida mais recentemente é sobrescrita pela nova imagem que será recebida em seguida. Se $ bloco\_atual $ for acrescido, então a imagem mais antiga é sobrescrita. Desta forma, à partir da terceira imagem sempre há três imagens úteis carregadas e uma sendo recebida.
 
-% desenhar um esquemático e colocar aqui
+\begin{figure}[h]
+\subfigure[\label{fig:esquematico-memoria-1}]{
+	\centering
+	\includegraphics[width=\textwidth]{./Figuras/Esquematico-memoria-1.jpg}}
+\subfigure[\label{fig:esquematico-memoria-2}]{
+	\centering
+	\includegraphics[width=\textwidth]{./Figuras/Esquematico-memoria-2.jpg}}
+\subfigure[\label{fig:esquematico-memoria-3}]{
+	\centering
+	\includegraphics[width=\textwidth]{./Figuras/Esquematico-memoria-3.jpg}}
+\caption{Funcionamento dos blocos de memória.}
+\label{fig:esquematico-memoria}
+\end{figure}
+
 
 Para que isto fosse possível durante a simulação, foi implementado um bloco de RAM utilizando uma \textit{megafunction} do Quartus II. O tamanho desta memória calculado para armazenar quatro vezes a quantidade de bits de uma imagem. Para os primeiros estágios do desenvolvimento e teste, foram utilizadas imagens de 296x264 pixels reduzidas a 60x60 pixels (para economia de tempo e melhor visualização da simulação). O tamanho desta memória deveria comportar $ 60 \times 60 \times 4 = 1440 B $, portanto foi utilizada uma memória de 16 KB.
 
@@ -483,7 +501,7 @@ Onde $q$ é o byte armazenado no endereço de memória dado por $bloco\_atual$ conc
 
 Os dados de topo e base do arame foram obtidos com a mesma lógica criada para Matlab e de forma sequencial. Foi utilizado um processo que tem $in_janela$ e $in_clock$ como \textit{sensitivity list}. O sinal $in_janela$ foi utilizado para sincronização de final de imagem e o $in_clock$ era o \textit{clock} de entrada da câmera e define o fim e o começo da transmissão de cada pixel.
 
-Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{section:filtro_media_imagens} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
+Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{section:desenv-fpga-filtro_media_imagens} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
 
 Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com simples testes ao final de cada linha. Ao final da imagem estes valores já estão devidamente definidos.
 
@@ -511,10 +529,10 @@ Os programas desenvolvidos em Matlab utilizaram de imagens previamente obtidas e
 
 O experimento utilizou um eletrodo de $r_{eletrodo} = 1mm$ de diâmetro, com $standoff = 15mm$. Parte do eletrodo fica coberta pelo bocal na captura das imagens, mas sabe-se que a câmera estava posicionada a $\alpha = 30^\circ$ em relação ao plano horizontal. Considerando o bocal da tocha de soldagem com \textbf{$ r_{bocal} = 10mm$} de diâmetro, a altura da $h$ parte visível do eletrodo é dada por:
 
-\begin{eqnarray}
+\begin{align}
 h = standoff - (r_{bocal} - r_{eletrodo}) \cdot sen(\alpha) \\
 h = 15 - (10-0,5) \cdot sen(30) = 10,25mm
-\end{eqnarray}
+\end{align}
 
 Os valores de $r_{eletrodo}$ e  $h$ foram utilizados para calcular a distorção de perspectiva à partir das próprias imagens. Apesar de essa não ser a opção desejada (o ideal seria uma calibração em separado) é suficiente para o propósito de simulação.
 
