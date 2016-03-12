@@ -126,7 +126,7 @@ component RegressaoLinear
   FVAL          : in std_logic;
   posArameTopo  : in natural range numlin downto 0;
   posArameBase  : in natural range numlin downto 0;
-  intervalo     : in natural range numlin downto 0;
+  --intervalo     : in natural range numlin downto 0;
   --signal inicioArame  : in array (0 to qtdPontosArame) of natural range numcols downto 0;
   --signal fimArame     : in array (0 to qtdPontosArame) of natural range numcols downto 0;
   observacoes   : in vetorVert := (others => 0);
@@ -148,11 +148,6 @@ begin
   medidas_arame : MedidasArame port map(meioVert, meioHor, strobe, FVAL_teste, pixel_filtrado0, bloco_atual, endereco_leitura, q, inicioArame, fimArame, posArameTopo, posArameBase);
   bordas_poca : BordasPoca port map(meioHor, strobe, FVAL_teste, pixel_filtrado0, q, limEsqPoca, limDirPoca);
   
-  --if (posArameBase - posArameTopo - afastamento - afastamento < 0) then 
-    intervalo <= 1;
-  --else
-    --intervalo <= posArameBase - posArameTopo - afastamento - afastamento;
-  --end if;
-  regressao_linear1 : RegressaoLinear port map(meioHor, afastamento, strobe, FVAL_teste, posArameTopo, posArameBase, intervalo, inicioArame, ladoEsqArame);
+  regressao_linear1 : RegressaoLinear port map(meioHor, afastamento, strobe, FVAL_teste, posArameTopo, posArameBase, inicioArame, ladoEsqArame);
 
 end comportamental;
