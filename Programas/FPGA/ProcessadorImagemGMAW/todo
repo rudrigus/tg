@@ -10,43 +10,8 @@ ok  Calcular medidas nas outras imagens
 -----------------------------------------------------------------------------------------------
 FPGA
 
-Programar uma placa no GRACO
-Arranjar interface camera link para FPGA 
-
-ok Criar receptor para camera na fpga
-ok    Precisa de um clock 7x mais rápido que o da câmera (7x85MHz)
-ok    Deserializador para 8 bits. 7 em uma porta e 1 em outra
-ok    Tem que arrumar a sincronia do primeiro bit no meio do clock high
-ok    Arrumar sinais de fim de janela e linha
-??    Prestar atenção no bit de "data check"
-
-Criar bloco calibrador na FPGA
-  Programa separado ou junto com o principal?
-  1. Detector de cantos
-  2. Cálculo matricial
-  3. Apresentar matriz caso o programa seja separado
-
-Criar receptor para a câmera
-  Usar placa receptora com driver
-    Confirmar com Llanos se será comprada
-    Ler manual antes da placa chegar
-    Arrumar problema da sincronização
-
-
-Arrumar os blocos para receberem dados se baseando em FVAL e LVAL
-->Criar valores de linha e coluna no bloco ReceptorDados e passar para outros blocos
-    provavelmente isso vai causar um atraso de um ciclo
-ok  Leitura só acontece com FVAL e LVAL em high
-    Uma imagem começa quando FVAL sobe.
-    A leitura de uma linha acontece quando LVAL sobe. Depois...
-    Contar clocks até a quantidade de colunas, então a linha acaba e não são gravados mais dados (coluna deve permanecer constante e igual a numcols)
-  Criar valores teste p/ entrada
-    usar as imagens já no TB
-
-
-
-Colocar segundo threshold depois do filtro gaussiano.
-  Verificar no Matlab se a imagem fica Binária da 0 e 1 ou 0 e 20 a 255
+Colocar segundo e terceiro thresholds depois do filtro gaussiano.
+  Imagem deve ficar entre Threshold2 e Threshold3
 
 OK Implementar filtro gaussiano no Matlab e testar 
 OK   Ficou bom: manter na FPGA. não é tão bom quanto o de mediana, mas é fácil de implementar
@@ -55,62 +20,147 @@ OFF Implementar filtro de mediana na fpga
   não vale a pena
 
 * linearizar laterais do arame na fpga(vai ser foda)
-  Linearização tem complexidade da ordem n, onde n é o número de observações. Algoritmos com robustez tem alto nível de paralelismo!
-  Cálculos matriciais (olhar arquivo quadrados_minimos.pdf)
-  ou os somatórios (no wikipedia), que usam menos multiplicaões
-  OU usar linearização robusta
+  Linearização - tem complexidade da ordem n, onde n é o número de observações.
+    usar artigo Linear Regression FPGA - INVE_MEM_2011_93487 para regressão linear
+      OU Cálculos matriciais (olhar arquivo quadrados_minimos.pdf)
+      ou os somatórios (no wikipedia), que usam menos multiplicaões
+  Linearização robusta
+    Seguir algoritmo do robustfit do matlab e citar o RobustRegression.pdf
+
+Calcular valores corrigindo distorção de perspectiva
+
+Criar bloco calibrador na FPGA
+  Programa separado ou junto com o principal?
+  1. Detector de cantos
+  2. Cálculo matricial
+  3. Apresentar matriz caso o programa seja separado
+
+Programar uma placa no GRACO
+OFF Arranjar interface camera link para FPGA 
+Fazer testes com imagens em memória
+
+
+
+OFF
+  ok Criar receptor para camera na fpga
+  ok    Precisa de um clock 7x mais rápido que o da câmera (7x85MHz)
+  ok    Deserializador para 8 bits. 7 em uma porta e 1 em outra
+  ok    Tem que arrumar a sincronia do primeiro bit no meio do clock high
+  ok    Arrumar sinais de fim de janela e linha
+  ??    Prestar atenção no bit de "data check"
+
+OFF
+  Criar receptor para a câmera
+    Usar placa receptora com driver
+      Confirmar com Llanos se será comprada
+      Ler manual antes da placa chegar
+      Arrumar problema da sincronização
+
+OFF
+  Arrumar os blocos para receberem dados se baseando em FVAL e LVAL
+  ->Criar valores de linha e coluna no bloco ReceptorDados e passar para outros blocos
+      provavelmente isso vai causar um atraso de um ciclo
+  ok  Leitura só acontece com FVAL e LVAL em high
+      Uma imagem começa quando FVAL sobe.
+      A leitura de uma linha acontece quando LVAL sobe. Depois...
+      Contar clocks até a quantidade de colunas, então a linha acaba e não são gravados mais dados (coluna deve permanecer constante e igual a numcols)
+    Criar valores teste p/ entrada
+      usar as imagens já no TB
+
 
 
 -----------------------------------------------------------------------------------------------
 RELATÓRIO
 
-Revisão bibliográfica
-  Processamento de Imagens
-    Perfis verticais e horizontais
-    Derivadas de perfis verticais e horizontais
-    Distorção de perspectiva
-    -Mostrar meu exemplo com o papel
+  *revisar blocos que precisam estar em páginas inteiras
+
+  Revisão bibliográfica
+    Processamento de Imagens
+OK    Perfis verticais e horizontais
+OK    Derivadas de perfis verticais e horizontais
+OK    Distorção de perspectiva
+      -Mostrar um exemplo, pode ser o meu com o papel
   FPGA
-    Simulação
+OK  Simulação
       Modelsim
-      Testbenches
+OK    Testbenches
+  
+  Regressão linear
+      Mínimos quadrados
+      Robusta
 
 
 
-Desenvolvimento
-  Arquitetura Geral
-  Identificação do ângulo da câmera e distorção de perspectiva
-    -Ou eu coloco algo decente aqui ou isso some
-  Desenvolvimento em matlab
-    Algoritmo Base
-    Filtros
-      -Descrever os detalhes de cada um e falar o porque foram utilizados
-    Perfis verticais e horizontais
-    Regressão robusta
-    Distorção de perspectiva
-      -Medir ângulo da câmera
-    Simulação (talvez colocar nos resultados)
+  Desenvolvimento
+  *tem uma section chamada simulações. Ou eu quebro ela em matlab e fpga ou eu coloco nos resultados
+OK  Arquitetura Geral
+      -Ou eu coloco algo decente aqui ou isso some
+OK  Desenvolvimento em matlab
+OK    Algoritmo Base
+OK    Filtros
+OK      -Descrever os detalhes de cada um e falar o porque foram utilizados
+OK    Perfis verticais e horizontais
+OK    Regressão robusta
+OK    Identificação do ângulo da câmera e distorção de perspectiva
+      Simulação (talvez colocar nos resultados)
 
-  Desenvolvimento em FPGA
-    Aquisição de imagens
-      -falar que talvez fosse possível fazer sem uma interface(ligação com fios)
-      -explicar a interface
-    Seleção de imagens
-    Filtros
-      -Explicar que o filtro de mediana é mais complexo que o de gaussiana
-    Medições
-    Linearização
-      -tentativa com linearização robusta vs linearização comum
-    Distorção de perspectiva
-    Simulação (talvez colocar nos resultados)
-    Testes reais
+    Desenvolvimento em FPGA
+??    Aquisição de imagens
+        -falar que talvez fosse possível fazer sem uma interface(ligação com fios)
+        -explicar a interface
+OK    Constantes e tipos customizados
+OK    Seleção de imagens
+OK    Filtros
+OK      Filtro de média (explicado na seleção de imagens)
+        Binarizações
+        -Explicar que o filtro de mediana é mais complexo que o de gaussiana e o resultado é razoável
+OK    Cálculo de topo e base do arame
+OK    Laterais do arame
+      Linearização
+        Método dos mínimos quadrados
+        Regressão robusta
+        -tentativa com linearização robusta vs linearização comum
+      Distorção de perspectiva
+      Simulações em FPGA
+        Conversão de Imagens para Simulação
+        (talvez colocar nos resultados)
+      Testes reais
+        Imagens em memória
 
 
 Resultados
   Mostrar resultados do matlab
+    -Escolha de thresholds
     -Mostrar resultados de diferentes filtros: Mediana vs Gaussiana
     -Mostrar resultado com distorção de perspectiva
+    -Regressão linear vs robusta
   Mostrar resultados da FPGA
     -Limitação de memória
+    -Quantidade de elementos utilizados
 
 
+
+-----------------------------------------------------------------------------------------------
+APRESENTAÇÃO
+
+Soldagem
+  GMAW
+  Automação
+  Qualidade
+
+
+Visão computacional
+  Filtros
+  Distorção de perspectiva
+
+Algoritmo
+  Filtros
+  Perfis horizontais e verticais
+  Desenvolvimento em Matlab
+  -falar que é para aplicação específica
+
+Implementação em FPGA
+  Descrição de hardware
+  FPGAs
+  VHDL
+  Regressão robusta?

@@ -35,8 +35,7 @@ begin
 
   
 
-process(FVAL,in_clock)
-begin
+process(FVAL,in_clock) begin
   
   if(rising_edge(in_clock)) then
     soma_imagem <= soma_imagem + unsigned(pixel_entrada);

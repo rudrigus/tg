@@ -85,8 +85,6 @@ Quando o processo é automatizado alguns parâmetros podem ser avaliados em tempo 
 
 \section{Processamento de imagens}
 
-
-
 As imagens capturadas em um processo de soldagem necessitam passar por um processamento para que os valores necessários sejam obtidos. Nesta seção será explicado como é feito esse processamento.
 
 % usar mota, ze mauricio, Jones para 
@@ -97,7 +95,7 @@ A área de processamento de imagens desperta interesse de estudiosos por ter dive
 Diversas áreas se beneficiam de técnicas de processamento de imagens. Na medicina procedimentos computacionais melhoram o contraste, codificam níveis de intensidade para melhor interpretação e podem até mesmo calcular a quantidade de uma determinada célula em uma imagem. Geógrafos fazem uso de técnicas semelhantes e podem determinar áreas de vegetação, desmatamento, e poluição \cite{gonzalez}. Existem muitos outros exemplos, que vão até o controle de qualidade e de processos.
 
 \subsection{Elementos de sistemas de processamento de imagens}
-Um sistema de processamento de imagens consiste alguns elementos básicos mostrados a seguir\cite{citacao}:
+Um sistema de processamento de imagens consiste alguns elementos básicos mostrados a seguir \cite{gonzalez}:
 \begin{enumerate}
 \item {Aquisição:
 
@@ -589,15 +587,19 @@ Os pinos de entrada e saída são representados por blocos de entrada e saída, IOB
 \label{fig:esquema-FPGA}
 \end{figure}
 
-\subsection{Módulos especiais}
-
-% mostrar todos aqui
-
-Em caso geral, as FPGAs também vêm equipadas com módulos especiais que seriam de difícil implementação por parte do desenvolvedor ou mesmo impossíveis devido às restrições da própria arquitetura. A quantidade e variedade desses módulos varia bastante de placa para placa. Alguns dos mais comuns foram utilizados neste projeto e serão aqui descritos.
-
-\subsubsection{PLL}
-
-A PLL, ou \textit{Phase-locked loop}, é um módulo capaz de sincronizar diferentes interfaces e um dos circuitos mais importantes na eletrônica de telecomunicações. Basicamente, uma PLL gera um sinal de saída que é proporcional a um sinal de entrada.
+%\subsection{Módulos especiais}
+%
+%% mostrar todos aqui
+%
+%Em caso geral, as FPGAs também vêm equipadas com módulos especiais que seriam de difícil implementação por parte do desenvolvedor ou mesmo impossíveis devido às restrições da própria arquitetura. A quantidade e variedade desses módulos varia bastante de placa para placa. Alguns dos mais comuns foram utilizados neste projeto e serão aqui descritos.
+%
+%\subsubsection{PLL}
+%
+%A PLL, ou \textit{Phase-locked loop}, é um módulo capaz de sincronizar diferentes interfaces e um dos circuitos mais importantes na eletrônica de telecomunicações. Basicamente, uma PLL gera um sinal de saída que é proporcional a um sinal de entrada.
+%
+%\subsubsection{Desserializador}
+%
+%\subsubsection{Memória}
 
 % % % %        % % % %         % % % %       % % % %
 
@@ -637,14 +639,7 @@ A linguagem VHDL, pode ser entendida tanto por máquinas quanto por humanos como 
 
 Uma das suas principais características é a alta hierarquização. É possível criar projetos com múltiplos níveis de hierarquia utilizando entidades (descrições de circuitos) dentro de entidades. Essa estrutura facilita o desenvolvimento partindo de níveis mais altos de abstração para níveis menores, com o método chamado \textit{top down} (muito comum nas linguagens de programação mais recentes). Também é usada a descrição do comportamento esperado do circuito.
 
-Em um circuito sintetizado, a maioria dos comandos é executado concorrentemente, independente do nível hierárquico dos componentes e da ordem em que são declarados. No exemplo da figura \ref{fig:exemplo_concorrencia} 
-
-%\begin{figure}[h]
-%\centering
-%\includegraphics[width=\textwidth]{./Figuras/exemplo_concorrencia.jpg}
-%\caption{Concorrência de comandos}
-%\label{fig:exemplo_concorrencia}
-%\end{figure}
+Em um circuito sintetizado, a maioria dos comandos é executado concorrentemente, independente do nível hierárquico dos componentes e da ordem em que são declarados. 
 
 Apesar disso é possível criar operações sequenciais tais como linguagens de programação em regiões específicas do código, nos subprogramas e processos. Essas estruturas são muito úteis para operações específicas como operações aritméticas mais complexas.
 
@@ -786,7 +781,7 @@ Com a descrição de componentes e ligações entre os mesmos, o sintetizador faz o 
 \centering
 \includegraphics[width=\textwidth]{./Figuras/sintetizacao_VHDL.jpg}
 \caption{Síntese de uma descrição VHDL}
-\label{fig:exemplo_concorrencia}
+\label{fig:sintetizacao_VHDL}
 \end{figure}
 
 
@@ -810,7 +805,7 @@ A seguir serão descritos alguns aspectos de simuladores de forma sucinta.
 
 O simulador considera um circuito como uma coleção de sinais e processos. Sinais podem mudar de valor com o tempo sob o impacto de processos. Uma mudança de sinal é chamada de transação. \cite{manual:VHDL-simulation}
 
-O que um simulador deve fazer em um determinado momento é indicado por uma lista de ações classificadas por tempo. Esta é a \textbf{lista de eventos}. Evento é a designação para uma mudança de sinal ou ativação de um processo em um momento específico. Por exemplo, se um processo que está ativo no momento $t = t_0$ tem o comando $a <= ?1? after 10 ns$, então a transação $a <= ?1?$ é colocada na lista de eventos no momento $t = t_0 + 10 ns$. \cite{manual:VHDL-simulation}
+O que um simulador deve fazer em um determinado momento é indicado por uma lista de ações classificadas por tempo. Esta é a \textbf{lista de eventos}. Evento é a designação para uma mudança de sinal ou ativação de um processo em um momento específico. Por exemplo, se um processo que está ativo no momento $t = t_0$ tem o comando $a <= '1' \ after \ 10 ns$, então a transação $a <= '1'$ é colocada na lista de eventos no momento $t = t_0 + 10 ns$. \cite{manual:VHDL-simulation}
 
 Uma transação nunca ocorre imediatamente, mesmo quando se o código não especificar nenhum atraso(\textit{after}). Portanto, uma transação é colocada na lista de eventos no momento $t = t_0 + \Delta$, em que $\Delta$ é zero (ou infinitesimalmente pequeno). Isso permite que processos que ocorrem simultaneamente sejam ordenados no tempo. Isto é possível porque $0 < \Delta < 2\Delta$ para o simulador. O conceito de infinitesimalmente pequeno é chamado de \textbf{atraso delta}. \cite{manual:VHDL-simulation}
 

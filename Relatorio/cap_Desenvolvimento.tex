@@ -9,25 +9,40 @@
 \section{Introdução}
 
 % explicar passos do trabalho
-% fazer um diagrama, usar visage
+% fazer um diagrama, usar bisagi
+
+O trabalho consistiu basicamente em duas etapas. Na primeira foi desenvolvido um algoritmo de processamento em um computador com software de alto nível de abstração, o Matlab, e na segunda foi feita a implementação em hardware do mesmo algoritmo utilizando um FPGA.
+
+Inicialmente, no algoritmo em Matlab, foi criado o algoritmo para fazer as medidas necessárias em apenas uma imagem, até que se percebeu que seria necessário usar média de imagens. Depois passaram a ser processadas grandes grupos de imagens armazenadas. O sistema em FPGA, escrito em VHDL, foi concebido para processar imagens à medida que são capturadas, em tempo real.
+
+Infelizmente não foi possível obter dados reais com a câmera, pois não havia uma interface física entre o cabo de comunicação da câmera e o FPGA. Por esse motivo foi utilizada a memória da placa para fornecer dados ao processador de imagens desenvolvido.
 
 \section{Arquitetura geral}
 
-O sistema devera fazer parte de um controlador em malha fechada, que teoricamente será superior ao controle de malha aberta comumente utilizado em sistemas soldas automatizadas. Ou seja, o sinal de entrada deve ser o resultado da soma do sinal de referência, que será o trajeto definido na programação de um robô, e do sinal de controle, que será calculado por um computador.
+O sistema deverá fazer parte de um controlador em malha fechada, que teoricamente será superior ao controle de malha aberta comumente utilizado em sistemas soldas automatizadas. Ou seja, o sinal de entrada deve ser o resultado da soma do sinal de referência, que será o trajeto definido na programação de um robô, e do sinal de controle, que será calculado por um computador.
 
 Para que o sistema seja realimentado é necessário obter medidas da saída do sistema e, se possível, outros estados. O estado de saída no caso será obtido através de um algoritmo que irá processar fotos do processo e retornar valores numéricos relevantes à operação. Esta etapa é feita com o uso de uma câmera de alta taxa de captura de imagens, capaz de fotografar o arame e a poça de soldagem no instante em que há um curto circuito. O algoritmo processa as imagens e obtém valores numéricos de tamanho da poça, desvio e inclinação do arame.
 
 % Finalmente, o algoritmo calcula e fornece um sinal de controle para corrigir o posicionamento da tocha de soldagem ou parâmetros como velocidade de alimentação do arame e corrente elétrica.
 
 
-\section{Implementação em Matlab}\label{section:implementacao-matlab}
+\section{Implementação em Matlab} \label{section:implementacao-matlab}
 
 
 O primeiro algoritmo foi desenvolvido para funcionamento de forma sequencial, pois seria implementado com o software Matlab. A sequência de operações foi definida de acordo com a descrição abaixo. As descrições entre parênteses indicam os parâmetros utilizados em testes que obtiveram bons resultados.
 
 \subsection{Algoritmo Base}
 
-Os passos abaixo demonstram a sequencia de instruções criadas no Matlab para processar as imagens:
+O diagrama da figura \ref{fig:diagrama-algoritmo} demonstra a sequência de instruções criadas no Matlab para processar as imagens:
+
+\begin{figure}[h!]
+\centering
+{\includegraphics[width=.5\textwidth]{./Figuras/diagrama-algoritmo.png}}
+\caption{Diagrama do algoritmo utilizado}
+\label{fig:diagrama-algoritmo}
+\end{figure}
+
+A sequência de passos pode ser lida com mais detalhes abaixo:
 
 \begin{enumerate}
 \item Limpar memória e fechar figuras
@@ -60,10 +75,8 @@ Os passos abaixo demonstram a sequencia de instruções criadas no Matlab para pro
 \subitem  Valores máximos de derivadaArame -> vetor fimArame
 \subitem  Linearizar inicioArame e fimArame
 \end{enumerate}
-%fazer imagem disso
 
-
-Esses passos com os valores para os parâmetros definidos acima obtiveram bons resultados para uma grande quantidade de imagens (imagens antigas). O algoritmo demonstrou certa robustez à ruídos, porém quando a imagem foge muito ao padrão esperado, o algoritmo fornece valores equivocados. Um exemplo é quando há uma grande gota de solda fora da área da poça. 
+Esses passos com os valores para os parâmetros definidos acima obtiveram bons resultados para uma grande quantidade de imagens (antigas). O algoritmo demonstrou certa robustez à ruídos, porém quando a imagem foge muito ao padrão esperado, o algoritmo fornece valores equivocados. Um exemplo é quando há uma grande gota de solda fora da área da poça. 
 % Mencionar que deve ser usado um filtro de Kalman?
 
 % mostrar exemplo
@@ -415,25 +428,25 @@ A implementação em FPGA desenvolvida apenas recebe imagens para a função \textit
 
 O primeiro passo para o recebimento do vídeo pela placa é a sincronização com o clock da câmera. Apesar deste clock ser fornecido pelo \textit{Channel Link}, as palavras de dados não são sincronizadas com a subida do clock. Também é necessario um sinal com 7 vezes a frequencia do clock fornecido para fazer a leitura dos 7 bits de cada palavra transmitida por ciclo. 
 
-\subsubsection{PLL}\label{section:PLL-desenv}
-
-Foi utilizado um PLL (\textit{Phase-locked loop}) para esta função, pois cria tanto o clock sincronizado com as palavras de dados quanto o clock para a leitura dos bits dessas palavras. O Quartus II permite a configuração de PLLs através do \textit{MegaWizard Plugin Manager} com o Plug-in chamado ''ALTPLL''.
-
-Foi utilizado um PLL com um sinal de entrada e dois de saída. O primeiro sinal de saída tem a mesma frequência do sinal de entrada e uma defasagem de 102º. Além disso foi configurado o \textit{duty cycle} deste sinal como 57\% para manter a mesma proporção de 4:3 do clock do \textit{Camera Link}. Este sinal foi automáticamente denominado $c0$ pelo \textit{MegaWizard Plugin Manager}.
-
-o segundo sinal de saída tem um fator de multiplicação de 7 e um fator de divisão de 2, sendo assim 3,5 vezes mais rápido que o primeiro sinal. Esta frequência foi escolhida dessa forma pois o módulo desserializador descrito em \ref{section:LVDS-desenv} aceita a sincronização tanto com subida quanto descida do sinal. Este sinal foi automáticamente denominado $c1$ pelo \textit{MegaWizard Plugin Manager}.
-
-Este módulo foi chamada simplesmente de ''PLL'' na configuração.
-
-\subsubsection{Desserializador LVDS}\label{section:LVDS-desenv}
-
-Os dados seriais são transformados em uma única palavra de 28 bits com ajuda do Plug-in ''ALTLVDS\_RX'' do Quartus II. Este módulo possui tem como entrada os quatro canais do \textit{Camera Link}, $c0$ e $c1$. O vetor de 28 bits que compõe a saída, foi denominado $rx\_out$ pelo \textit{MegaWizard Plugin Manager}. Infelizmente, os bits não saem deste módulo na ordem desejada, portanto foram necessários alguns roteamentos para separar os oito bits usados para processamento e os bits de validação.
-
-Este módulo foi configurado sem um PLL interno pois não seria possível satisfazer todas as especificações do protocolo, como o atraso de fase. Por esse motivo foi utilizado o PLL descrito em \ref{section:PLL-desenv}
-
-Este módulo foi chamada de ''deserializer'' na configuração.
-
-Por fim, os módulos ''PLL'' e ''deserializer'' foram instancializados em uma entidade chamada ''ReceptorDados'' que fornece os dados corretamente para o resto do sistema.
+%\subsubsection{PLL}\label{section:PLL-desenv}
+%
+%Foi utilizado um PLL (\textit{Phase-locked loop}) para esta função, pois cria tanto o clock sincronizado com as palavras de dados quanto o clock para a leitura dos bits dessas palavras. O Quartus II permite a configuração de PLLs através do \textit{MegaWizard Plugin Manager} com o Plug-in chamado ''ALTPLL''.
+%
+%Foi utilizado um PLL com um sinal de entrada e dois de saída. O primeiro sinal de saída tem a mesma frequência do sinal de entrada e uma defasagem de 102º. Além disso foi configurado o \textit{duty cycle} deste sinal como 57\% para manter a mesma proporção de 4:3 do clock do \textit{Camera Link}. Este sinal foi automáticamente denominado $c0$ pelo \textit{MegaWizard Plugin Manager}.
+%
+%o segundo sinal de saída tem um fator de multiplicação de 7 e um fator de divisão de 2, sendo assim 3,5 vezes mais rápido que o primeiro sinal. Esta frequência foi escolhida dessa forma pois o módulo desserializador descrito em \ref{section:LVDS-desenv} aceita a sincronização tanto com subida quanto descida do sinal. Este sinal foi automáticamente denominado $c1$ pelo \textit{MegaWizard Plugin Manager}.
+%
+%Este módulo foi chamada simplesmente de ''PLL'' na configuração.
+%
+%\subsubsection{Desserializador LVDS}\label{section:LVDS-desenv}
+%
+%Os dados seriais são transformados em uma única palavra de 28 bits com ajuda do Plug-in ''ALTLVDS\_RX'' do Quartus II. Este módulo possui tem como entrada os quatro canais do \textit{Camera Link}, $c0$ e $c1$. O vetor de 28 bits que compõe a saída, foi denominado $rx\_out$ pelo \textit{MegaWizard Plugin Manager}. Infelizmente, os bits não saem deste módulo na ordem desejada, portanto foram necessários alguns roteamentos para separar os oito bits usados para processamento e os bits de validação.
+%
+%Este módulo foi configurado sem um PLL interno pois não seria possível satisfazer todas as especificações do protocolo, como o atraso de fase. Por esse motivo foi utilizado o PLL descrito em \ref{section:PLL-desenv}
+%
+%Este módulo foi chamada de ''deserializer'' na configuração.
+%
+%Por fim, os módulos ''PLL'' e ''deserializer'' foram instancializados em uma entidade chamada ''ReceptorDados'' que fornece os dados corretamente para o resto do sistema.
 
 \subsection{Retirada de scanlines}
 

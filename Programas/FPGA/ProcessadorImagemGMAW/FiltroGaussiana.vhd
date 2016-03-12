@@ -53,8 +53,7 @@ begin
   mascara_gaussiana(2,1) <= x"15";
   mascara_gaussiana(2,2) <= x"03";
 
-process(FVAL,in_clock)
-begin
+process(FVAL,in_clock) begin
   
   if(rising_edge(in_clock)) then
     buffer_filtro((2 * numcols + 1) downto 1) <= buffer_filtro((2 * numcols) downto 0);

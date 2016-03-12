@@ -7,15 +7,17 @@ use work.common.all;
 entity MedidasArame is
   port(
   meioVert      : in unsigned(7 downto 0);
-  meioImagem    : in unsigned(7 downto 0);
+  meioHor       : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   FVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
   q                : in std_logic_vector(7 downto 0);
-  posArameTopo  : out natural range numlin downto 0;
-  posArameBase  : out natural range numlin downto 0);
+  inicioArame   : buffer vetorVert := (others => 0);
+  fimArame      : buffer vetorVert := (others => 0);
+  posArameTopo  : out natural range numlin downto 0 := 0;
+  posArameBase  : out natural range numlin downto 0 := 0);
 end MedidasArame;
 
 architecture comportamental of MedidasArame is
@@ -27,12 +29,13 @@ signal derivadaHor        : vetorHor := (others => 0);
 signal max_derivada       : integer := -1000000;
 signal min_derivada       : integer := 1000000;
 
-signal inicioArame        : vetorVert := (others => 0);
+-- inicioArame e fimArame sao calculados a cada imagem. Portanto, eh necessario 3 vetores para fazer a media movel.
+--signal inicioArame        : vetorVert := (others => 0);
 signal inicioArame0       : vetorVert := (others => 0);
 signal inicioArame1       : vetorVert := (others => 0);
 signal inicioArame2       : vetorVert := (others => 0);
 signal inicioArame3       : vetorVert := (others => 0);
-signal fimArame           : vetorVert := (others => 0);
+--signal fimArame           : vetorVert := (others => 0);
 signal fimArame0          : vetorVert := (others => 0);
 signal fimArame1          : vetorVert := (others => 0);
 signal fimArame2          : vetorVert := (others => 0);
@@ -51,11 +54,10 @@ begin
   -- guardar os vetores somaHor e derivadaHor, para então subtrair do vetor os valores antigos de (bloco_atual -3)
   -- se der certo dá para usar tranquilamente quantas imagens eu quiser, pelo menos no cálculo de topo e base
 
-process(FVAL,in_clock)
-begin
+process(FVAL,in_clock) begin
   if(rising_edge(in_clock)) then
     
-    if(FVAL = '1') then
+    if(FVAL = '0') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
       -- Adiantar endereço de memória pois sempre há o atraso de um ciclo para leitura e um para a subtração em soma_linha
       endereco_leitura <= (bloco_atual - "10") & ("000000000000" + "000000000010");
@@ -124,7 +126,7 @@ begin
 
         -- definicao das laterais do arame
         derivada <= to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(pixel_antigo));
-        if (coluna < meioImagem) then
+        if (coluna < meioHor) then
           if (derivada < min_derivada_arame) then
             min_derivada_arame <= derivada;
             inicioArame0(linha) <= coluna;

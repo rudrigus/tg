@@ -36,49 +36,50 @@ ARCHITECTURE ProcessadorImagemGMAW_arch OF ProcessadorImagemGMAW_TB IS
 -- constants                                                 
 
 -- signals
-CONSTANT LinePause : integer := 5;
+CONSTANT LinePause       : integer := 5;
 CONSTANT IntegrationCPRE : integer := 107;
-SIGNAL ENDSIM : STD_LOGIC := '0';
-SIGNAL temp : STD_LOGIC := '0';
-SIGNAL clk_count : natural := 0;
-SIGNAL brilho_maximo : UNSIGNED(24 DOWNTO 0);
-SIGNAL threshold1    : std_logic_vector(7 downto 0);
-SIGNAL meioVert      : unsigned(7 downto 0);
-SIGNAL meioImagem    : unsigned(7 downto 0);
-SIGNAL in_clock : STD_LOGIC;
-SIGNAL FVAL_teste : STD_LOGIC;
-SIGNAL LVAL_teste : STD_LOGIC;
-SIGNAL RX : STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');
-SIGNAL pixel_entrada : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
-SIGNAL bloco_atual : natural range qtd_imagens downto 0 := 0;
-SIGNAL linha : integer range 0 to numcols - 1 := 0;
-SIGNAL coluna : integer range 0 to numlin - 1 := 0;
-SIGNAL reset : STD_LOGIC;
-SIGNAL start_stop :  STD_LOGIC;
-SIGNAL contador12b : STD_LOGIC_VECTOR(11 DOWNTO 0);
-SIGNAL qtd_imagens : UNSIGNED(1 DOWNTO 0) := "11";
+SIGNAL ENDSIM            : STD_LOGIC := '0';
+SIGNAL temp              : STD_LOGIC := '0';
+SIGNAL clk_count         : natural := 0;
+SIGNAL brilho_maximo     : UNSIGNED(24 DOWNTO 0);
+SIGNAL threshold1        : std_logic_vector(7 downto 0);
+SIGNAL meioVert          : unsigned(7 downto 0);
+SIGNAL meioHor           : unsigned(7 downto 0);
+SIGNAL in_clock          : STD_LOGIC;
+SIGNAL FVAL_teste        : STD_LOGIC;
+SIGNAL LVAL_teste        : STD_LOGIC;
+SIGNAL RX                : STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');
+SIGNAL pixel_entrada     : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
+SIGNAL bloco_atual       : natural range qtd_imagens downto 0 := 0;
+SIGNAL linha             : integer range 0 to numcols - 1 := 0;
+SIGNAL coluna            : integer range 0 to numlin - 1 := 0;
+SIGNAL reset             : STD_LOGIC;
+SIGNAL start_stop        :  STD_LOGIC;
+SIGNAL contador12b       : STD_LOGIC_VECTOR(11 DOWNTO 0);
+SIGNAL qtd_imagens       : UNSIGNED(1 DOWNTO 0) := "11";
 SIGNAL frequencia_camera : real := 85.000E6;
-SIGNAL periodo : real := 12.000E-8;
+SIGNAL periodo           : real := 12.000E-8;
+SIGNAL afastamento       : natural range numlin downto 0 :=0 ;
 
-SIGNAL after_line : integer range 0 to LinePause := 0;
---SIGNAL inicio_imagem : STD_LOGIC := '0';
-SIGNAL inicio_imagem : integer range 0 to IntegrationCPRE := 0;
+SIGNAL after_line        : integer range 0 to LinePause := 0;
+--SIGNAL inicio_imagem   : STD_LOGIC := '0';
+SIGNAL inicio_imagem     : integer range 0 to IntegrationCPRE := 0;
 
 
 COMPONENT ProcessadorImagemGMAW
-  PORT (
+port (
   in_clock      : in std_logic;                                       -- clock gerado pela camera
   FVAL_teste    : in std_logic;                                       -- para simulacao
-  LVAL_teste    : in std_logic;                                       -- para simulacao
-  RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
+  --LVAL_teste    : in std_logic;                                       -- para simulacao
+  --RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
   brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
   threshold1    : in std_logic_vector(7 downto 0);
   meioVert      : in unsigned(7 downto 0);
-  meioImagem    : in unsigned(7 downto 0);
-  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";      -- para simulacao
-  limEsqPoca    : out natural range numcols downto 0;
-  limDirPoca    : out natural range numcols downto 0);  
+  meioHor       : in unsigned(7 downto 0);
+  afastamento   : in natural range numlin downto 0;
+  pixel_entrada : in std_logic_vector(7 downto 0) := "00000000");      -- para simulacao
 END COMPONENT;
+
 
 
 -- Procedure for clock generation
@@ -115,21 +116,23 @@ BEGIN
   i1 : ProcessadorImagemGMAW
   PORT MAP (
 -- list connections between master ports and signals
+  in_clock => in_clock,
+  FVAL_teste => FVAL_teste,
   brilho_maximo => brilho_maximo,
   threshold1 => threshold1,
   meioVert => meioVert,
-  meioImagem => meioImagem,
-  in_clock => in_clock,
-  RX => RX,
-  FVAL_teste => FVAL_teste,
-  LVAL_teste => LVAL_teste,
+  meioHor => meioHor,
+  afastamento => afastamento,
+  --RX => RX,
+  --LVAL_teste => LVAL_teste,
   pixel_entrada => pixel_entrada
   );
 
 brilho_maximo <= to_unsigned(720000,25) after 0 ns;
 threshold1    <= "00001010" after 0 ns;
 meioVert      <= to_unsigned(30,8) after 0 ns;
-meioImagem    <= to_unsigned(31,8) after 0 ns;
+meioHor       <= to_unsigned(31,8) after 0 ns;
+afastamento   <= 5 after 0 ns;
 
 -- usando um line pause de 5 ciclos
 -- e tempos de integration + CPRE de 100 ciclos

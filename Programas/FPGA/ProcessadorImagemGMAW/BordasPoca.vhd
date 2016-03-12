@@ -4,18 +4,18 @@ use ieee.std_logic_1164.all;
 use work.common.all;
 
 
-entity Bordas is
+entity BordasPoca is
   port(
-  meioImagem    : in unsigned(7 downto 0);
+  meioHor       : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   FVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := (others => '0');
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
   limDirPoca    : out natural range numcols downto 0);
-end Bordas;
+end BordasPoca;
 
-architecture comportamental of Bordas is
+architecture comportamental of BordasPoca is
 signal coluna : natural range (numcols - 1) downto 0 := 0;
 signal linha  : natural range (numlin  - 1) downto 0 := 0;
 --signal somaColuna        : natural;
@@ -31,12 +31,11 @@ begin
 
 -- algoritmo parecido com o TopoBase.vhd, mas calcula só na última linha
 
-process(FVAL,in_clock)
-begin
+process(FVAL,in_clock) begin
   
   if(rising_edge(in_clock)) then
     
-    if(FVAL = '1') then
+    if(FVAL = '0') then
     -- começo de uma imagem. para evitar surpresas, resetar valores aqui
       coluna <= 0;
       linha <= 0;
@@ -76,7 +75,7 @@ begin
           end if;
 
           -- definicao do maximo e minimo das derivadas e bordas
-          if (coluna < meioImagem) then
+          if (coluna < meioHor) then
             if (derivadaVert(coluna) > max_derivada) then
               max_derivada <= derivadaVert(coluna);
               limEsqPoca <= coluna;
