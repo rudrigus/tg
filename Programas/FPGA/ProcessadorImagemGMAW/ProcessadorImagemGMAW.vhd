@@ -8,7 +8,7 @@ entity ProcessadorImagemGMAW is
   port (
   in_clock      : in std_logic;                                       -- clock gerado pela camera
   FVAL_teste    : in std_logic;                                       -- para simulacao
-  --LVAL_teste    : in std_logic;                                       -- para simulacao
+  LVAL_teste    : in std_logic;                                       -- para simulacao
   --RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
   brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
   threshold1    : in std_logic_vector(7 downto 0);
@@ -97,6 +97,7 @@ component MedidasArame
   meioHor          : in unsigned(7 downto 0);
   in_clock         : in std_logic;
   FVAL             : in std_logic;
+  LVAL             : in std_logic;
   pixel_entrada    : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual      : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0);
@@ -112,6 +113,7 @@ component BordasPoca
   meioHor       : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   FVAL          : in std_logic;
+  LVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
@@ -145,8 +147,8 @@ begin
   --filtro_gaussiana: FiltroGaussiana port map(strobe, FVAL_teste, pixel_filtrado0, pixel_filtrado1);
   ram : ImagensRAM port map(strobe, pixel_filtrado0, std_logic_vector(endereco_leitura), std_logic_vector(endereco_escrita), strobe, q); -- Entrada está sempre indo para a memoria
   seletor_imagem : SeletorImagem port map(brilho_maximo, threshold1, strobe, FVAL_teste, pixel_filtrado0, bloco_atual, endereco_escrita);
-  medidas_arame : MedidasArame port map(meioVert, meioHor, strobe, FVAL_teste, pixel_filtrado0, bloco_atual, endereco_leitura, q, inicioArame, fimArame, posArameTopo, posArameBase);
-  bordas_poca : BordasPoca port map(meioHor, strobe, FVAL_teste, pixel_filtrado0, q, limEsqPoca, limDirPoca);
+  medidas_arame : MedidasArame port map(meioVert, meioHor, strobe, FVAL_teste, LVAL_teste, pixel_filtrado0, bloco_atual, endereco_leitura, q, inicioArame, fimArame, posArameTopo, posArameBase);
+  bordas_poca : BordasPoca port map(meioHor, strobe, FVAL_teste, LVAL_teste, pixel_filtrado0, q, limEsqPoca, limDirPoca);
   
   regressao_linear1 : RegressaoLinear port map(meioHor, afastamento, strobe, FVAL_teste, posArameTopo, posArameBase, inicioArame, ladoEsqArame);
 

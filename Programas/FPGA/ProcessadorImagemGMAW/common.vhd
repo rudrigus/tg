@@ -23,8 +23,8 @@ package Common is
 
   constant qtdPontosArame  : natural := 16;
   constant constRegressao1 : integer   := 194616; -- = 0,0029 * 2^26
-  constant constRegressao2 : integer   := 185388; -- = 0.0221 * 2^23
-  constant constRegressao3 : integer   := 238970; -- = 0.2279 * 2^20
+  constant constRegressao2 : integer   := 185388; -- = 0,0221 * 2^23
+  constant constRegressao3 : integer   := 238970; -- = 0,2279 * 2^20
 
 
 

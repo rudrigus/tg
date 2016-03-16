@@ -70,7 +70,7 @@ COMPONENT ProcessadorImagemGMAW
 port (
   in_clock      : in std_logic;                                       -- clock gerado pela camera
   FVAL_teste    : in std_logic;                                       -- para simulacao
-  --LVAL_teste    : in std_logic;                                       -- para simulacao
+  LVAL_teste    : in std_logic;                                       -- para simulacao
   --RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
   brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
   threshold1    : in std_logic_vector(7 downto 0);
@@ -124,7 +124,7 @@ BEGIN
   meioHor => meioHor,
   afastamento => afastamento,
   --RX => RX,
-  --LVAL_teste => LVAL_teste,
+  LVAL_teste => LVAL_teste,
   pixel_entrada => pixel_entrada
   );
 
@@ -132,7 +132,7 @@ brilho_maximo <= to_unsigned(720000,25) after 0 ns;
 threshold1    <= "00001010" after 0 ns;
 meioVert      <= to_unsigned(30,8) after 0 ns;
 meioHor       <= to_unsigned(31,8) after 0 ns;
-afastamento   <= 5 after 0 ns;
+afastamento   <= 2 after 0 ns;
 
 -- usando um line pause de 5 ciclos
 -- e tempos de integration + CPRE de 100 ciclos
@@ -196,6 +196,7 @@ IN_process: process (in_clock) begin
   --  end if;
   --end if;
   
+  -- logica para simular a transmissao cameralink
   -- durante imagem
     clk_count <= clk_count + 1;
     if (FVAL_teste = '1') then

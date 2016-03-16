@@ -5,8 +5,6 @@ if {[file exists rtl_work]} {
 vlib rtl_work
 vmap work rtl_work
 
-vlog -vlog01compat -work work +incdir+/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/db {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/db/pll_altpll.v}
-vlog -vlog01compat -work work +incdir+/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/db {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/db/deserializer_lvds_rx.v}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/ImagensRAM.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/common.vhd}
 vcom -93 -work work {/home/rudrigus/UNB/TG/Programas/FPGA/ProcessadorImagemGMAW/imagensteste.vhd}

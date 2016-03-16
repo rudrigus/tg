@@ -10,6 +10,7 @@ entity MedidasArame is
   meioHor       : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   FVAL          : in std_logic;
+  LVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
   bloco_atual   : in unsigned(1 downto 0);
   endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
@@ -27,7 +28,7 @@ signal linha  : natural range (numlin  - 1) downto 0 := 0;
 signal somaHor            : vetorHor := (others => 0);
 signal derivadaHor        : vetorHor := (others => 0);
 signal max_derivada       : integer := -1000000;
-signal min_derivada       : integer := 1000000;
+signal max_derivada2      : integer := -1000000;
 
 -- inicioArame e fimArame sao calculados a cada imagem. Portanto, eh necessario 3 vetores para fazer a media movel.
 --signal inicioArame        : vetorVert := (others => 0);
@@ -64,7 +65,7 @@ process(FVAL,in_clock) begin
       coluna <= 0;
       linha <= 0;
       max_derivada <= -1000000;
-      min_derivada <= 1000000;
+      max_derivada2 <= -1000000;
       max_derivada_arame <= -1000000;
       min_derivada_arame <= 1000000;
 
@@ -81,7 +82,7 @@ process(FVAL,in_clock) begin
           endereco_leitura <= (bloco_atual - "10") & "000000000000";
           
           max_derivada <= -1000000;
-          min_derivada <= 1000000;
+          max_derivada2 <= -1000000;
         else
         -- proxima linha
           linha <= linha + 1;
@@ -112,8 +113,8 @@ process(FVAL,in_clock) begin
               posArameTopo <= linha;
             end if;
           else
-            if (derivadaHor(linha) < min_derivada) then
-              min_derivada <= derivadaHor(linha);
+            if (derivadaHor(linha) > max_derivada2) then
+              max_derivada2 <= derivadaHor(linha);
               posArameBase <= linha;
             end if;
           end if;
@@ -122,8 +123,9 @@ process(FVAL,in_clock) begin
       else
       -- ler mais um pixel na linha
         endereco_leitura <= endereco_leitura + 1;
-        coluna <= coluna + 1;
-
+        if(LVAL = '1') then
+          coluna <= coluna + 1;
+        end if;
         -- definicao das laterais do arame
         derivada <= to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(pixel_antigo));
         if (coluna < meioHor) then

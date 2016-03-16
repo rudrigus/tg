@@ -911,7 +911,205 @@ Todos esses parâmetros podem ser definidos através de comunicação serial por um 
 Isso significa que a câmera pode ser configurada com o software e utilizada para aquisição com outra interface mesmo após ser desligada.
 
 
+\section{Regressão Linear}
 
+Regressão é uma ferramenta comum para diversos problemas em engenharia e estatística em geral. Uma regressão consiste basicamente em uma função matemática que descreve a relação entre duas variáveis sendo o comportamento de uma dependente da outra \cite{book:adv-eng-math}.
+
+Em uma regressão, uma das variáveis, normalmente chamada de $x$, é tida como independente ou variável controlada. Esta variável pode ser medida com bom nível de exatidão. A outra variável, normalmente tida como $y$ é aleatória. O que se deseja obter é a função matemática $\mu(x)$ de dependência que $y$ tem em relação a $x$ \cite{book:adv-eng-math}.
+
+Uma regressão linear é um caso específico, o mais simples dentre as regressões, e a função que se procura é uma linha reta da forma:
+
+\begin{align}
+\mu(x) = b + ax
+\end{align}
+
+O método mais utilizado para se encontrar a reta que melhor descreve uma sequencia com pontos do tipo $(x_1,y_1)$,$\cdots$,$(x_n,y_n)$ é o método dos Mínimos Quadrados Ordinários, ou MQO. O princípio é o seguinte: "A reta deve ser ajustada através dos pontos de modo que a soma dos quadrados das distâncias entre os pontos e a reta seja mínima, onde a distância é medida na vertical(enxo $y$)." \cite{book:adv-eng-math}
+
+Além deste princípio é necessária mais uma condição para a solução matemática única deste método: "Os valores $x_1$,$\cdots$,$x_n$ na amostra ($x_1,y_1)$,$\cdots$,$(x_n,y_n)$ não podem ser todos iguais."\cite{book:adv-eng-math} 
+
+À partir de uma amostra $(x_1,y_1)$,$\cdots$,$(x_n,y_n)$, descreve-se a seguinte linha, chamada \textbf{linha de regressão exemplo}:
+
+\begin{align}
+y = b + ax
+\label{eq:linha-exemplo}
+\end{align}
+
+A distância vertical entre um ponto $(x_i,y_i)$ e a reta em \ref{eq:linha-exemplo} é dada por:
+
+\begin{align}
+|y_i - (b+ax_i)|
+\end{align}
+
+Portanto a soma dos quadrados dessas distâncias é 
+
+\begin{align}
+q = \sum_{i=1}^{n}(y_i - b - ax+i)^2
+\label{eq:soma-erros-minimos-quadrados}
+\end{align}
+
+Para o MQO, deve-se determinar $a$ e $b$ de modo a minimizar o valor de $q$ na equação \ref{eq:soma-erros-minimos-quadrados}. Portanto:
+
+\begin{align}
+\frac{\partial q}{\partial a} = 0
+\\\frac{\partial q}{\partial b} = 0
+\label{eq:derivada-erros-minimos-quadrados}
+\end{align}
+
+A linha exemplo pode ser reescrita da forma:
+
+\begin{align}
+y - \bar{y} = a (x - \bar{x})
+\label{eq:medias-minimos-quadrados}
+\end{align}
+
+Onde $\bar{x}$ e $\bar{y}$ são os valores médios de $x$ e $y$ na amostra. O coeficiente $a$ na equação \ref{eq:medias-minimos-quadrados} é chamado de corficiente de regressão e é dado por:
+
+\begin{align}
+a = \frac{s_{xy}}{x_x^2}
+\label{eq:coeficiente-de-regressao}
+\end{align}
+
+A covariância de amostra $s_{xy}$ é:
+
+\begin{align}
+s_{xy} = \frac{1}{n-1}\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y}) = \frac{1}{n-1} \left[\sum_{i=1}^n x_i y_i - \frac{1}{n} \left(\sum_{i=1}^n x_i\right) \left( \sum_{i=1}^n y_i\right) \right]
+\label{eq:covariancia-amostra}
+\end{align}
+
+E a variância dos valores $x$, $s_x^2$ é dada por:
+
+\begin{align}
+s_{x}^2 = \frac{1}{n-1}\sum_{i=1}^n(x_i-\bar{x})^2 = \frac{1}{n-1} \left[\sum_{i=1}^n x_i^2 - \frac{1}{n} \left(\sum_{i=1}^n x_i\right)^2 \right]
+\label{eq:variancia-amostra-x}
+\end{align}
+
+De \ref{eq:medias-minimos-quadrados} pode-se observar que a reta passa pelo ponto $\bar{x},\bar{y}$. Como $x$ é uma variável ordinária, será necessária também a variância dos valores $y$:
+
+
+\begin{align}
+s_{y}^2 = \frac{1}{n-1}\sum_{i=1}^n(y_i-\bar{y})^2 = \frac{1}{n-1} \left[\sum_{i=1}^n y_i^2 - \frac{1}{n} \left(\sum_{i=1}^n y_i\right)^2 \right]
+\label{eq:variancia-amostra-y}
+\end{align}
+
+Ao se diferenciar a equação \ref{eq:soma-erros-minimos-quadrados} e se aplicar  \ref{eq:derivada-erros-minimos-quadrados} resulta em:
+
+\begin{align}
+\frac{\partial q}{\partial a} = -2 \sum(y_i - b -ax_i) = 0
+\\\frac{\partial q}{\partial b} = -2 \sum x_i(y_i - b - a x_i) = 0
+\label{eq:derivada-erros-minimos-quadrados-2}
+\end{align}
+
+Onde se soma de $i$ de  1 a $n$. Divide-se por 2, escreve-se cada lado das duas somas como três somas e leva-se as somas contendo $x_i$ e $x_iy_i$ para o lado direito. Então obtém-se as equações normais:
+
+\begin{align}
+b n + a \sum x_i = \sum y_i \\
+b \sum x_i + a \sum x_i^2 = \sum x_i y_i 
+\label{eq:derivada-erros-minimos-normais}
+\end{align}
+
+
+Este é um sistema linear de duas equações e duas variáveis e pode ser resolvido com a equação \ref{eq:sistema-linear-regressao} abaixo:
+
+\begin{align}
+\left| 
+\begin{matrix}
+n & \sum x_i \\
+\sum x_i & \sum x_i^2
+\end{matrix}
+\right|
+= n \sum x_i^2 - \left( \sum x_i \right) = n(n-1)s_x^2 = n \sum(x_i - \bar{x})^2
+\label{eq:sistema-linear-regressao}
+\end{align}
+
+Este sistema tem solução única desde que sejam atendidas as condições necessárias. Dividindo-se a equação \ref{eq:sistema-linear-regressao} por $n$ e usando as médias, tem-se $b = \bar{y} - a \bar{x}$. 
+%Junto com $y = b + ax$ isto dá \ref{eq:medias-minimos-quadrados}
+Para se obter $a$, resolve-se \ref{eq:sistema-linear-regressao} com a regra de Cramer:
+
+\begin{align}
+a = \frac{n\sum x_i y_i - \sum x_i \sum y_i}{n(n-1)s_x^2}
+\label{eq:solucao-regressao-a}
+\end{align}
+
+
+
+\subsection{Regressão Linear para FPGAs} \label{section:regressao-fpga}
+
+A solução de uma regressão pelo método dos Mínimos Quadrados exige uma certa quantidade de cálculos computacionalmente custosos, como multiplicações e divisões. Quando se deseja ocupar poucos elementos em uma FPGA e reduzir a quantidade de operações, algumas simplificações podem ser feitas. Isto mostrado nesta seção.
+
+De acordo com \cite{article:linear-regression-FPGA}, o primeiro passo é definir que os valores em $x$ são inteiros e começando à partir de 0. Desta a equação \ref{eq:soma-erros-minimos-quadrados} pode ser reescrita da seguinte forma:
+
+\begin{align}
+q = \sum_{i=0}^{n-1}(y_i - b - ax+i)^2
+\label{eq:soma-erros-minimos-quadrados-fpga}
+\end{align}
+
+Ao se aplicar o quadrado e separar a equação \ref{eq:soma-erros-minimos-quadrados-fpga} em diferentes somas tem-se:
+
+\begin{align}
+q = \sum_{i=0}^{n-1}y_i^2 + a^2 \sum_{i=0}^{n-1} i^2 - 2a\sum_{i=0}^{n-1} i y_i + nb^2 + 2ab\sum_{i=0}^{n-1}i - 2b \sum_{i=0}^{n-1} y_i
+\label{eq:soma-erros-minimos-quadrados-fpga-2}
+\end{align}
+
+Aplicando-se derivadas parciais na equação \ref{eq:soma-erros-minimos-quadrados-fpga-2}:
+
+\begin{align}
+\frac{\partial q}{\partial a} = 2a \sum_{i=0}^{n-1} i^2 -2\sum_{i=0}^{n-1} iy_i + 2b \sum_{i=0}^{n-1} i = 0 \\
+a = \left( \sum_{i=0}^{n-1} iy_i -b \sum_{i=0}^{n-1} i  \right) / \sum_{i=0}^{n-1} i^2
+\label{eq:derivada-erros-regressao-a}
+\end{align}
+
+\begin{align}
+\frac{\partial q}{\partial b} = 2nb + 2a\sum_{i=0}^{n-1} i - 2\sum_{i=0}^{n-1} y_i = 0 \\
+b = \left( 2\sum_{i=0}^{n-1} y_i -a\sum_{i=0}^{n-1} i\right)/n
+\label{eq:derivada-erros-regressao-b}
+\end{align}
+
+No final tem-se:
+
+\begin{align}
+a = \left( n\sum_{i=0}^{n-1} iy_i - \sum_{i=0}^{n-1} y_i \sum_{i=0}^{n-1} i  \right) / \left( n\sum_{i=0}^{n-1} i^2 -\sum_{i=0}^{n-1} i \sum_{i=0}^{n-1} i\right)
+\label{eq:regressao-fpga-a}
+\end{align}
+
+\begin{align}
+b = \left( \sum_{i=0}^{n-1} y_i \sum_{i=0}^{n-1} i^2 - \sum_{i=0}^{n-1} iy_i \sum_{i=0}^{n-1} i  \right) / \left( n\sum_{i=0}^{n-1} i^2 -\sum_{i=0}^{n-1} i \sum_{i=0}^{n-1} i\right)
+\label{eq:regressao-fpga-b}
+\end{align}
+
+
+Como visto nas equações \ref{eq:regressao-fpga-a} e \ref{eq:regressao-fpga-a}, ambos os coeficientes dependem da quantidade de pontos utilizados. São necessárias muitos somatórios com multiplicações e duas divisões.
+
+Se esta quantidade for limitada para um valor constante $N$, obtém-se equações muito mais simplificadas, pois os somatórios que não dependem de $x$ ou $y$ passam a ter valores constantes. Esta limitação reduz boa parte dos cálculos dos fatores, incluindo os denominadores.
+
+Considere-se que:
+
+\begin{align}
+\sum_{i=0}^{N-1} i = \frac{N^2}{2} -\frac{N}{2}
+\end{align}
+
+\begin{align}
+\sum_{i=0}^{N-1} i^2 = \frac{N^3}{3} - \frac{N^2}{2} +\frac{N}{6}
+\end{align}
+
+Os coeficientes podem ser então encontrados apenas multiplicando-se constantes por somatórios e subtraindo resultados como pode ser visto em \ref{eq:const-reg-fpga-A} e \ref{eq:const-reg-fpga-B} \cite{article:linear-regression-FPGA}.
+
+
+\begin{align}
+a = \left(\frac{N}{N\sum i^2 - \sum i \sum i } \right) \cdot \sum_{i=0}^{N-1} i d_i
+- \left(\frac{\sum i}{N\sum i^2 - \sum i \sum i } \right) \cdot \sum_{i=0}^{N-1} d_i
+\label{eq:const-reg-fpga-A}
+\end{align}
+
+\begin{align}
+b = \left(\frac{\sum i^2}{N\sum i^2 - \sum i \sum i } \right) \cdot \sum_{i=0}^{N-1} d_i
+- \left(\frac{\sum i}{N\sum i^2 - \sum i \sum i } \right) \cdot \sum_{i=0}^{N-1} i d_i
+\label{eq:const-reg-fpga-B}
+\end{align}
+
+
+
+
+\subsection{Regressão Robusta}
 
 
 

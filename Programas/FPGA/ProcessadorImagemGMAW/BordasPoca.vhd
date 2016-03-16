@@ -9,6 +9,7 @@ entity BordasPoca is
   meioHor       : in unsigned(7 downto 0);
   in_clock      : in std_logic;
   FVAL          : in std_logic;
+  LVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := (others => '0');
   q             : in std_logic_vector(7 downto 0);
   limEsqPoca    : out natural range numcols downto 0;
@@ -60,8 +61,9 @@ process(FVAL,in_clock) begin
         end if;
       else
       -- ler mais um pixel
-        coluna <= coluna + 1;
-
+        if LVAL = '1' then
+          coluna <= coluna + 1;
+        end if;
         -- vetores sao formados enquanto a leitura ocorre
         somaVert(coluna) <= somaVert(coluna) + to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(q));
 

@@ -520,14 +520,76 @@ Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com si
 
 % apresentar resultados a cada imagem lida
 
-\subsection{Laterais do arame}
+\subsection{Laterais do Eletrodo}
+
+As laterais do eletrodo são definidas em dois estágios diferentes. Primeiro os pontos prováveis destas laterais são encontrados, depois é calculada a equação de reta que descreve essas laterais. O cálculo desta equação de reta é descrita em \ref{section:desenv-fpga-regressao}
 
 
 
 
 
+
+\subsubsection{Regressão linear} \label{section:desenv-fpga-regressao}
+
+Esta regressão é feita de forma simplificada para poupar elementos utilizados na placa e diminuir o tempo de cálculo.
+Para tanto foi decidido que seriam utilizados apenas uma quantidade limitada de pontos por reta no momento do desenvolvimento. Essa quantidade foi a princípio definida como $qtdPontosArame = 16$ para a simulação com imagens de 60x60 pixels. Este valor foi escolhido por ser uma potência de 2 e também por ter sido testado com o programa em Matlab, com resultados satisfatórios.
+
+Esta forma de se calcular permite que seja utilizado o método descrito em \ref{section:regressao-fpga}. As constantes utilizadas para as multiplicações pelos somatórios são previamente calculadas no momento do desenvolvimento do código de acordo com as equações \ref{eq:const-reg-fpga-A}, e \ref{eq:const-reg-fpga-B}.
+
+Como os valores destas constantes são quase sempre muito pequenos (da ordem de $10^{-4}$ para 16 pontos), esses valores foram multiplicados por potências de 2 para serem utilizados na multiplicação pelos somatórios. Essas potências de 2 equivalem a \textit{shifts} para a esquerda nas constantes. O resultado de cada uma passa posteriormente por um \textit{shift} para a direita equivalentes à potência pela qual foram multiplicadas as constantes.
+
+Os valores calculados para as contantes para 16 pontos, com seus proporcionais utilizados na no código VHDL, e as quantidades de \textit{shifts} são descritos na tabela \ref{table:constantes-reg-16}. É importante notar que os valores inteiros foram todos calculados de forma a se obter a máxima precisão com 18 bits, pois os multiplicadores da placa utilizada são de 18x18 bits.
+
+\begin{table}
+\centering
+\begin{tabular} {|c|c|c|c|}
+\hline
+Descrição & Valor & Inteiro usado & Utilizada com fator\\ \hline
+constRegressao1 & 0,0029 & $0,0029 * 2^{26}$ & a \\ \hline
+constRegressao2 & 0,0221 & $0,0221 * 2^{23}$ & a,b \\ \hline
+constRegressao3 & 0,2279 & $0,2279 * 2^{20}$ & b \\ \hline
+\end{tabular}
+\caption{Constantes utilizadas em regressão com 16 pontos}
+\label{table:constantes-reg-16}
+\end{table}
+
+
+Os somatórios são calculados com os valores dos vetores $inicioArame$ e $fimArame$ entre os índices $posArameTopo$ e $posArameBase$. Assim como no algoritmo para Matlab, aqui também foi utilizado um afastamento entre o topo e a base para se evitar os cantos onde podem haver inconsistências. Este foi definido inicialmente como $afastamento = 2$ para a imagem de 60x60 pixels.
+
+Para a definição dos índices nos vetores $inicioArame$ e $fimArame$ que seriam utilizados para a leitura dos valores foi feito um processo semelhante ao utilizado com as multiplicações de constantes acima. Isto foi necessário pois o para se utilizar uma quantidade limitada de pontos distribuídos o mais homogeneamente possível entre dois limites, sem a utilização de pontos flutuantes. Para melhor demostrar o problema: Imagine que se deseja 16 índices inteiros distribuídos entre os valores 14 e 42 de forma mais homogênea possível com ferramentas que não permitem o uso de números fracionários.
+
+A solução encontra-se em utilizar valores inteiros e \textit{shifts}. Neste caso específico as variáveis de entrada, $posArameTopo$, $posArameBase$, $qtdPontosArame$ e $afastamento$ são todas inteiras. O que se necessita para a obtenção do n-ésimo índice pode ser melhor entendido com a equação \ref{eq:indice}.
+
+\begin{align}
+indice = i + (n - 1) \times \frac{intervalo}{qtdPontosArame}
+\label{eq:indice}
+\end{align}
+
+Onde $i$ é o primeiro índice da série, $n$ se refere ao n-ésimo ponto e $intervalo/qtdPontosArame$ é a diferença entre dois pontos subsequentes que se deseja na série,  sendo $intervalo$ calculado acordo com a equação \ref{eq:intervalo}.
+
+\begin{align}
+\centering
+intervalo = posArameBase - posArameTopo - afastamento - afastamento
+\label{eq:intervalo}
+\end{align}
+
+
+O valor de $intervalo$ precisa ser sempre inteiro para se obter um índice válido no vetor. Caso a divisão ocorra antes da multiplicação, o valor truncado perde precisão. Por este motivo a equação \ref{eq:indice} foi adaptada na equação \ref{eq:indice-inteiro} para manter o melhor inteiro possível.
+
+\begin{align}
+\centering
+indice = i + [(n - 1) \times intervalo] >> log_2(qtdePontosArame)
+\label{eq:indice-inteiro}
+\end{align}
+
+O operador $>>$ denota a operação de \textit{shift}. Neste caso, serão feitos 4 \textit{shifts}, o que equivale a uma divisão por 16. O resultado final pode ser normalmente somado e multiplicado por ferramentas comuns da FPGA.
+
+Os coeficientes obtidos com o cálculo simplificado devem ser corrigidos pois até este ponto as observações são consideradas como tendo avanço unitário no eixo X, e não aquelas calculadas por $intervalo/qtdPontosArame$.
+
+%encontrar b com equação logo depois de {eq:sistema-linear-regressao} na revisão
 
 \section{Simulações}
+% colocar nos resultados?
 
 A maior parte do projeto foi desenvolvida sem a utilização de placas FPGA e câmeras reais, portanto foi essencial o uso de simulações. Cada criação ou alteração de código foi testada com auxílio das simulações a fim de evitar excessivo retrabalho em correções de erros.
 
