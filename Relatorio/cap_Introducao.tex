@@ -7,11 +7,11 @@
 
 \section{Contextualização}
 
-Qualidade de produtos deve ser um foco de atenção da indústria, principalmente em países emergentes, como o Brasil. Isso se deve ao aumento da exigência dos potenciais clientes por produtos e serviços de qualidade \cite{article:Ventura:2010}. Essa exigência aumenta a competitividade do mercado \cite{Broering} e obriga as indústrias a aperfeiçoar seus processos produtivos a fim de satisfazer os clientes e manter um bom nível de produtividade a baixo custo. O custo final dos produtos pode ser afetado pelo fator qualidade, aumentando em 80 a elasticidade do preço estimado \cite{article:Trandel:1991}
+Qualidade de produtos deve ser um foco de atenção da indústria, principalmente em países emergentes, como o Brasil. Isso se deve ao aumento da exigência dos potenciais clientes por produtos e serviços de qualidade \cite{article:Ventura:2010}. Essa exigência aumenta a competitividade do mercado \cite{Broering} e obriga as indústrias a aperfeiçoar seus processos produtivos a fim de satisfazer os clientes e manter um bom nível de produtividade a baixo custo. O custo final dos produtos pode ser afetado pelo fator qualidade, aumentando em até 83\% a elasticidade do preço estimado \cite{article:Trandel:1991}.
 
-Um dos fatores que influencia a qualidade de produtos é o processo de fabricação. A soldagem é um dos processos mais utilizados atualmente na indústria e o processo GMAW (\textit{Gas Metal Arc Welding}) é um dos tipos de solda que apresentam mais vantagens: Alta taxa de deposição, facilidade para automação e variadas aplicações \cite{book:modenesi, article:Adolfsson:1997}.
+Um dos fatores que influencia a qualidade de produtos é o processo de fabricação. A soldagem é um dos processos mais utilizados atualmente na indústria e o processo GMAW (\textit{Gas Metal Arc Welding}) é um dos tipos de processo que apresentam mais vantagens: alta taxa de deposição, facilidade para automação e variadas aplicações \cite{book:modenesi, article:Adolfsson:1997}.
 
-\section{Definição do problema}
+\section{Motivação}
 
 Esse processo requer mão de obra especializada cada vez mais escassa, grandes períodos de trabalho e alta regularidade. Além disso torna o ambiente altamente insalubre com radiação e gases tóxicos proveniente do arco, respingos de metal fundido e altas temperaturas. Este  tipo  de  trabalho  faz  com  que  o  soldador  fique  fatigado  rapidamente,  e  isto  é  uma  das  principais causas da baixa produtividade e inconsistência em procedimentos com solda manual.
 
@@ -20,20 +20,43 @@ Além disso, regularidade é um aspecto fundamental em soldagem, pois melhora cara
 Esses fatores levaram a necessidade automatização para diminuir a exposição de trabalhadores e manter a regularidade do processo, aumentando a produtividade e a qualidade do produto final.
 
 
-Infelizmente nem mesmo robôs e máquinas específicas para soldagem não são capazes produzir cordões de solda perfeitos, inclusive podem não atender às especificações desejadas e cometer erros. Portanto, faz-se necessária a aplicação de controle do processo visando minimizar a quantidade de erros, evitar refugo e garantir as características desejadas aos produtos.
+Infelizmente nem mesmo robôs e máquinas específicas para soldagem são capazes produzir cordões de solda perfeitos, inclusive podem não atender às especificações desejadas e cometer erros. Portanto, faz-se necessária a aplicação de controle do processo visando minimizar a quantidade de erros, evitar refugo e garantir as características desejadas aos produtos.
+
+\section{Definição do problema}
 
 Existem vários métodos de controle para soldagem atualmente. A maioria deles consiste em monitorar parâmetros como tensão do arco e corrente, corrigir esses mesmos e outras variáveis como velocidade de alimentação do arame e velocidade de avanço. Esse tipo de controle é de malha aberta pois não monitora o cordão ou a poça de solda e apesar de melhorar a qualidade do processo não garante que os requisitos sejam cumpridos.
-Para garantir a qualidade da soldagem é necessário que seja feito um controle em malha fechada e isso só pode ser feito ao monitorar os estágios finais do processo. 
+
+Para garantir a qualidade da soldagem é necessário que seja feito um controle em malha fechada e isso só pode ser feito ao monitorar os resultados do processo. Para isso, é necessário inferir, em medidas de engenharia, informações úteis do processo, como geometria da poça de soldagem, posição do arame, temperatura, tensão e corrente do arco.
+
+As medidas de tensão e corrente podem ser obtidas com voltímetros e amperímetros. A temperatura pode ser obtida com um sensor infravermelho. Esses parâmetros não estão no escopo deste trabalho.
+Neste projeto, o que se deseja encontrar são informações geométricas do eletrodo e poça de soldagem. 
+
+Essas informações não são trivialmente obtidas com algum tipo de sensor comum existente no mercado pois envolvem os conceitos de distâncias, ângulos e área. Soma-se a isso o pequeno tempo em que porções do eletrodo e peça são mantidos fundidos formando a poça de soldagem.
 
 \section{Objetivos do projeto}
 
-A proposta deste trabalho é esse que o processamento seja feito através de uma FPGA em blocos sequenciais e paralelos. Cada bloco é responsável por uma etapa específica do processamento:
+Neste sentido a proposta do trabalho é encontrar algumas medidas necessárias ao controle em malha fechada por meio de visão computacional. As medidas desejadas são:
+
+\begin{itemize}
+\item Largura da poça de soldagem;
+\item Comprimento da poça de soldagem;
+\item Posição do eletrodo.
+\end{itemize}
+
+Para tanto serão definidos métodos e um sistema que seja capaz de fornecer as medidas no menor tempo possível. Os métodos devem ser de baixa complexidade e levar em conta a especificidade do problema para facilitar o desenvolvimento do sistema que fará o processamento. O sistema em si deve ser implementado em \textit{hardware} para minimizar o máximo possível o tempo entre a aquisição de uma imagem e o fornecimento das medidas desejadas.
+
+
+\section{Metodologia}
+
+A proposta deste trabalho é esse que o processamento seja feito através de um FPGA em blocos sequenciais e paralelos. Cada bloco é responsável por uma etapa específica do processamento:
 \begin{itemize}
 \item Seleção de imagens propícias ao processamento;
 \item Pré-processamento das imagens;
 \item Obtenção de medidas do eletrodo;
-\item Obtenção de medidas da poça de soldagem
+\item Obtenção de medidas da poça de soldagem.
 \end{itemize}
+
+
 
 \section{Apresentação do manuscrito}
 

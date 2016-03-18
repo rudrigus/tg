@@ -6,15 +6,13 @@
 
 O processo de soldagem GMAW do inglês \textit{Gas Metal Arc Welding}, também conhecido como MIG/MAG (\textit{Metal Inert Gas/Metal Active Gas}) é um dos processos de soldagem mais propícios para automação. Alguns aspectos básicos do processo GMAW concernentes ao problema aqui tratado serão detalhados e discutidos nos próximos subitens.
 
-
-
 \subsection{Fundamentos}
 
 O princípio da soldagem GMAW é a união de peças metálicas é devido ao aquecimento por um arco elétrico formado entre as mesmas e um eletrodo metálico nu e consumível, sendo todos os elementos envoltos por um gás ativo ou inerte. 
 
 O arame de soldar desempenha duas funções: por um lado é o eletrodo que conduz corrente, por outro, é também, em simultâneo, o material de adição a ser inserido na poça de soldagem. Este arame é introduzido mecanicamente através de um alimentador motorizado o que caracteriza o processo como semi-automático quando operado por humanos. \cite{book:modenesi}
 
-A imagem \ref{fig:solda_gmaw} demonstra o processo de formação do cordão de solda e seus elementos principais.
+A figura \ref{fig:solda_gmaw} demonstra o processo de formação do cordão de solda e seus elementos principais.
 
 \begin{figure}[h]
 \centering
@@ -24,7 +22,7 @@ A imagem \ref{fig:solda_gmaw} demonstra o processo de formação do cordão de sold
 \end{figure}
 
 
-Um gás de proteção que flui através do bocal da tocha protege o arco elétrico e o material em fusão, podendo o mesmo ser inerte (MIG) ou ativo (MAG). Os gases inertes, tais como o argônio e o hélio, não entram em reação com o material em fusão e apenas protegem os materiais fundidos de contaminantes. Por outro lado, os gases ativos, não só interferem no próprio arco elétrico, como também reagem com o material em fusão. Um exemplo de gás inativo é uma mistura de dióxido de carbono ou oxigênio com argônio. O componente ativo tem influência, por exemplo, sobre a penetração e/ou a temperatura do banho de fusão.
+Um gás de proteção que flui através do bocal da tocha protege o arco elétrico e o material em fusão, podendo o mesmo ser inerte (MIG) ou ativo (MAG). Os gases inertes, tais como o argônio e o hélio, não entram em reação com o material em fusão e apenas protegem os materiais fundidos de contaminantes. Por outro lado, os gases ativos, não só interferem no próprio arco elétrico, como também reagem com o material em fusão. Um exemplo de gás ativo é uma mistura de dióxido de carbono ou oxigênio com argônio. O componente ativo tem influência, por exemplo, sobre a penetração e/ou a temperatura do banho de fusão.
 
 Além disto, o gás também tem influência nas perdas de elementos químicos, na temperatura da poça de fusão, na sensibilidade à fissuração e na porosidade, bem como na facilidade da execução da soldagem em diversas posições. Os gases nobres (processo MIG) são preferidos por razões metalúrgicas, enquanto o CO2 puro, é preferido por razões econômicas. O processo MAG é utilizado somente na soldagem de materiais ferrosos, enquanto o processo MIG pode ser usado tanto na soldagem de materiais ferrosos quanto não ferrosos como Alumínio, Cobre, Magnésio, Níquel e suas ligas.
 
@@ -92,7 +90,7 @@ As imagens capturadas em um processo de soldagem necessitam passar por um proces
 
 A área de processamento de imagens desperta interesse de estudiosos por ter diversas aplicações em duas principais categorias: (1) aprimoramento de informações pictóricas para interpretação humana; e (2) extração automática de dados relevantes à partir de uma cena \cite{oge}. A segunda categoria, que será utilizada neste trabalho, também pode ser designada como ''análise de imagens'', ''visão por computador'' ou ''reconhecimento de padrões''.
 
-Diversas áreas se beneficiam de técnicas de processamento de imagens. Na medicina procedimentos computacionais melhoram o contraste, codificam níveis de intensidade para melhor interpretação e podem até mesmo calcular a quantidade de uma determinada célula em uma imagem. Geógrafos fazem uso de técnicas semelhantes e podem determinar áreas de vegetação, desmatamento, e poluição \cite{gonzalez}. Existem muitos outros exemplos, que vão até o controle de qualidade e de processos.
+Diversas áreas se beneficiam de técnicas de processamento de imagens. Na medicina procedimentos computacionais melhoram o contraste, codificam níveis de intensidade para melhor interpretação e podem até mesmo calcular a quantidade de um determinado tipo de célula em uma imagem. Geógrafos fazem uso de técnicas semelhantes e podem determinar áreas de vegetação, desmatamento, e poluição \cite{gonzalez}. Existem muitos outros exemplos, que vão até o controle de qualidade e de processos.
 
 \subsection{Elementos de sistemas de processamento de imagens}
 Um sistema de processamento de imagens consiste alguns elementos básicos mostrados a seguir \cite{gonzalez}:
@@ -124,8 +122,7 @@ Por fim, o resultado do processamento é exposto ao ser humano através de um moni
 O elemento mais importante neste trabalho, Processamento de Imagens,possui alguns passos fundamentais para se chegar ao objetivo proposto. São eles:
 
 \begin{enumerate}
-\item{\textbf{Pré-processamento}: tem por objetivo melhorar a qualidade da imagem para que os estágios seguintes tenham mais garantia de sucesso. Geralmente envolve técnicas de realce de contrastes, remoção de ruído e isolamento de regiões.
-}
+\item{\textbf{Pré-processamento}: tem por objetivo melhorar a qualidade da imagem para que os estágios seguintes tenham mais garantia de sucesso. Geralmente envolve técnicas de realce de contrastes, remoção de ruído e isolamento de regiões.}
 \item{\textbf{Segmentação}: é a divisão da imagem pré-processada em partes ou objetos constituintes. Por exemplo, caracteres em uma imagem de texto. É uma das tarefas mais difíceis de se implementar  e geralmente é o que define se o processamento vai ter sucesso ou não.
 }
 \item{\textbf{Representação e descrição}: nesse estágio, os dados obtidos pela segmentação em forma de pixels passam a ser representados de forma fronteiras e/ou  regiões completas. A partir dessa representação, há a descrição de características quantitativas ou qualitativas, por exemplo, uma concavidade ou um buraco.
@@ -213,7 +210,7 @@ Para eliminar o problema de distorção existem dois métodos comumente utilizados:
 \includegraphics[scale = 0.7]{Figuras/ModeloPlanoCamera.jpg}}
 \subfigure[\label{fig:Modelo1DimCamera}]{
 \includegraphics[scale = 0.7]{Figuras/Modelo1DimCamera.jpg}}
-\caption{ \cite{article:Criminisi} (a) Modelo de câmera plana. (b) Modelo de câmera unidimensional.}\label{fig:ModeloCamera}
+\caption{(a) Modelo de câmera plana. (b) Modelo de câmera unidimensional. \cite{article:Criminisi}}\label{fig:ModeloCamera}
 \end{center}
 \end{figure}
 
@@ -224,21 +221,23 @@ Matematicamente o modelo de câmera e de projeção pode ser definido por uma matri
 
 
 \begin{equation}
-\textbf{X} = T\textbf{x}
-\end{equation}\label{eq:ModeloCamera}
+\textbf{x} = T\textbf{X}
+\label{eq:ModeloCamera}
+\end{equation}
 
-Onde $T$ é uma matriz $3 \times 3$, ''$= $''  representa igualdade em escala. Os vetores de pontos são dados por: $\textbf{X} = (X_1,X_2,X_3)^T$ e $\textbf{x} = (x_1,x_2,x_3)^T$
+Onde $T$ é uma matriz $3 \times 3$ e ''$= $''  representa igualdade em escala. Os vetores de pontos são dados por: $\textbf{X} = (X_1,X_2,X_3)^T$ e $\textbf{x} = (x_1,x_2,x_3)^T$
 
 
 O ponto da imagem, uma projeção, e representado por três coordenadas cartesianas, $\textbf{x} = (x_1,x_2,x_3)^T$. Essas coordenadas são chamadas de homogêneas. Apenas a direção do vetor é importante visto que, independente da distância da câmera, qualquer ponto real em determinada direção aparecerá em um único ponto na projeção. Portanto todos os pontos da forma $ \lambda \textbf{x} = (\lambda x_1, \lambda x_2, \lambda x_3)$ são equivalentes.
 
 Para representar os pontos em um plano cartesiano convencional da forma $(x,y)$, deve-se construir um plano especial $\pi_e)$, perpendicular ao eixo $x_3$ a uma distância unitária na direção de $x_3$. A intersecção do vetor $\textbf{x}$ com o plano $\pi_e$ é o ponto $x_e = (x,y,1)$.
 
-É de interesse que a posição desse plano não afete a posição das coordenadas cartesianas $(x,y)$, portanto define-se essas coordenadas da seguinte forma:
+É de interesse que a posição desse plano não afete a posição das coordenadas cartesianas $(x,y)$, portanto definem-se essas coordenadas da seguinte forma:
 
-\begin{equation*}
+\begin{equation}
 x_e = (\frac{x_1}{x_3},\frac{x_2}{x_3},1)^T = (x,y,1)^T
-\end{equation*}
+\label{eq:xe}
+\end{equation}
 
 
 
@@ -267,13 +266,14 @@ t_{31} & t_{32} & t_{33}
 X_1 \\
 X_2 \\
 X_3
-\end{bmatrix} 
+\end{bmatrix}
+\label{eq:ModeloCamera-2}
 \end{equation}
 
 
 A escala $\lambda$ da matriz não afeta a equação, portanto apenas os oito graus de liberdade correspondentes à razão dos elementos da matriz são significantes.
 
-À partir da equação \ref{eq:ModeloCamera}, cada correspondência entre pontos reais e pontos da imagem gera duas equações de coordenada cartesianas $\textbf{H}$. Para $n$ correspondências obtém-se um sistema com $2n$ equações com $8$ variáveis. Se $n = 4$, obtém-se a solução exata \cite{chapter:Zisserman:23}. Se $n > 4$, a matriz  é super-determinada e estima-se $\textbf{H}$ por minimização \cite{article:Criminisi}.%
+À partir da equação \ref{eq:ModeloCamera-2}, cada correspondência entre pontos reais e pontos da imagem gera duas equações de coordenada cartesianas $\textbf{H}$. Para $n$ correspondências obtém-se um sistema com $2n$ equações com $8$ variáveis. Se $n = 4$, obtém-se a solução exata \cite{chapter:Zisserman:23}. Se $n > 4$, a matriz  é super-determinada e estima-se $\textbf{H}$ por minimização \cite{article:Criminisi}.%
 % % MUITO IMPORTANTE!!! Significa que são necessários 4 pontos conhecidos no mundo real. Posso colocar uma escala sobre a peça para obter o modelo da câmera e fazer uma pré calibração
 
 A representação em coordenadas cartesianas demonstra a natureza não linear da transformação:
@@ -283,7 +283,7 @@ x = \frac{x_1}{x_3} = \frac{t_{11}X + t_{12}Y + t_{13}}{t_{31}X + t_{32}Y + t_{3
 y = \frac{x_2}{x_3} = \frac{t_{21}X + t_{22}Y + t_{23}}{t_{31}X + t_{32}Y + t_{33}}
 \end{align}
 
-Para definir os elementos da matriz de transformação deve-se ter quatro correspondências de pontos entre plano real e projeção. Com a escala de $\textbf{T}$ arbitrária, e $t_{33}=1$, temos os pontos representados por $(\lambda_i x_i, \lambda_i y_i, lambda_i)^T = T(X_i,Y_i,1)^T$. O sistema de equações lineares resultantes é:
+Para definir os elementos da matriz de transformação deve-se ter quatro correspondências de pontos entre plano real e projeção. Com a escala de $\textbf{T}$ arbitrária, e $t_{33}=1$, Têm-se os pontos representados por $(\lambda_i x_i, \lambda_i y_i, lambda_i)^T = T(X_i,Y_i,1)^T$. O sistema de equações lineares resultantes é:
 
 \begin{equation}\label{eq:SistEqZisserman}
 \begin{bmatrix}
@@ -321,7 +321,7 @@ y_4\\
 
 Esse sistema linear garante a solução para a matriz $\textbf{T}$, desde que nenhum grupo de três pontos sejam colineares.
 
-Finalmente, para determinar a matriz de transformação deve-se resolver a equação \ref{eq:SistEqZisserman} para $t_{11}$ a $t_{32}$. O sistema é do formato $ A \cdot T = B $, e pode ser calculado com a regra da matriz inversa. A solução segue-se na equação \ref{eq:solucao-transformada} abaixo:
+Finalmente, para determinar a matriz de transformação, deve-se resolver a equação \ref{eq:SistEqZisserman} para $t_{11}$ a $t_{32}$. O sistema é do formato $ A \cdot T = B $, e pode ser calculado com a regra da matriz inversa. A solução segue-se na equação \ref{eq:solucao-transformada} abaixo:
 
 \begin{equation}
 T = A^{-1} \cdot B
@@ -365,7 +365,7 @@ y_4\\
 
 \subsubsection{Minimização de erros da transformação}
 
-Para que se minimize as margens de erro da matriz de transformação $\textbf{T}$, são necessários mais de quatro correspondências de pontos. De modo geral, como demonstrado em \cite{article:Criminisi}, quanto mais pontos utilizados na determinação da matriz de transformação, menor é a incerteza. Para $n$ pontos, sistema de equações é semelhante à \ref{eq:SistEqZisserman}:
+Para que se minimizem as margens de erro da matriz de transformação $\textbf{T}$, são necessários mais de quatro correspondências de pontos. De modo geral, como demonstrado em \cite{article:Criminisi}, quanto mais pontos utilizados na determinação da matriz de transformação, menor é a incerteza. Para $n$ pontos, sistema de equações é semelhante à \ref{eq:SistEqZisserman}:
 
 \begin{equation}
 \begin{bmatrix}
@@ -416,13 +416,13 @@ O algorítimo parte do princípio de diferenciação de intensidade em porções de im
 \item Se a janela contém um canto ou ponto isolado, então todas os deslocamentos resultam em uma grande mudança de intensidade. Portanto, um canto pode ser detectado quando a menor mudança produzida por qualquer deslocamento for grande.
 \end{enumerate}
 
-Foi feita a descrição matemática das considerações acima. Denotando as intensidades como $I$, a mudança $E$ produzida por um deslocamento $(x,y)$ é dado por:
+Foi feita a descrição matemática das considerações acima. Denotando as intensidades como $I$, a mudança $E$ produzida por um deslocamento $(x,y)$ é dada por:
 
 \begin{equation}
 E_{x,y} = \sum\limits_{u}^{v} w_{u,v} | I_{x+u,y+v} - I_{u,v} |^2
 \end{equation}
 
-onde $w$ especifica a janela da imagem: é uma unidade dentro de uma região retangular específica, e zero fora dela. Os deslocamentos $(x,y)$, são do tipo ${(1,0),(1,1),(0,1),(-1,1)}$. Portando o detector de Moravec é basicamente: procurar por um máximo local em $min(E)$ acima de uma limite estabelecido.
+Onde $w$ especifica a janela da imagem: é uma unidade dentro de uma região retangular específica, e zero fora dela. Os deslocamentos $(x,y)$, são do tipo ${(1,0),(1,1),(0,1),(-1,1)}$. Portando o detector de Moravec é basicamente: procurar por um máximo local em $min(E)$ acima de uma limite estabelecido.
 
 \subsubsection{Detector de auto-correlação}
 
@@ -547,11 +547,11 @@ Contudo, foi durante a década de 1990 que esses dispositivos ficaram famosos e a
 
 Atualmente os sistemas reconfiguráveis continuam em alta, principalmente agora que as tecnologias de fabricação estão próximas do limite de miniatuzação. A evolução do poder de processamento de arquiteturas convencionais (Arquitetura de Von Neumann), baseadas em um \textit{hardware} genérico que recebe fluxos de instruções, demonstra desaceleramento \cite{thesis:moore-law-limit}. Com o esperado limite da Lei de Moore  \cite{article:moore-cramming-components} , muitos projetistas recorrem ao uso de \textit{hardware} específico para solucionar diferentes problemas. 
 
-As FPGAs atuais são produzidas com uma série de facilidades que incluem: memória, entradas e saídas de alta velocidade e blocos lógicos. Elas podem tanto ser utilizadas para desenvolvimento e teste de circuits digitais (motivo pelo qual foram desenvolvidas) como podem ser implementadas no produto final. As aplicações vão desde processamento de imagens a mineração de \textit{bitcoins}
+As FPGAs atuais são produzidas com uma série de facilidades que incluem: memória, entradas e saídas de alta velocidade e blocos lógicos. Elas podem tanto ser utilizadas para desenvolvimento e teste de circuitos digitais (motivo pelo qual foram desenvolvidas) como podem ser implementadas no produto final. As aplicações vão desde processamento de imagens à mineração de \textit{bitcoins}.
 
 \subsection{Aspectos Gerais}
 
-De acordo com a patente de \textit{Re-programmable PLA} \cite{page1985re} os \textit{Programmable Gate Array} (PLAs) reconfiguráveis são descritos abaixo:
+De acordo com a patente de \textit{Re-programmable PLA} \cite{page1985re} os \textit{Programmable Gate Arrays} (PLAs) reconfiguráveis são descritos abaixo:
 
 \begin{quote}
 Em geral, um PLA é um circuito lógico que recebe uma pluralidade de sinais digitais de entrada e gera uma pluralidade de sinais digitais de saída onde cada um dos sinais de saída é uma combinação de soma-de-produto programável dos sinais de entrada. Em PLAs convencionais, um circuito é fornecido para gerar uma pluralidade de termos que são o E lógico de sinais de entrada selecionados; e um outro circuito é fornecido para gerar os sinais de saída ao operar seletivamente esses termos com OU ou E lógicos.
@@ -603,17 +603,6 @@ Os pinos de entrada e saída são representados por blocos de entrada e saída, IOB
 
 % % % %        % % % %         % % % %       % % % %
 
-LER DESSES TEXTOS E EXPLICAR MAIS
-
-\begin{verbatim}
-https://en.wikipedia.org/wiki/Field-programmable_gate_array#cite_note-book-16
-file:///home/rodrigo/Downloads/US4508977.pdf
-https://www.google.com/patents/US8112466?dq=field+programmable+gate+array+patent&hl=pt-BR&sa=X&ved=0CCQQ6AEwAWoVChMIwYequJ2VyAIVyA2QCh26Iw5V
-https://www.google.com/patents/US4870302?dq=freeman+1989+configurable&hl=pt-BR&sa=X&ved=0CBsQ6AEwAGoVChMI-O2cw5OVyAIVhoyQCh07Cgcw
-https://www.google.com.br/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8&client=ubuntu#q=patent%20fpga
-
-\end{verbatim}
-
 
 \section{Linguagens de Descrição de Hardware e VHDL}
 % falar sobre varias linguagens aqui e da vhdl so no desenv
@@ -657,7 +646,7 @@ Algumas das características principais da linguagem são:
 
 É uma abstração primária do VHDL.  As entidades podem ser instanciadas dentro de outras entidades, formando assim a hierarquia do projeto. Cada instância é vista pela entidade superior como uma caixa preta da qual se conhece apenas as entradas e saídas. A ferramenta de sintetização cria as instâncias à partir do nível mais alto da hierarquia, a Entidade de Projeto (ou \textit{Top Level Entity}).
 
-Cada entidade ser declarada com a palavra reservada ''ENTITY'' seguida do nome que a identifica. Em seguida podem ser opcionalmente declaradas as cláusulas \textbf{}PORT'' ou ''GENERIC''. A cláusula ''PORT'' define os tipos de portas de entrada e saída da entidade. A cláusula ''GENERIC'' permite passar informações estáticas para uma entidade. Essas cláusulas são opcionais e podem ser omitidas, por exemplo em um \textit{testbench} usado para simulações.
+Cada entidade deve ser declarada com a palavra reservada ''ENTITY'' seguida do nome que a identifica. Em seguida podem ser opcionalmente declaradas as cláusulas \textbf{}PORT'' ou ''GENERIC''. A cláusula ''PORT'' define os tipos de portas de entrada e saída da entidade. A cláusula ''GENERIC'' permite passar informações estáticas para uma entidade. Essas cláusulas são opcionais e podem ser omitidas, por exemplo em um \textit{testbench} usado para simulações.
 
 %Cada porta tem um modo que define a direção e como os comandos na arquitetura podem operar com essas portas. Os modos são: ''in'', ''out'', ''buffer'', ''inout''.
 
@@ -665,6 +654,7 @@ O comportamento de uma entidade é definido pela arquitetura e precisa ser declar
 
 O exemplo abaixo mostra uma entidade que utiliza a instância de outras em seu código:
 
+\begin{framed}
 %colocar em uma folha só
 \begin{lstlisting}[language=VHDL]
 LIBRARY ieee ;
@@ -673,9 +663,9 @@ USE ieee.std_logic_arith.all;
 
 ENTITY main is
     port (  CLOCK : in std_logic;
-    start_stop  : in std_logic ;
-            up_down       : in std_logic ;
-    D1A, D1B, D1C, D1D, D1E, D1F, D1G, DP1 : out std_logic;
+    start_stop    : in std_logic ;
+    up_down       : in std_logic ;
+    A, B, C, D, E, F, G, DP : out std_logic;
   );
         
         
@@ -684,13 +674,13 @@ END main ;
 ARCHITECTURE ESTRUTURA of main is
 
 SIGNAL BCD : std_logic_vector(3 downto 0);
-SIGNAL binario4bits : integer(11 downto 0);
+SIGNAL bin4bits : integer(11 downto 0);
 COMPONENT CONTADOR
 PORT  ( 
   CLK   : in std_logic;
   start_stop    : in std_logic ;
-    up_down     : in std_logic ;
-  binario4bits  : out integer(3 downto 0)
+  up_down       : in std_logic ;
+  bin4bits      : out integer(3 downto 0)
   );
 END component;
 
@@ -702,12 +692,12 @@ PORT  (
 END component;
 
 BEGIN
-conta1 : CONTADOR port map (CLOCK, start_stop, up_down, binario12bits);
-conv1 : BIN_7SEG port map (binario4bits, D1A, D1B, D1C, D1D, D1E, D1F, D1G, DP1);
+conta1 : CONTADOR port map (CLOCK, start_stop, up_down, bin4bits);
+conv1 : BIN_7SEG port map (bin4bits, A, B, C, D, E, F, G, DP);
 END ESTRUTURA;
 
 \end{lstlisting}
-
+\end{framed}
 
 
 \subsubsection{Entidade de Projeto}
@@ -731,13 +721,16 @@ Existem diversos pacotes padrões, muitos dos quais distribuídos pelo IEEE, mas t
 
 Cada pacote utilizado precisa ser declarado no início do documento para se ter acesso aos elementos definidos no mesmo ao longo do código. É necessário declarar de antemão a biblioteca em que o pacote está contido, caso não esteja nas bibliotecas ''std'' ou ''work''. O exemplo abaixo permite acesso aos tipos e operações do pacote 1164 da IEEE:
 
+\begin{framed}
 \begin{lstlisting}[language=VHDL]
 LIBRARY ieee;
 USE ieee.std_logic_1164;
 \end{lstlisting}
+\end{framed}
 
 Pacotes definidos pelo usuário precisam ser claramente identificados pela palavra chave ''package'' e ficam disponíveis para seus documentos dentro da biblioteca ''work'', a não ser que sejam explicitamente declaradas dentro de outra biblioteca definida pelo usuário. O exemplo abaixo mostra a declaração e utilização de um pacote:
 
+\begin{framed}
 \begin{lstlisting}[language=VHDL]
 PACKAGE meu_pacote IS
   TYPE \textbf{meu_inteiro} IS range -127 to 127;
@@ -751,10 +744,11 @@ PORT(
     saida: out \textbf{meu_inteiro} );
 END minha_entidade;
 \end{lstlisting}
+\end{framed}
 
 \subsection{Sintetização}
 
-Por ser uma linguagem muito abrangente e complexa, algumas das funcionalidades possíveis na linguagem podem não ser possíveis na implementação física, como leitura de arquivos. Portanto é importante considerar o circuito real desejado. A ferramenta de síntese e simulação também deve ser considerada, pois a mesma pode aceitar diversos comandos irrealizável no mundo real.
+Por ser uma linguagem muito abrangente e complexa, algumas das funcionalidades possíveis na linguagem podem não ser possíveis na implementação física, como leitura de arquivos. Portanto é importante considerar o circuito real desejado. A ferramenta de síntese e simulação também deve ser considerada, pois a mesma pode aceitar diversos comandos irrealizáveis no mundo real.
 
 A sintetização ocorre em várias etapas para levar a descrição do nível de abstração da linguagem até o circuito real. Os fabricantes de dispositivos reprogramáveis (FPGAs) costumam fornecer ferramentas que fazem todo o processo automaticamente. Esses níveis geralmente são:
 \begin{enumerate}
@@ -768,7 +762,7 @@ Verificação de sintaxe, tipos e hierarquia do código, semelhante a uma primeira 
 
 \item { Portas }
 
-As primitivas genéricas são substituídas por componentes reais do dispositivo empregado, como flip-flops, carrys e latches.
+As primitivas genéricas são substituídas por componentes reais do dispositivo empregado, como \textit{flip-flops}, \textit{carrys} e \textit{latches}.
 
 
 \item { \textit{Place and Route} }
@@ -791,12 +785,13 @@ Uma das ferramentas mais úteis para o desenvolvimento de qualquer sistema é o si
 
 A princípio pode-se pensar que um simulador rodando em uma arquitetura de Von Neumann não será útil pois não tem a capacidade de processar na mesma velocidade que um \textit{hardware} de aplicação específica. Porém, o processo de compilação e escrita em uma placa FPGA tem um alto custo de tempo e o simulador normalmente é capaz de dar resultados satisfatórios apenas com uma sintetização a nível de RTL. Dessa forma é possível testar e corrigir rapidamente alterações no projeto.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{./Figuras/exemplo-simulacao-VHDL.jpg}
-\caption{Resultado de uma simulação em VHDL}
-\label{fig:exemplo_simulacao_VHDL}
-\end{figure}
+% retirado a pedido do Guilherme
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=\textwidth]{./Figuras/exemplo-simulacao-VHDL.jpg}
+%\caption{Resultado de uma simulação em VHDL}
+%\label{fig:exemplo_simulacao_VHDL}
+%\end{figure}
 
 
 A seguir serão descritos alguns aspectos de simuladores de forma sucinta.
@@ -817,7 +812,7 @@ Este processo é chamado de simulação orientada a eventos (\textit{event-driven})
 
 Alem da descrição de \textit{hardware}, um simulador precisa dos sinais de entrada que influenciarão os processos.
 
-Alguns softwares tem funções que ajudam o projetista a criar estímulos para o simulador, como um arquivo de formas de onda (\textit{waveform}). Esses arquivos são facilmente editáveis com funções simples para vetores de ondas como: clock, contadores, valores aleatórios, textos ou edição manual feita visualmente. Estes arquivos são bastante úteis para o teste de blocos mais simples.
+Alguns softwares tem funções que ajudam o projetista a criar estímulos para o simulador, como um arquivo de formas de onda (\textit{waveform}). Esses arquivos são facilmente editáveis com funções simples para vetores de ondas como: \textit{clock}, contadores, valores aleatórios, textos ou edição manual feita visualmente. Estes arquivos são bastante úteis para o teste de blocos mais simples.
 
 Porém, simulações mais detalhadas e extensas é mais comum o uso de \textit{testbenches}. Os \textit{testbenches} são arquivos criados em VHDL e aproveitam a própria estrutura e os elementos da linguagem para fornecer os valores desejados ao simulador. 
 
@@ -855,7 +850,7 @@ Algumas câmeras especiais, desenvolvidas para uso industrial ou pesquisa científ
 
 \subsection{Camera Link}
 
-Atualmente existem protocolos rápidos o suficiente para transmissão de dados à partir da ordem de 1 Gb/s, como a fibra ótica e os cabos ethernet Cat 6 e Cat 7. Mas a câmera em questão utiliza um outro protocolo padronizado especificamente para aplicação com câmeras, o \textit{Camera Link}. Este protocolo permite transmissão de até 6,8 Gb/s em uma configuração máxima de três \textit{Channel-links} e transmite até 80 bits por ciclo. Esta característica é muito interessante para uso com FPGAs pois tem um grau de paralelismo naturalmente superior à outros protocolos.
+Atualmente existem protocolos rápidos o suficiente para transmissão de dados a partir da ordem de 1 Gb/s, como a fibra ótica e os cabos ethernet Cat 6 e Cat 7. Mas a câmera em questão utiliza um outro protocolo padronizado especificamente para aplicação com câmeras, o \textit{Camera Link}. Este protocolo permite transmissão de até 6,8 Gb/s em uma configuração máxima de três \textit{Channel-links} e transmite até 80 bits por ciclo. Esta característica é muito interessante para uso com FPGAs pois tem um grau de paralelismo naturalmente superior a outros protocolos.
 
 O Camera Link usa de um a três \textit{Channel-links}. Com apenas um é classificado como Configuração Base (\textit{Base Configuration}) e pode transmitir até 2,04 Gb/s. As outras configurações são a Média (\textit{Medium Configuration}) e a Completa (\textit{Full Configuration}) e transmitem 4,08 e 6,8 Gb/s respectivamente.
 
@@ -865,9 +860,9 @@ O \textit{Channel-link} é uma interface de comunicação com um par emissão e rece
 
 \subsubsection{Especificações}
 
-A configuração base transmite 24 bits de dados do pixel mais 3 bits de validação e um bit reserva a cada ciclo de clock. Os bits de validação são \textit{Data Valid}, \textit{Line Valid} e \textit{Frame Valid}. As configurações média e completa utilizam doi e três \textit{Channel-links} respectivamente, duplicando ou triplicando a quantidade de bits transmitios simultaneamente. Elas podem omitir os bits de validação redundantes e transmitir até 80 bits de dados por ciclo \cite{camera-link}. Esta característica da interface \textit{Camera Link} a torna ideal para processamento com alto nível de paralelismo, como em FPGAs. 
+A configuração base transmite 24 bits de dados do pixel mais 3 bits de validação e um bit reserva a cada ciclo de clock. Os bits de validação são \textit{Data Valid}, \textit{Line Valid} e \textit{Frame Valid}. As configurações média e completa utilizam dois e três \textit{Channel-links} respectivamente, duplicando ou triplicando a quantidade de bits transmitios simultaneamente. Elas podem omitir os bits de validação redundantes e transmitir até 80 bits de dados por ciclo \cite{camera-link}. Esta característica da interface \textit{Camera Link} a torna ideal para processamento com alto nível de paralelismo, como em FPGAs. 
 
-A transmissão serial é feita com 7 bits em cada canal a cada ciclo de clock. O início de cada palavra fica no meio do valor alto do clock e o clock tem o período de valor alto maior que o de valor baixo na proporção 4:3. Esta configuração pode ser melhor observada na imagem \ref{fig:camera-link-serial}. \cite{camera-link-ip-core}
+A transmissão serial é feita com 7 bits em cada canal a cada ciclo de clock. O início de cada palavra fica no meio do valor alto do clock e o clock tem o período de valor alto maior que o de valor baixo na proporção 4:3. Esta configuração pode ser melhor observada na figura \ref{fig:camera-link-serial}. \cite{camera-link-ip-core}
 
 \begin{figure}[h!]
 \centering
@@ -876,7 +871,7 @@ A transmissão serial é feita com 7 bits em cada canal a cada ciclo de clock. O i
 \label{fig:camera-link-serial}
 \end{figure}
 
-Pode-se notar na imagem \ref{fig:camera-link-serial} que os dados de cada cor são distribuídos de forma complicada entre os quatro canais da interface. 
+Pode-se notar na figura \ref{fig:camera-link-serial} que os dados de cada cor são distribuídos de forma complicada entre os quatro canais da interface. 
 
 Os bits de validação dependem basicamente da câmera utilizada mas seguem sempre um mesmo padrão \cite{camera-link}:
 
@@ -886,7 +881,7 @@ Os bits de validação dependem basicamente da câmera utilizada mas seguem sempre 
 \item DVAL (\textit{Data Valid}) tem o valor ALTO para dados válidos.
 \end{itemize}
 
-Estes bits podem ser melhor visualizados no manual do fabricante da câmera utilizada nos experimentos, conforme a imagem \ref{fig:bits-validacao-camera-freerunning} abaixo \cite{dalsa}:
+Estes bits podem ser melhor visualizados no manual do fabricante da câmera utilizada nos experimentos, conforme a figura \ref{fig:bits-validacao-camera-freerunning} abaixo \cite{dalsa}:
 
 \begin{figure}[h!]
 \centering
@@ -895,11 +890,11 @@ Estes bits podem ser melhor visualizados no manual do fabricante da câmera utili
 \label{fig:bits-validacao-camera-freerunning}
 \end{figure}
 
-A imagem \ref{fig:bits-validacao-camera-freerunning} demonstra com clareza os momentos de ativação e desativação dos bits de validação, além de outras características interessantes dessa transmissão de dados. O valor \textit{INTEGRATION} por exemplo se refere ao tempo de exposição da câmera, CPRE (\textit{Clocks after exposure of the sensor}) que é um tempo mínimo entre a exposição e o início da transmissão de dados e \textit{line pause} é o tempo entre uma linha e outra.
+A figura \ref{fig:bits-validacao-camera-freerunning} demonstra com clareza os momentos de ativação e desativação dos bits de validação, além de outras características interessantes dessa transmissão de dados. O valor \textit{INTEGRATION} por exemplo se refere ao tempo de exposição da câmera, CPRE (\textit{Clocks after exposure of the sensor}) que é um tempo mínimo entre a exposição e o início da transmissão de dados e \textit{line pause} é o tempo entre uma linha e outra.
 
 \subsection{Configuração da câmera}
 
-A câmera é extremamente versátil e permite uma grande gama de configurações que podem inclusive alterar a duração de alguns tempos demonstrados na imagem \ref{fig:bits-validacao-camera-freerunning}. Algumas opções incluem \cite{dalsa}:
+A câmera é extremamente versátil e permite uma grande gama de configurações que podem inclusive alterar a duração de alguns tempos demonstrados na figura \ref{fig:bits-validacao-camera-freerunning}. Algumas opções incluem \cite{dalsa}:
 
 \begin{itemize}
 \item Tempo de exposição - é a duração de tempo que a câmera recebe luz do ambiente externo a cada imagem. Normalmente, quanto maior for o tempo de exposição, maior o brilho das imagens obtidas;
@@ -907,7 +902,7 @@ A câmera é extremamente versátil e permite uma grande gama de configurações que 
 \item Dimensionamento de janela - é uma das funções mais interessantes dessa câmera, pois permite usar apenas setores de interesse dentro da janela da câmera. Isto permite a aquisição de imagens menores a uma taxa mais elevada de FPS. Por exemplo, pode ser transmitido um vídeo de 1024 x 1024 pixels (1 Mp) a 150 FPS ou um de 512 x 1024 pixels (0,5) Mp a 300 FPS.
 \end{itemize}
 
-Todos esses parâmetros podem ser definidos através de comunicação serial por um software fornecido pelo fabricante. As configurações ficam armazenadas na EEPROM (Electrically-Erasable Programmable Read-Only Memory) da câmera e continuam em vigor mesmo após a mesma ser desligada.
+Todos esses parâmetros podem ser definidos através de comunicação serial por um software fornecido pelo fabricante. As configurações ficam armazenadas na EEPROM (\textit{Electrically-Erasable Programmable Read-Only Memory}) da câmera e continuam em vigor mesmo após a mesma ser desligada.
 Isso significa que a câmera pode ser configurada com o software e utilizada para aquisição com outra interface mesmo após ser desligada.
 
 
@@ -1110,15 +1105,6 @@ b = \left(\frac{\sum i^2}{N\sum i^2 - \sum i \sum i } \right) \cdot \sum_{i=0}^{
 
 
 \subsection{Regressão Robusta}
-
-
-
-
-\section{Filtro de Kalman}
-
-
-Retirar ruídos dos dados gerados pelo processamento de imagens.
-Geração do sinal de controle à partir dos vetores gerados pelo algoritmo de processamento.
 
 
 

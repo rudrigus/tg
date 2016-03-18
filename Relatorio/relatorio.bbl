@@ -35,17 +35,19 @@ Disserta��o (Mestrado) --- Universidade Federal de Santa Catarina, 2005.}
   welding.
 \emph{Welding Journal}, December 1997.}
 
+\bibitem{book:intro-soldagem}
+\abntrefinfo{Modenesi, Marques e Santos}{MODENESI; MARQUES; SANTOS}{2012}
+{MODENESI, P.~J.; MARQUES, P.~V.; SANTOS, D.~B. \emph{Introdução à
+  Metalurgia da Soldagem}. [S.l.: s.n.], 2012.}
+
 \bibitem{book:ivanguerra}
 \abntrefinfo{Machado}{MACHADO}{2007}
 {MACHADO, I.~G. \emph{Soldagem e técnicas conexas}. [S.l.: s.n.], 2007.}
 
-\bibitem{luciano}
-\abntrefinfo{Franco}{FRANCO}{2007}
-{FRANCO, L. D.~N.
-\emph{Sincronização, captura e análise de imagens da poça de soldagem no
-  processo GMAW convencional, no modo de transferência metálica por curto
-  circuito}.
-Disserta��o (Mestrado) --- Universidade de Brasília, 2007.}
+\bibitem{article:balfour}
+\abntrefinfo{Balfour, Smith e Al-Shamma'A}{BALFOUR; SMITH; AL-SHAMMA'A}{}
+{BALFOUR, C.; SMITH, J.~S.; AL-SHAMMA'A, A.~I. A novel edge feature correlation
+  algorithm for real-time computer vision-based molten weld pool measurements.}
 
 \bibitem{oge}
 \abntrefinfo{Filho e Neto}{FILHO; NETO}{1999}
@@ -57,15 +59,15 @@ Disserta��o (Mestrado) --- Universidade de Brasília, 2007.}
 {GONZALEZ, R.~C.; WOODS, R.~E. \emph{Processamento de Imagens Digitais}. 1ª.
   ed. [S.l.]: Edgard Blücher LTDA, 2000.}
 
-\bibitem{chapter:Zisserman:23}
-\abntrefinfo{Mundy Joseph.~Zisserman}{MUNDY JOSEPH.~ZISSERMAN}{1992}
-{MUNDY JOSEPH.~ZISSERMAN, A. Geometric invariance in computer vision.
-In:  \underline{\ \ \ \ \ \ \ \ }. [S.l.]: MIT Press, 1992. cap.~23.}
-
 \bibitem{article:Criminisi}
 \abntrefinfo{Criminisi, Reid e Zisserman}{CRIMINISI; REID; ZISSERMAN}{1997}
 {CRIMINISI, A.; REID, I.; ZISSERMAN, A. A plane measuring device.
 \emph{British Machine Vision Conferencel}, July 1997.}
+
+\bibitem{chapter:Zisserman:23}
+\abntrefinfo{Mundy Joseph.~Zisserman}{MUNDY JOSEPH.~ZISSERMAN}{1992}
+{MUNDY JOSEPH.~ZISSERMAN, A. Geometric invariance in computer vision.
+In:  \underline{\ \ \ \ \ \ \ \ }. [S.l.]: MIT Press, 1992. cap.~23.}
 
 \bibitem{article:Harris}
 \abntrefinfo{Harris}{HARRIS}{1998}
@@ -78,16 +80,53 @@ In:  \underline{\ \ \ \ \ \ \ \ }. [S.l.]: MIT Press, 1992. cap.~23.}
 \emph{Proc. 5th International Joint Conference on Artificial Intelligence},
   p.~584, 1977.}
 
-\bibitem{online:Wayback}
+\bibitem{book:galbiati}
+\abntrefinfo{Jr. e J.}{JR.; J.}{1990}
+{JR., G.; J., L. \emph{Machine Vision and Digital Image Processing
+  Fundamentals}. [S.l.]: Prentie Hall, 1990.}
+
+\bibitem{online:terasic-de115}
+\abntrefinfo{Altera\ldots}{ALTERA\ldots}{}
+{ALTERA DE2-115 Development and Education Board.
+Dispon{\'\i}vel em:
+  $<$http://www.terasic.com.tw/cgi-bin/page/archive.pl?Language=English\&CategoryNo=
+  165\&No=502\&PartNo=1$>$.}
+
+\bibitem{online:wayback}
 \abntrefinfo{History\ldots}{HISTORY\ldots}{}
 {HISTORY of FPGAs.
-Dispon{\'\i}vel em: $<$url$>$.}
+Dispon{\'\i}vel em:
+  $<$https://web.archive.org/web/20070412183416/http://filebox.vt.edu/users/tmagin/history.htm$>$.}
+
+\bibitem{online:altera-in-the-beginning}
+\abntrefinfo{In\ldots}{IN\ldots}{}
+{IN the Beginning.
+Dispon{\'\i}vel em:
+  $<$https://www.altera.com/solutions/technology/system-design/articles/\_2013/in-the-beginning.html$>$.}
 
 \bibitem{page1985re}
 \abntrefinfo{Page e Peterson}{PAGE; PETERSON}{1985}
-{D.W. Page e L.V.R. Peterson. \emph{Re-programmable PLA}. abr.~2 1985.
+{David~W. Page e LuVerne~R. Peterson. \emph{Re-programmable PLA}. abr.~2 1985.
 US Patent 4,508,977.
 Dispon{\'\i}vel em: $<$http://www.google.com/patents/US4508977$>$.}
+
+\bibitem{periodic:xcell}
+\abntrefinfo{Xilinx}{XILINX}{}
+{XILINX (Ed.). \emph{Xcell}.}
+
+\bibitem{thesis:moore-law-limit}
+\abntrefinfo{Kinnunen}{KINNUNEN}{}
+{KINNUNEN, M.
+\emph{Examining the limits of Moore's law}.
+Bachelor of Engineering.}
+
+\bibitem{article:moore-cramming-components}
+\abntrefinfo{Moore}{MOORE}{}
+{MOORE, G.~E. Cramming more components onto integrated circuits.}
+
+\bibitem{book:FPGA-system-design}
+\abntrefinfo{Wolf}{WOLF}{}
+{WOLF, W. \emph{FPGA-Based System Design}. [S.l.: s.n.].}
 
 \bibitem{book:Amore}
 \abntrefinfo{D'Amore}{D'AMORE}{2005}
@@ -110,5 +149,43 @@ ISBN 9788521614524. Dispon{\'\i}vel em:
 \abntrefinfo{IEEE\ldots}{IEEE\ldots}{1997}
 {IEEE Standard VHDL Synthesis Packages.
 \emph{IEEE Std 1076.3-1997}, p. 1--52, June 1997.}
+
+\bibitem{manual:VHDL-simulation}
+\abntrefinfo{VHDL\ldots}{VHDL\ldots}{}
+{VHDL for Simulation and Synthesis.
+[S.l.].}
+
+\bibitem{luciano}
+\abntrefinfo{Franco}{FRANCO}{2007}
+{FRANCO, L. D.~N.
+\emph{Sincronização, captura e análise de imagens da poça de soldagem no
+  processo GMAW convencional, no modo de transferência metálica por curto
+  circuito}.
+Disserta��o (Mestrado) --- Universidade de Brasília, 2007.}
+
+\bibitem{camera-link}
+\abntrefinfo{Specifications\ldots}{SPECIFICATIONS\ldots}{}
+{SPECIFICATIONS of The Camera Link Interface Standard for Digital Cameras and
+  Frame Grabbers.
+[S.l.].}
+
+\bibitem{camera-link-ip-core}
+\abntrefinfo{Microtronix\ldots}{MICROTRONIX\ldots}{}
+{MICROTRONIX Camera Link IP Core.
+[S.l.].}
+
+\bibitem{dalsa}
+\abntrefinfo{1M28\ldots}{1M28\ldots}{}
+{1M28, 1M75, and 1M150 User’s Manual.
+[S.l.].}
+
+\bibitem{book:adv-eng-math}
+\abntrefinfo{Kreysig}{KREYSIG}{}
+{KREYSIG, E. \emph{Advanced Engineering Mathematics}. [S.l.: s.n.].}
+
+\bibitem{article:linear-regression-FPGA}
+\abntrefinfo{Royer et al.}{ROYER et al.}{}
+{ROYER, P. et al. Area-efficient linear regression architecture for real-time
+  signal processing on fpgas.}
 
 \end{thebibliography}

@@ -1,8 +1,7 @@
 %TCIDATA{LaTeXparent=0,0,relatorio.tex}
 
 %\resumo{Resumo}{O presente texto apresenta normas a serem seguidas por alunos do Curso de Engenharia Mecatrônica da Universidade de Brasília para redação de relatório na disciplina Projeto de Graduação 2. Tais normas foram aprovadas pela Comissão de Graduação do Curso de Engenharia Mecatrônica em julho/2005. São apresentadas instruções detalhadas para a formatação do trabalho em termos de suas partes principais.}
-\resumo{Resumo}{Continuar o desenvolvimento de um sensor de geometria da poça de fusão em um processo de soldagem GMAW por curto circuito por meio de algoritmos de processamento de imagem que possibilitem para cada quadro:
-
+\resumo{Resumo}{Desenvolvimento de um sensor de geometria da poça de fusão em um processo de soldagem GMAW por curto circuito por meio de algoritmos de processamento de imagem que possibilitem para cada quadro:
 
 \begin{itemize}
 \item
@@ -13,7 +12,22 @@ Determinar a largura e o eixo central do arame, bem como a distorção de perspect
 Determinar a largura máxima da poça, assim como a distorção de perspectiva que ocorre no plano da poça de soldagem;
 \end{itemize}
 
-Os resultados do processamento acima serão organizados em vetores, os quais deverão ser filtrados por um Filtro de Kalman para geração de sinais propícios à utilização em uma malha de controle. Os algoritmos deverão ser validados comparando seus resultados com valores medidos à partir de testes controlados do processo.
+Os resultados do processamento acima serão organizados em vetores,  para geração de sinais propícios à utilização em uma malha de controle. Os algoritmos deverão ser validados comparando seus resultados com valores medidos à partir de testes controlados do processo.
+
+----------------------------------------------------------------
+Desenvolvimento de métodos para a obtenção em tempo real de parâmetros em um processo de soldagem GMAW (\textit{Gas Metal Arc Welding}) por meio de processamento de imagens. Em uma primeira etapa foi desenvolvido um algoritmo em software que realiza as seguintes tarefas a cada quadro: 
+
+\begin{itemize}
+\item
+Selecionar quadros propícios ao processamento;
+\item
+Determinar a largura e o eixo central do arame, bem como a distorção de perspectiva que ocorre no seu plano normal à direção do movimento de soldagem;
+\item
+Determinar a largura máxima da poça, assim como a distorção de perspectiva que ocorre no plano da poça de soldagem;
+\end{itemize}
+
+Em seguida, algumas das tarefas acima foram implementadas em \textit{hardware} com o uso de um FPGA (\textit{Field Programmable Gate Array}) para reduzir significativamente o tempo 
+de processamento.
 }
 
 \vspace*{2cm}
