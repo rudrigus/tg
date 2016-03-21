@@ -3,7 +3,7 @@
 \chapter{Resultados Experimentais}\label{CapExperimentos}
 
 % Resumo opcional. Comentar se não usar.
-\resumodocapitulo{Resumo opcional.}
+%\resumodocapitulo{Resumo opcional.}
 
 \section{Introdução}
 
@@ -11,9 +11,70 @@ Na introdução deverá ser feita uma descrição geral dos experimentos realizados.
 
 Para cada experimentação apresentada, descrever as condições de experimentação (e.g., instrumentos, ligações específicas, configurações dos programas), os resultados obtidos na forma de tabelas, curvas ou gráficos. Por fim, tão importante quando ter os resultados é a análise que se faz deles. Quando os resultados obtidos não forem como esperados, procurar justificar e/ou propor alteração na teoria de forma a justificá-los.
 
-\section{Avaliação do algoritmo de resolução da equação algébrica de Riccati}
+Foram realizadas simulações nas duas etapas do projeto. As duas utilizaram imagens antigas do trabalho \cite{luciano}, como mencionado anteriormente. As simulações ocorreram também durante a formulação do algoritmo e contribuíram para as escolhas de parâmetros e filtros utilizados.
 
-O algoritmo proposto para solução da equação algébrica de Riccati foi avaliado em diferentes máquinas. Os tempos de execução são mostrados na Tabela \ref{TabDesempenho}. Nesta tabela, os algoritmos propostos receberam a denominação $CH$ para Chandrasekhar e $CH+LYAP$ para Chandrasekhar com Lyapunov. As implementações foram feitas em linguagem \textit{script} MATLAB.
+
+
+\section{Avaliação do algoritmo em Matlab}
+
+Um grupo de três imagens foi escolhido para demonstrar a sequência do algoritmo, passo a passo. Essas imagens são as de número 440 a 442, em uma filmagem denominada ''Resultados Filtro Adaptativo'' no trabalho \cite{luciano} e foram capturadas a uma taxa de 1000 FPS. Cada uma tem 296x264 \textit{pixels} em níveis de cinza.
+
+\subsection{Média de imagens}
+A primeira etapa do algoritmo é o filtro de média de imagens, como descrito na seção \ref{section:desenv-filtros}. A figura \ref{fig:result-media-imagens} demonstra as diferenças entre se fazer ou não a média de imagens para a obtenção das medidas. É possível observar na figura \ref{fig:result-media-imagens-1} que há algo preso ao eletrodo de soldagem e que o algoritmo de identificação de bordas está considerando isso como uma borda do eletrodo na figura \ref{fig:result-media-imagens-2}, mas não na figura na figura \ref{fig:result-media-imagens-3}.
+
+\begin{figure}[h!]
+\begin{center}
+\subfigure[\label{fig:result-media-imagens-1}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/Img440.jpg}}
+\end{center}
+\subfigure[\label{fig:result-media-imagens-2}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-medidas.jpg}}
+\subfigure[\label{fig:result-media-imagens-3}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas.jpg}}
+\caption{(b) Resultado sem média de imagens. (c) Resultado com média de imagens}.
+\label{fig:result-media-imagens}
+\end{figure}
+
+É importante ressaltar que esta comparação foi feita utilizando os outros filtros e métodos de medição definidos para o projeto. A figura \ref{fig:result-media-imagens-sem-filtro} demonstra como a média não proporciona resultados satisfatórios por si só.
+
+\begin{figure}[h!]
+\subfigure[\label{fig:result-media-imagens-sem-filtro-1}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-medidas.jpg}}
+	\subfigure[\label{fig:result-media-imagens-sem-filtro-2}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas-sem-filtros.jpg}}
+\caption{(a) Resultado sem média de imagens. (b)Resultado com média sem filtro}
+\label{fig:result-media-imagens-sem-filtro}
+\end{figure}
+
+\subsection{Primeira binarização}
+
+Em seguida é feito o primeiro filtro de binarização. A imagem \ref{fig:detalhe-scanlines} demonstra de forma satisfatória o resultado deste filtro. Como a ocorrência das \textit{scanlines} sua utilização antes ou depois do filtro de médias tem o mesmo efeito.  Visualmente, o efeito desse filtro é tão pequeno que cogitou-se retirá-lo, mas o custo computacional é tão baixo que decidiu-se mantê-lo. A figura \ref{fig:result-threshold1} ilustra qual é o efeito das \textit{scanlines} sobre a imagem. A primeira binarização tem evita medidas erradas nas bordas do eletrodo decorrentes das \textit{scanlines}.
+
+\begin{figure}[h!]
+\subfigure[\label{fig:result-threshold1-1}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-comum-zoom.jpg}}
+	\subfigure[\label{fig:result-threshold1-2}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-threshold1-zoom.jpg}}
+\caption{Detalhe de imagem com \textit{scanlines} (a) e sem (b)}
+\label{fig:result-threshold1}
+\end{figure}
+
+
+\subsection{Filtro de gaussiana}
+
+O filtro seguinte, de máscara gaussiana, tem o efeito de atenuar bordas e pequenos ruídos aleatórios na imagem.
+
+\subsection{Segunda binarização}
+
+
+--------------------------------------------------------
 
 \begin{table}[tbp]
 \caption{Tempos de execução em segundos para diferentes máquinas}
@@ -32,4 +93,7 @@ $CH+LYAP$ & 357,86 & 952,9 & 3.689,2 & 3.875,0 \\ \hline
 \end{center}
 \end{table}
 
-Observa-se que o algoritmo $CH+LYAP$ apresenta tempos de execução superiores com relação ao algoritmo $CH$. Entretanto, era esperado que o algoritmo $CH$ fosse mais rápido. Este resultado se justifica pelo fato de o algoritmo $CH$ fazer uso de funções embutidas do MATLAB. Já o aloritmo $CH+LYAP$ faz uso também de funções \textit{script} externas, aumentando bastante seu tempo computacional.
+
+\section{Avaliação do algoritmo em FPGA}
+
+

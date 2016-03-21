@@ -84,7 +84,7 @@ Esses passos com os valores para os parâmetros definidos acima obtiveram bons re
 % mostrar exemplo
 
 \subsection{Filtros}
-
+\label{section:desenv-filtros}
 A escolha dos filtros utilizados foi baseada nas características do processo e das próprias imagens, já conhecidas. Abaixo segue a sequência de filtro utilizados.
 
 \begin{enumerate}
@@ -106,7 +106,7 @@ A média de imagens reduz bastante este efeito e quanto maior o número de imagens
 
 \item Binarização
 
-Esta binarização retira as \textit{scanlines} verticais que estão presentes em todas as imagens. Essas \textit{scanlines} são pouco mais claras que o preto total (geralmente menor que 6/255), portanto é utilizado um filtro de binarização simples. Quase nenhuma informação útil é perdida neste passo. Pois a maior parte das informações úteis estão contidas em pixels com brilho médio a alto (acima de 100/255).
+Esta binarização retira as \textit{scanlines} verticais que estão presentes em todas as imagens. Essas \textit{scanlines} são fruto do ruído de fundo da câmera CMOS e só se observam em regiões onde a luminosidade é mínima, ou seja 0/255. Na figura \ref{fig:detalhe-scanlines} pode-se ver que elas não continuam sobre regiões mais brilhosas. As \textit{scanlines} são pouco mais claras que o preto total (geralmente menor que 6/255), portanto é utilizado um filtro de binarização simples. Quase nenhuma informação útil é perdida neste passo. Pois a maior parte das informações úteis estão contidas em pixels com brilho médio a alto (acima de 40/255).
 
 \begin{figure}[h!]
 \hspace{1.5em}
@@ -455,14 +455,6 @@ O primeiro passo para o recebimento do vídeo pela placa é a sincronização com o 
 %
 %Por fim, os módulos ''PLL'' e ''deserializer'' foram instancializados em uma entidade chamada ''ReceptorDados'' que fornece os dados corretamente para o resto do sistema.
 
-\subsection{Retirada de scanlines}
-
-Assim que os dados estejam corretamente disponíveis para processamento começam a passar por etapas semelhantes às descritas na seção \ref{section:implementacao-matlab}. A primeira etapa é a retirada de \textit{scanlines}.
-
-Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
-
-A binarização consiste basicamente transformar em zero qualquer pixel que seja maior que $threshold1$. O valor utilizado para testes $threshold1$ foi de 10, sendo o brilho máximo 255.
-
 
 \subsection{Constantes e tipos customizados}
 
@@ -481,6 +473,14 @@ Para agilizar o desenvolvimento do projeto foi criada um pacote com valores e ti
 \item $MatrizImagem$ Matriz utilizada para armazenar imagens inteiras na  simulação. Tem tamanho de $numlin$ por $numcols$ do tipo \textit{unsigned} de 8b.
 \end{itemize}
 \end{enumerate}
+
+\subsection{Retirada de scanlines}
+
+Assim que os dados estejam corretamente disponíveis para processamento começam a passar por etapas semelhantes às descritas na seção \ref{section:implementacao-matlab}. A primeira etapa é a retirada de \textit{scanlines}.
+
+Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
+
+A binarização consiste basicamente transformar em zero qualquer pixel que seja maior que $threshold1$. O valor utilizado para testes $threshold1$ foi de 7, sendo o brilho máximo 255.
 
 \subsection{Filtro de imagem média e seleção de imagens propícias} \label{section:desenv-fpga-filtro_media_imagens}
 
