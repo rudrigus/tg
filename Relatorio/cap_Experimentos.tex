@@ -19,22 +19,29 @@ Foram realizadas simulações nas duas etapas do projeto. As duas utilizaram image
 
 Um grupo de três imagens foi escolhido para demonstrar a sequência do algoritmo, passo a passo. Essas imagens são as de número 440 a 442, em uma filmagem denominada ''Resultados Filtro Adaptativo'' no trabalho \cite{luciano} e foram capturadas a uma taxa de 1000 FPS. Cada uma tem 296x264 \textit{pixels} em níveis de cinza.
 
-\subsection{Média de imagens}
+\subsection{Filtros}
+
+Esta seção faz uma comparação de imagens com e sem os filtros selecionados. As imagens foram escolhidas propositalmente para a apresentação destes resultados de forma a ressaltar a importância de cada filtro. Todas as imagens desta seção têm as informações relevantes apresentadas por meio de linhas coloridas. Essas linhas são:
+
+\begin{itemize}
+\item Azul horizontal: topo e base do eletrodo de solda;
+\item Amarelo tracejado vertical: bordas da poça de soldagem
+\item Vermelho: posições da lateral esquerda do eletrodo;
+\item Verde: posições da lateral direita do eletrodo;
+\item Azul oblíquo(quase vertical): reta calculada por regressão das laterais do eletrodo.
+\end{itemize}
+
+\subsubsection{Média de imagens}
 A primeira etapa do algoritmo é o filtro de média de imagens, como descrito na seção \ref{section:desenv-filtros}. A figura \ref{fig:result-media-imagens} demonstra as diferenças entre se fazer ou não a média de imagens para a obtenção das medidas. É possível observar na figura \ref{fig:result-media-imagens-1} que há algo preso ao eletrodo de soldagem e que o algoritmo de identificação de bordas está considerando isso como uma borda do eletrodo na figura \ref{fig:result-media-imagens-2}, mas não na figura na figura \ref{fig:result-media-imagens-3}.
 
 \begin{figure}[h!]
-\begin{center}
-\subfigure[\label{fig:result-media-imagens-1}]{
-	\centering
-	\includegraphics[width=.5\textwidth]{./Figuras/Img440.jpg}}
-\end{center}
 \subfigure[\label{fig:result-media-imagens-2}]{
 	\centering
 	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-medidas.jpg}}
 \subfigure[\label{fig:result-media-imagens-3}]{
 	\centering
 	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas.jpg}}
-\caption{(b) Resultado sem média de imagens. (c) Resultado com média de imagens}.
+\caption{(a) Resultado sem média de imagens. (b) Resultado com média de imagens}.
 \label{fig:result-media-imagens}
 \end{figure}
 
@@ -44,35 +51,211 @@ A primeira etapa do algoritmo é o filtro de média de imagens, como descrito na s
 \subfigure[\label{fig:result-media-imagens-sem-filtro-1}]{
 	\centering
 	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-medidas.jpg}}
-	\subfigure[\label{fig:result-media-imagens-sem-filtro-2}]{
+\subfigure[\label{fig:result-media-imagens-sem-filtro-2}]{
 	\centering
 	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas-sem-filtros.jpg}}
-\caption{(a) Resultado sem média de imagens. (b)Resultado com média sem filtro}
+\caption{(a) Resultado sem média de imagens. (b) Resultado com média sem filtros}
+
 \label{fig:result-media-imagens-sem-filtro}
 \end{figure}
 
-\subsection{Primeira binarização}
+\subsubsection{Primeira binarização}
 
 Em seguida é feito o primeiro filtro de binarização. A imagem \ref{fig:detalhe-scanlines} demonstra de forma satisfatória o resultado deste filtro. Como a ocorrência das \textit{scanlines} sua utilização antes ou depois do filtro de médias tem o mesmo efeito.  Visualmente, o efeito desse filtro é tão pequeno que cogitou-se retirá-lo, mas o custo computacional é tão baixo que decidiu-se mantê-lo. A figura \ref{fig:result-threshold1} ilustra qual é o efeito das \textit{scanlines} sobre a imagem. A primeira binarização tem evita medidas erradas nas bordas do eletrodo decorrentes das \textit{scanlines}.
 
 \begin{figure}[h!]
+\begin{center}
 \subfigure[\label{fig:result-threshold1-1}]{
 	\centering
-	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-comum-zoom.jpg}}
-	\subfigure[\label{fig:result-threshold1-2}]{
+	\includegraphics[width=.45\textwidth]{./Figuras/imagem440-comum-zoom.jpg}}
+\subfigure[\label{fig:result-threshold1-2}]{
 	\centering
-	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-threshold1-zoom.jpg}}
-\caption{Detalhe de imagem com \textit{scanlines} (a) e sem (b)}
+	\includegraphics[width=.45\textwidth]{./Figuras/imagem440-threshold1-zoom.jpg}}
+\end{center}
+\caption{(a) Detalhe de imagem com \textit{scanlines} e (b) sem \textit{scanlines}}
 \label{fig:result-threshold1}
 \end{figure}
 
 
+\subsubsection{Filtro de gaussiana}
+
+O filtro seguinte, de máscara gaussiana, tem o efeito de atenuar bordas e pequenos ruídos aleatórios na imagem. A figura \ref{fig:result-filtro-gaussiana} demonstra a utilização deste filtro após a primeira binarização.
+
+\begin{figure}[h!]
+\subfigure[\label{fig:result-filtro-gaussiana-1}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas-sem-filtro-gaussiana.jpg}}
+\subfigure[\label{fig:result-filtro-gaussiana-2}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas.jpg}}
+\caption{(a) Imagem original e (b) depois de filtro de gaussiana}
+\label{fig:result-filtro-gaussiana}
+\end{figure}
+
+Visualmente, o filtro parece quase não afetar a imagem, mas os ruídos neste exemplo têm grande impacto no cálculo do perfil vertical e consequentemente em sua derivada.
+
+
+\subsubsection{Segunda binarização}
+
+Em seguida é aplicada a segunda binarização que visa eliminar porções e ruídos pouco relevantes ao processamento. Esta etapa faz duas binarizações, uma por mínimo e uma por máximo, e não apenas uma. Mas por serem operações simples e independentes de ordem chamou-se apenas de ''segunda binarização''.
+
+A figura \ref{fig:result-threshold23} demonstra o efeito deste filtro sobre as medidas finais. Sem este filtro, 
+
+A maior diferença é evidente na porção inferior da imagem, que é mais brilhosa na figura \ref{fig:result-threshold23-1}. Essa diferença de brilhosidade pode afetar o funcionamento dos algoritmos de perfis e suas derivadas.
+
+\begin{figure}[h!]
+\begin{center}
+\subfigure[\label{fig:result-threshold23-1}]{
+	\centering
+	\includegraphics[width=.45\textwidth]{./Figuras/imagem440-442-filtro-gaussiana.jpg}}
+\subfigure[\label{fig:result-threshold23-2}]{
+	\centering
+	\includegraphics[width=.45\textwidth]{./Figuras/imagem440-442-threshold23.jpg}}
+\end{center}
+\caption{(a) Imagem original e (b) depois da segunda binarização}
+\label{fig:result-threshold23}
+\end{figure}
+
+Também foi feita a comparação entre as medidas feitas com e sem a segunda binarização. A figura \ref{fig:result-medidas-threshold23} mostra o efeito sobre as imagens 440 a 442, mas outras imagens têm melhorias mais significativas com este filtro.
+
+\begin{figure}[h!]
+\subfigure[\label{fig:result-medidas-threshold23-1}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas-sem-threshold23.jpg}}
+\subfigure[\label{fig:result-medidas-threshold23-2}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-medidas.jpg}}
+\caption{(a) Imagem sem a segunda binarização e (b) com segunda binarização}
+\label{fig:result-medidas-threshold23}
+\end{figure}
+
+
+\subsection{Perfis Horizontais e Verticais}
+
+Depois da passagem dos filtros, as medidas são feitas com as derivadas dos perfis vertical e horizontal. As figuras \ref{fig:result-perfil-hor} e \ref{fig:result-perfil-vert} mostram essas derivadas e a posição obtida em cada mínimo ou máximo local. Cada uma dessas posições resulta em uma medida, que no caso dessas imagens são apresentadas na tabela \ref{table:medidas-440-442}
+
+\begin{figure}[h!]
+\subfigure[\label{fig:result-perfil-hor}]{
+	\centering
+		\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-perfil-hor.jpg}}
+\subfigure[\label{fig:result-perfil-vert}]{
+	\centering
+	\includegraphics[width=.5\textwidth]{./Figuras/imagem440-442-perfil-vert.jpg}}
+\caption{(a) Perfil horizontal. (b) Perfil vertical.}
+\end{figure}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Parâmetro} & \textbf{Valor} \\ \hline
+Limite esquerdo da poça & 41 \\ \hline
+Limite direito da poça & 257 \\ \hline
+Topo do eletrodo & 49 \\ \hline
+Base do eletrodo & 190 \\ \hline
+\end{tabular}
+\label{table:medidas-440-442}
+\caption{Medidas obtidas com derivadas de perfis horizontal e vertical.}
+\end{table}
+ 
+
+\subsection{Bordas do eletrodo e regressão robusta}
+
+Para o eletrodo, o mesmo princípio é utilizado, porém com derivadas \textit{pixel} a \textit{pixel}. Essas derivadas são mostradas na figura \ref{fig:result-derivadas-arame}. As posições encontradas são armazenadas em um vetor para a regressão. Os vetores obtidos com as imagens são podem ser avaliados na tabela \ref{table:bordas-arame}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.7\textwidth]{./Figuras/imagem440-442-bordas-arame.jpg}
+\caption{Bordas do arame detectadas por derivadas}
+\label{fig:result-derivadas-arame}
+\end{figure}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Esquerda} & 144 & 143 & 143 & 143 & 142 & 142 & 141 & 141 & 141 & 140 & 140 & 139 & 139 & 139 & 141 & 140 \\ \hline
+\textbf{Direita} & 177 & 176 & 176 & 175 & 174 & 174 & 173 & 173 & 172 & 172 & 171 & 171 & 170 & 169 & 169 & 168  \\ \hline
+\end{tabular}
+\label{table:bordas-arame}
+\caption{Valores encontrados para bordas do arame com 16 pontos observados.}
+\end{table}
+
+
+Os vetores são utilizados para uma regressão robusta que define as equações de reta das laterais do arame. Essas retas já foram mostradas em figuras anteriores como a \ref{fig:result-medidas-threshold23-2}. Os valores dos coeficientes de das retas obtidas com as repressões são apresentados na tabela \ref{table:coef-arame}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+ & \textbf{a} & \textbf{b} \\ \hline
+\textbf{Esquerda} & -0.0430 & 145,9618 \\ \hline
+\textbf{Direita} & -0.0626 & 179,9779 \\ \hline
+\end{tabular}
+\label{table:coef-arame}
+\caption{Coeficientes da regressão nos pontos das bordas do eletrodo.}
+\end{table}
+
+Esses valores são utilizados para se encontrar os vértices do eletrodo demonstrados na tabela \ref{table:vertices-arame}. As retas de regressão são ilustradas na figura \ref{fig:result-regressao}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+ & \textbf{X} & \textbf{Y} \\ \hline
+\textbf{Topo esquerdo} & 143,8552 & 49 \\ \hline
+\textbf{Base esquerdo} & 137,7931 & 190 \\ \hline
+\textbf{Topo direito} & 176,9117 & 49 \\ \hline
+\textbf{Base direito} & 168,0883 & 190 \\ \hline
+\end{tabular}
+\label{table:vertices-arame}
+\caption{Coeficientes da regressão nos pontos das bordas do eletrodo.}
+\end{table}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.7\textwidth]{./Figuras/imagem440-442-bordas-arame-regressao.jpg}
+\caption{Bordas do arame detectadas por derivadas}
+\label{fig:result-regressao}
+\end{figure}
+
+
+\subsection{Correção da distorção de perspectiva e medidas}
+
+Para encontrar os valores finais com a correção de distorção de perspectiva, todos os passos anteriores foram aplicados em imagens corrigida. A figura \ref{fig:result-imagem-corrigida-medidas} mostra uma imagem transformada e tratada pelos filtros com as posições dos valores buscados, que são:
+
+TopoEsquerdo
+TopoDireito
+BaseEsquerdo
+BaseDireito
+LadoEsqPoca:
+LadoDirPoca:
+
+Os valores reais em mm são:
+TopoEsquerdo
+TopoDireito
+BaseEsquerdo
+BaseDireito
+LadoEsqPoca:
+LadoDirPoca:
+
+\subsection{Resultados com sequência de imagens}
+
+O algoritmo foi aplicado em uma sequência de imagens, das quais se obtiveram as medidas desejadas. As sequências de medidas podem ser vistas nos gráficos de \ref{fig:result-grafico-bordas-poca} a \ref{fig:result-grafico-base-arame}
+
+
+
+O gráfico \ref{fig:result-grafico-bordas-poca} foi sobreposto a um cordão de solda para se verificar a qualidade do algoritmo. Essa comparação se segue na figura \ref{fig:result-comparacao-bordas}
+
+
+
+\section{Avaliação do algoritmo em FPGA}
+\subsection{Média de imagens}
+\subsection{Primeira binarização}
 \subsection{Filtro de gaussiana}
-
-O filtro seguinte, de máscara gaussiana, tem o efeito de atenuar bordas e pequenos ruídos aleatórios na imagem.
-
 \subsection{Segunda binarização}
-
+\subsection{Perfis Horizontais}
+\subsection{Perfis Verticais}
 
 --------------------------------------------------------
 
@@ -92,8 +275,3 @@ $CH+LYAP$ & 357,86 & 952,9 & 3.689,2 & 3.875,0 \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
-
-
-\section{Avaliação do algoritmo em FPGA}
-
-

@@ -28,7 +28,7 @@ Y=[1185; 160; 160; 1185];
 ImagemBase = './Imagens/Capturas/1000 fps/Resultados Filtro Adaptativo/Img440.bmp';
 I = imread(ImagemBase);
 tamanho = size(I);
-[ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamentoRelatorio(I,tamanho,1,440);
+% [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamentoRelatorio(I,tamanho,1,440);
 
 
 %% Correcao de valores com distorcao de perspectiva
@@ -122,7 +122,7 @@ for j = inicio:1:fim
 
 
   % Obtencao de calculos na imagem corrigida
-%   [I2,posArameTopo(j-inicio+1),posArameBase(j-inicio+1),limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamentoRelatorio(I2,tamanho2,0,j);
+  [I2,posArameTopo(j-inicio+1),posArameBase(j-inicio+1),limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamentoRelatorio(I2,tamanho2,0,j);
   LarguraPoca(j-inicio+1) = diametroArame * (limDirPoca(j-inicio+1) - limEsqPoca(j-inicio+1))/pixelsArameBase(j-inicio+1);
   CentroArameTopo(j-inicio+1) = (posArameTopo(j-inicio+1)*ladoEsqArame(2)+ladoEsqArame(1) + posArameTopo(j-inicio+1)*ladoDirArame(2)+ladoDirArame(1))/2;
   CentroArameBase(j-inicio+1) = (posArameBase(j-inicio+1)*ladoEsqArame(2)+ladoEsqArame(1) + posArameBase(j-inicio+1)*ladoDirArame(2)+ladoDirArame(1))/2;
