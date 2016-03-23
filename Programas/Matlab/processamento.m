@@ -41,7 +41,7 @@ posArameBase     = posArameBase + meioVert;
 %%
 % limites horizontais do arame
 % perfil vertical, da esquerda para a direita
-somaVert     = sum(ImagemTratada,1);
+somaVert     = sum(B,1);
 derivadaVert = diff(somaVert);
 
 %%
@@ -71,7 +71,7 @@ inicioArame = zeros(n,1);
 fimArame = zeros(n,1);
 derivadaArame = zeros(n,tamanho(2)-1);
 for i = 1:1:n+1
-    derivadaArame(i,:) = diff(B(posArameTopo + afastamento1 + round(intervalo*(i-1)),:));
+    derivadaArame(i,:) = diff(ImagemTratada(posArameTopo + afastamento1 + round(intervalo*(i-1)),:));
     [M, inicioArame(i)] = min(derivadaArame(i,floor(meioHor/2):1:meioHor));
     inicioArame(i) = inicioArame(i) + floor(meioHor/2);
     [M, fimArame(i)] = max(derivadaArame(i,meioHor:1:tamanho(2)-1));

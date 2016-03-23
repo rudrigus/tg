@@ -222,30 +222,98 @@ Esses valores são utilizados para se encontrar os vértices do eletrodo demonstra
 
 \subsection{Correção da distorção de perspectiva e medidas}
 
-Para encontrar os valores finais com a correção de distorção de perspectiva, todos os passos anteriores foram aplicados em imagens corrigida. A figura \ref{fig:result-imagem-corrigida-medidas} mostra uma imagem transformada e tratada pelos filtros com as posições dos valores buscados, que são:
+Para encontrar os valores finais com a correção de distorção de perspectiva, todos os passos anteriores foram aplicados em imagens corrigidas. No exemplo mostrado, utilizou-se uma imagem base como padrão para se definir os parâmetros da distorção, a imagem número 181 da mesma série. A figura \ref{fig:result-imagem-corrigida-medidas} mostra uma imagem transformada e tratada pelos filtros com as posições dos valores buscados. 
 
-TopoEsquerdo
-TopoDireito
-BaseEsquerdo
-BaseDireito
-LadoEsqPoca:
-LadoDirPoca:
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.6\textwidth]{./Figuras/imagem440-442-corrigida-medidas.jpg}
+\caption{Bordas do arame detectadas por derivadas}
+\label{fig:result-imagem-corrigida-medidas}
+\end{figure}
 
-Os valores reais em mm são:
-TopoEsquerdo
-TopoDireito
-BaseEsquerdo
-BaseDireito
-LadoEsqPoca:
-LadoDirPoca:
+
+Os valores podem ser vistos na tabela \ref{table:result-imagem-corrigida} com a unidade em \textit{pixels}. Os valores reais, em mm, estão na tabela\ref{table:result-imagem-corrigida-mm}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+ & \textbf{X} & \textbf{Y} \\ \hline
+\textbf{Limite esquerdo da poça} & 297 &  \\ \hline
+\textbf{Limite direito da poça} & 1218 & \\ \hline
+\textbf{Topo esquerdo} & 465.2979 & 297 \\ \hline
+\textbf{Base esquerdo} & 467.7774 & 1218 \\ \hline
+\textbf{Topo direito} & 563.6346 & 297 \\ \hline
+\textbf{Base direito} & 565.8616 & 1218 \\ \hline
+\end{tabular}
+\label{table:result-imagem-corrigida}
+\caption{Valores medidos com o algoritmo em uma imagem corrigida.}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+ & \textbf{X} & \textbf{Y} \\ \hline
+\textbf{Limite esquerdo da poça} & 1,4885 &  \\ \hline
+\textbf{Limite direito da poça} & 8,6762 & \\ \hline
+\textbf{Topo esquerdo} & 4,7439 & 3,0280 \\ \hline
+\textbf{Base esquerdo} & 4,7691 & 12,4179 \\ \hline
+\textbf{Topo direito} & 5,7464 & 3,0280 \\ \hline
+\textbf{Base direito} & 5,7691 & 12,4179 \\ \hline
+\end{tabular}
+\label{table:result-imagem-corrigida-mm}
+\caption{Valores reais medidos com o algoritmo em uma imagem corrigida.}
+\end{table}
+
+Esses valores são bastante razoáveis, considerando-se que uma imagem da mesma série foi utilizada para se fazer a calibração. Pode-se ver por exemplo que a largura calculada do eletrodo vai de $5,7464 - 4,7439 = 1,0025mm$ no topo a $ 5,7691 - 4,7691 = 1mm$ na base. Esses valores são bastante razoáveis e demonstram que a transformação está ocorrendo de forma satisfatória.
+
+A largura da poça neste grupo de imagens é $8,6762 - 1,4885 = 7,1877mm$, um valor bastante plausível para uma solda de 1mm sobre uma chapa única.
+
+A altura do eletrodo, $12,4179 - 3,0280 = 9,3899mm$, apresenta um valor consideravelmente menor que o esperado de 10,25mm. Este valor pode significar uma variação no comprimento do eletrodo enquanto esse se funde durante o processo.
 
 \subsection{Resultados com sequência de imagens}
 
-O algoritmo foi aplicado em uma sequência de imagens, das quais se obtiveram as medidas desejadas. As sequências de medidas podem ser vistas nos gráficos de \ref{fig:result-grafico-bordas-poca} a \ref{fig:result-grafico-base-arame}
+O algoritmo foi aplicado em uma sequência de imagens, das quais se obtiveram as medidas desejadas. Foram utilizadas as imagens de número 150 a 480. As sequências de medidas podem ser vistas nos gráficos de \ref{fig:result-bordas-poca} a \ref{fig:result-medidas-arame}.
+Essas medidas foram todas calculadas em mm.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{./Figuras/imagem150-480-bordas-poca.jpg}
+\caption{Bordas da poça ao longo do tempo}
+\label{fig:result-bordas-poca}
+\end{figure}
 
+Pode-se observar na figura \ref{fig:result-bordas-poca} que para a sequência testada a largura da poça de soldagem teve pouca variação, sendo a borda esquerda praticamente constante durante todo o período. A borda direita apresentou algumas variações.
 
-O gráfico \ref{fig:result-grafico-bordas-poca} foi sobreposto a um cordão de solda para se verificar a qualidade do algoritmo. Essa comparação se segue na figura \ref{fig:result-comparacao-bordas}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{./Figuras/imagem150-480-altura-eletrodo.jpg}
+\caption{Altura do eletrodo ao longo do tempo}
+\label{fig:result-altura-eletrodo}
+\end{figure}
+
+De acordo com a figura \ref{fig:result-altura-eletrodo} o eletrodo de soldagem esteve boa parte do tempo entre 7mm e 11mm de comprimento. A variação desse comprimento aparentemente não tem uma frequência padrão que possa ser analisada. Apenas dois pontos (o de máximo e o de mínimo) indicam alguma falha do algoritmo neste quesito por estarem muito afastados do valor médio.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{./Figuras/imagem150-480-medidas-arame.jpg}
+\caption{Posição do eletrodo ao longo do tempo}
+\label{fig:result-medidas-arame}
+\end{figure}
+
+A figura \ref{fig:result-medidas-arame} mostra a variação de posição horizontal do topo e da base do eletrodo. Salvo por um ponto de máximo, a variação destes valores não é muito grande.
+
+Foi feito um gráfico extra com as medidas da poça comparadas com a posição do eletrodo. Este gráfico, na figura \ref{fig:result-bordas-poca-medidas-arame}, deixa claro que as medidas de borda direita da poça e de posição do eletrodo devem ter alguma correlação.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{./Figuras/imagem150-480-bordas-poca-medidas-arame.jpg}
+\caption{Posição do eletrodo e bordas da poça ao longo do tempo}
+\label{fig:result-bordas-poca-medidas-arame}
+\end{figure}
+
+%O gráfico \ref{fig:result-grafico-bordas-poca} foi sobreposto a um cordão de solda para se verificar a qualidade do algoritmo. Essa comparação se segue na figura \ref{fig:result-comparacao-bordas}
 
 
 

@@ -3,7 +3,7 @@ Threshold1 = 7;
 Threshold2 = 26;
 Threshold3 = 127;
 Isemfiltro=I;
-% if filtrar==1 
+if filtrar==1 
 % imwrite(I,colormap(gray(256)),strcat('Relatorio/Figuras/','imagem',int2str(j),'-comum.jpg'));
   %% Retirar scanlines
   a = I > Threshold1;
@@ -18,7 +18,7 @@ Isemfiltro=I;
   I = imfilter(I,H,'replicate');
 %   imwrite(I,colormap(gray(256)),strcat('Relatorio/Figuras/','imagem',int2str(j),'-',int2str(j+2),'-filtro-gaussiana.jpg'));
   %   title('Filtro de gaussiana');
-% end
+end
 
 %% Binarizacao
 B  = I > Threshold2;
@@ -109,31 +109,32 @@ ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afasta
 % fimArameBase = fimArameBase + inicioArameBase;
 
 %% calculo de cantos com regressao (funcionou muito melhor com a regressao robusta)
-pixelsArameBase = (ladoDirArame(2)*posArameBase + ladoDirArame(1)) - (ladoEsqArame(2)*posArameBase + ladoEsqArame(1));
+pixelsArameBase = (posArameBase*ladoDirArame(2)+ladoDirArame(1)) - (posArameBase*ladoEsqArame(2)+ladoEsqArame(1));
 
 % if ((pixelsArameBase < 85) || (pixelsArameBase > 105)) && tamanho(1) > 1000
   
 %   % impressão de imagem corrigida
-  figure;image(ImagemTratada);colormap(gray(256));axis image;
-  set(gca,'LooseInset',get(gca,'TightInset'));
-%   title('Imagem com medidas');
-  hold on;
+%   figure;image(ImagemTratada);colormap(gray(256));axis image;
+%   set(gca,'LooseInset',get(gca,'TightInset'));
+% %   title('Imagem com medidas');
+%   hold on;
   %bordas laterais
-%   b1=plot(ones(1,tamanho(1))*limEsqPoca,1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca,1:1:tamanho(1),'--y','LineWidth',2)
+%   b1=plot(ones(1,tamanho(1))*limEsqPoca,1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca,1:1:tamanho(1),'--y','LineWidth',2);
 %   legend(b1,'Bordas da poça');
   %lados esquerdo e direito do arame
 %   le1=plot(inicioArame,posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,'g','LineWidth',1.2);
 %   ld1=plot(fimArame,posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,'b','LineWidth',1.2);
 %   % com regressao
-  le2=plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'g','LineWidth',2)
-  ld2=plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'b','LineWidth',2)
-  legend([le2,ld2],'Borda esquerda do eletrodo','Borda direita do eletrodo');
+
+%   le2=plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'g','LineWidth',2);
+%   ld2=plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'b','LineWidth',2);
+%   legend([le2,ld2],'Borda esquerda do eletrodo','Borda direita do eletrodo');
   %topo e base do arame
-%   t1=plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b','LineWidth',2);
-%   b3=plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b','LineWidth',2);
+%   t1=plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'r','LineWidth',2);
+%   b3=plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'--r','LineWidth',2);
 %   legend(t1,'Topo e base do arame');
   
-
+% legend([b1(1),le2(1),ld2(1),t1(1),b3(1)],'Bordas da poça','Borda esquerda do eletrodo','Borda direita do eletrodo','Topo do eletrodo','Base do eletrodo');
 
   % PERFIS
   % horizontal
@@ -153,16 +154,23 @@ pixelsArameBase = (ladoDirArame(2)*posArameBase + ladoDirArame(1)) - (ladoEsqAra
   
 % end
 
-%%
-% calcular angulo da camera em relacao ao arame
-%  x  da imagem corresponde a primeira dimensao (cima->baixo)
-%  y  da imagem corresponde a segunda dimensao  (esq->dir)
-%  z  da imagem nao sera utilizado
-%  X  real corresponde a direcao do arame
-%  Y  real corresponde a direcao perpendicular ao cordao de 
-%     solda e ao arame (esq->dir)
-%  Z  corresponde a direcao do cordao de solda
 
-
-
+%% apresentar valores
+% topobase=[posArameTopo posArameBase]
+% topoesquerdo = (posArameTopo*ladoEsqArame(2)+ladoEsqArame(1))
+% baseEsquerdo = (posArameBase*ladoEsqArame(2)+ladoEsqArame(1))
+% topoDireito = (posArameTopo*ladoDirArame(2)+ladoDirArame(1))
+% baseDireito = (posArameBase*ladoDirArame(2)+ladoDirArame(1))
+% 
+% limEsqPoca = limEsqPoca
+% limDirPoca = limDirPoca
+% 
+% topobasemm=[posArameTopo posArameBase]/pixelsArameBase
+% topoesquerdomm = (posArameTopo*ladoEsqArame(2)+ladoEsqArame(1))/pixelsArameBase
+% baseEsquerdomm = (posArameBase*ladoEsqArame(2)+ladoEsqArame(1))/pixelsArameBase
+% topoDireitomm = (posArameTopo*ladoDirArame(2)+ladoDirArame(1))/pixelsArameBase
+% baseDireitomm = (posArameBase*ladoDirArame(2)+ladoDirArame(1))/pixelsArameBase
+% 
+% limEsqPocamm = limEsqPoca/pixelsArameBase
+% limDirPocamm = limDirPoca/pixelsArameBase
 

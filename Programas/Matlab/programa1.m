@@ -1,6 +1,3 @@
-%%Exemplo de processamento de imagem
-% Levenberg Marquardt
-
 clear;
 clc;
 close all;
@@ -126,7 +123,6 @@ for j = inicio:1:fim
 
   % Obtencao de calculos na imagem corrigida
   [I2,posArameTopo(j-inicio+1),posArameBase(j-inicio+1),limEsqPoca(j-inicio+1),limDirPoca(j-inicio+1),ladoEsqArame,ladoDirArame,pixelsArameBase(j-inicio+1)] = processamento(I2,tamanho2,0,j);
-  LarguraPoca(j-inicio+1) = diametroArame * (limDirPoca(j-inicio+1) - limEsqPoca(j-inicio+1))/pixelsArameBase(j-inicio+1);
   CentroArameTopo(j-inicio+1) = (posArameTopo(j-inicio+1)*ladoEsqArame(2)+ladoEsqArame(1) + posArameTopo(j-inicio+1)*ladoDirArame(2)+ladoDirArame(1))/2;
   CentroArameBase(j-inicio+1) = (posArameBase(j-inicio+1)*ladoEsqArame(2)+ladoEsqArame(1) + posArameBase(j-inicio+1)*ladoDirArame(2)+ladoDirArame(1))/2;
   
@@ -151,7 +147,11 @@ for j = inicio:1:fim
 end
 
 
+
 %% Resultados
+
+LarguraPoca = diametroArame * (limDirPoca - limEsqPoca) ./ pixelsArameBase;
+AlturaArame = (posArameBase-posArameTopo) ./ pixelsArameBase;
 
 AnguloDesvio = atan((CentroArameTopo-CentroArameBase)/(posArameTopo-posArameBase));
 AnguloDesvio = AnguloDesvio*180/pi;
@@ -162,6 +162,12 @@ hold on;
 title(strcat('Medidas da poça de soldagem. Imagens ',int2str(inicio),' a ',int2str(fim)))
 plot(LarguraPoca);
 legend('Largura da poça');
+
+figure;
+hold on;
+title(strcat('Medidas da altura do eletrodo. Imagens ',int2str(inicio),' a ',int2str(fim)))
+plot(AlturaArame);
+legend('Altura do eletrodo');
 
 figure;
 hold on;

@@ -5,6 +5,13 @@
 
 Foi interessante observar o efeito que cada filtro tem sobre o resultado final. Mais importante que isso foi encontrar um conjunto de filtros, que aplicados na ordem certa, transformam a imagem em algo mais fácil de trabalhar.
 
+O algoritmo implementado em Matlab apresentou resultados satisfatórios, com poucos pontos extraordinários entre as medidas feitas.
+
+A observação feita sobre a correlação entre a posição horizontal do eletrodo e a posição da borda direita da poça de soldagem é pertinente. Obviamente se deve a uma falha do algoritmo. A posição medida do topo do eletrodo deveria ser constante ou pelo menos muito estável, pois está próximo ao centro do bocal, que é fixo. A câmera do experimento também foi posicionada de forma fixa em relação ao bocal da tocha de soldagem. O que se deveria observar seria a base do eletrodo se movendo enquanto o topo fica fixo. Essa noção pode ser incorporada ao algoritmo para se obter melhores resultados.
+
+
+
+
 A implementação em FPGA foi mais difícil e demorada do que se esperava. Foram encontrados diversos problemas durante o desenvolvimento que não tinham solução trivial. 
 
 Sugere-se que sejam criados os blocos finais na implementação em FPGA, o de regressão robusta e o de correção de distorção de perspectiva. Esses blocos tornariam a solução completamente funcional para uma aplicação em indústrias ou \textit{workshops}.
