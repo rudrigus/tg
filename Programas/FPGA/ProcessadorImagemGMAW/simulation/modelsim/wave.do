@@ -3,21 +3,17 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/pixel_entrada
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/endereco_escrita
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/endereco_leitura
-add wave -noupdate /processadorimagemgmaw_tb/clk_count
 add wave -noupdate /processadorimagemgmaw_tb/in_clock
 add wave -noupdate /processadorimagemgmaw_tb/linha
 add wave -noupdate /processadorimagemgmaw_tb/coluna
+add wave -noupdate /processadorimagemgmaw_tb/i1/bordas_poca/derivadaVert
+add wave -noupdate /processadorimagemgmaw_tb/i1/bordas_poca/max_derivada
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/limEsqPoca
 add wave -noupdate -radix unsigned /processadorimagemgmaw_tb/i1/limDirPoca
-add wave -noupdate /processadorimagemgmaw_tb/FVAL_teste
-add wave -noupdate /processadorimagemgmaw_tb/LVAL_teste
-add wave -noupdate /processadorimagemgmaw_tb/after_line
-add wave -noupdate /processadorimagemgmaw_tb/inicio_imagem
 add wave -noupdate /processadorimagemgmaw_tb/i1/posArameTopo
 add wave -noupdate /processadorimagemgmaw_tb/i1/posArameBase
 add wave -noupdate /processadorimagemgmaw_tb/i1/medidas_arame/linha
 add wave -noupdate /processadorimagemgmaw_tb/i1/medidas_arame/coluna
-add wave -noupdate /processadorimagemgmaw_tb/i1/medidas_arame/somaHor
 add wave -noupdate /processadorimagemgmaw_tb/i1/medidas_arame/derivadaHor
 add wave -noupdate /processadorimagemgmaw_tb/i1/medidas_arame/max_derivada
 add wave -noupdate -radix decimal /processadorimagemgmaw_tb/i1/regressao_linear1/mult1
@@ -47,9 +43,9 @@ add wave -noupdate /processadorimagemgmaw_tb/i1/regressao_linear1/teste13
 add wave -noupdate /processadorimagemgmaw_tb/i1/regressao_linear1/teste14
 add wave -noupdate /processadorimagemgmaw_tb/i1/regressao_linear1/teste15
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1239919 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1869405916 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 309
+configure wave -namecolwidth 364
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -63,4 +59,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {26250 ns}
+WaveRestoreZoom {1869249837 ps} {1869506185 ps}

@@ -82,11 +82,6 @@ process(FVAL,in_clock) begin
               max_derivada <= derivadaVert(coluna);
               limEsqPoca <= coluna;
             end if;
-            if (derivadaVert(coluna) < min_derivada_arame) then
-              min_derivada_arame <= derivadaVert(coluna);
-              limEsqPoca <= coluna;
-            end if;
-
 
           else
             if (derivadaVert(coluna) < min_derivada) then

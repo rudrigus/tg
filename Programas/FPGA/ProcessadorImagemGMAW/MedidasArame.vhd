@@ -102,8 +102,6 @@ process(FVAL,in_clock) begin
           -- calculo das derivadas dos perfis horizontais
           if(linha > 0) then
             derivadaHor(linha) <= somaHor(linha) - somaHor(linha -1);
-          else
-            derivadaHor(linha) <= 0;
           end if;
 
           -- definicao do maximo e minimo das derivadas e topo e base do arame

@@ -8,6 +8,9 @@ entity FiltroGaussiana is
   port (
   in_clock         : in std_logic;
   FVAL             : in std_logic;
+  --bloco_atual   : in unsigned(1 downto 0);
+  --endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
+  --q                : in std_logic_vector(7 downto 0);
   pixel_entrada    : in std_logic_vector(7 downto 0) := (others => '0');
   pixel_filtrado   : out std_logic_vector(7 downto 0) := (others => '0'));
 end FiltroGaussiana;

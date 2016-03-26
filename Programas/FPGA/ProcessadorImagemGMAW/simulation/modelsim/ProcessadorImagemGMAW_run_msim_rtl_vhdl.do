@@ -1,6 +1,6 @@
 transcript on
 if {[file exists rtl_work]} {
-	vdel -lib rtl_work -all
+  vdel -lib rtl_work -all
 }
 vlib rtl_work
 vmap work rtl_work
@@ -25,4 +25,4 @@ do {wave.do}
 view wave
 view structure
 view signals
-run 200 us
+run 4000 us
