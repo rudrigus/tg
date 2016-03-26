@@ -37,7 +37,6 @@ ARCHITECTURE ProcessadorImagemGMAW_arch OF ProcessadorImagemGMAW_TB IS
 
 -- signals
 CONSTANT LinePause       : integer := 5;
-CONSTANT IntegrationCPRE : integer := 107;
 SIGNAL ENDSIM            : STD_LOGIC := '0';
 SIGNAL temp              : STD_LOGIC := '0';
 SIGNAL clk_count         : natural := 0;
@@ -46,8 +45,8 @@ SIGNAL threshold1        : std_logic_vector(7 downto 0);
 SIGNAL meioVert          : unsigned(7 downto 0);
 SIGNAL meioHor           : unsigned(7 downto 0);
 SIGNAL in_clock          : STD_LOGIC;
-SIGNAL FVAL_teste        : STD_LOGIC;
-SIGNAL LVAL_teste        : STD_LOGIC;
+SIGNAL FVAL_teste        : STD_LOGIC := '0';
+SIGNAL LVAL_teste        : STD_LOGIC := '0';
 SIGNAL RX                : STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');
 SIGNAL pixel_entrada     : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
 SIGNAL bloco_atual       : natural range qtd_imagens downto 0 := 0;
@@ -62,9 +61,7 @@ SIGNAL periodo           : real := 12.000E-8;
 SIGNAL afastamento       : natural range numlin downto 0 :=0 ;
 
 SIGNAL after_line        : integer range 0 to LinePause := 0;
-SIGNAL after_image       : integer range 0 to 10 := 0;
---SIGNAL inicio_imagem   : STD_LOGIC := '0';
-SIGNAL inicio_imagem     : integer range 0 to IntegrationCPRE := 0;
+SIGNAL inicio_imagem     : integer range 0 to LinePause := 0;
 
 
 COMPONENT ProcessadorImagemGMAW
@@ -176,12 +173,12 @@ IN_process: process (in_clock) begin
   -- durante imagem
     clk_count <= clk_count + 1;
     if (FVAL_teste = '1') then
-      if (inicio_imagem /= IntegrationCPRE - 1) then
+      if (inicio_imagem /= LinePause) then
         coluna <= 0;
         linha <= 0;
         after_line <= 0;
         inicio_imagem <= inicio_imagem + 1;
-        if (inicio_imagem < IntegrationCPRE - 2) then
+        if (inicio_imagem < LinePause-1) then
           LVAL_teste <= '0';
         else
           LVAL_teste <= '1';
