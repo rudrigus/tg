@@ -47,6 +47,7 @@ A sequência de passos pode ser lida com mais detalhes abaixo:
 \begin{framed}
 \begin{enumerate}
 \item Limpar memória e fechar figuras
+\item Selecionar imagens de curto circuito (brilhoMaximo=30\%)
 \item Carregar quantidadeImagens imagens (quantidadeImagens=3)
 \item Criar imagem média das imagens carregadas -> I
 
@@ -79,18 +80,50 @@ A sequência de passos pode ser lida com mais detalhes abaixo:
 \end{framed}
 
 Esses passos com os valores para os parâmetros definidos acima obtiveram bons resultados para uma grande quantidade de imagens (antigas). O algoritmo demonstrou certa robustez a ruídos, porém quando a imagem foge muito ao padrão esperado, o algoritmo fornece valores equivocados. Um exemplo é quando há uma grande gota de solda fora da área da poça. 
-% Mencionar que deve ser usado um filtro de Kalman?
 
 % mostrar exemplo
 
+\subsection{Seleção de imagens}
+
+Esta primeira etapa é bastante simples, pois basta somar os valores de intensidade dos \textit{pixels} e compará-los com um valor numérico pré definido. No Matlab, isto é feito com uma soma da matriz de imagem carregada que é então comparada com a variável $brilhoMaximo$. Essa variável teve inicialmente seu valor definido como 30\% do máximo possível para uma imagem. No caso de uma imagem de dimensões 296x264, esse valor é $brilhoMaximo = 3985344$.
+
+\begin{figure}[h!]
+\centering
+\figuraresult{Img}{2420}{2439}
+\caption{Imagens 2420 a 2440.}
+\label{fig:desenv-imagens-selecao}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\subfigure[\label{fig:desenv-selecao-imagens-.3}]{
+	\centering
+	\includegraphics[width=.7\textwidth]{./Figuras/desenv-grafico-selecao-03.jpg}}
+\subfigure[\label{fig:desenv-selecao-imagens-.2}]{
+	\centering
+	\includegraphics[width=.7\textwidth]{./Figuras/desenv-grafico-selecao-02.jpg}}
+\caption{(a) Imagens selecionadas com fator de 30\%. (b) Imagens selecionadas com fator de 20\%.}
+\label{fig:desenv-selecao-imagens}
+\end{figure}
+
+Para o teste desta etapa são utilizadas as imagens de número 2420 a 2439 de uma filmagem não sincronizada denominada ''Resultados 2 DVd Guilherme'', a 1000 FPS. Essas imagens estão em sequência na figura \ref{fig:desenv-imagens-selecao}. A figura \ref{fig:desenv-selecao-imagens} Mostra quais imagens foram selecionadas para se fazer o processamento. Como pose-se observar, valor de 20\% teve melhor seletividade nesta coleção.
+
+
+As figuras \ref {fig:desenv-imagens-selecao} e \ref{fig:desenv-selecao-imagens} demonstram que o algoritmo seleciona quase todas as imagens da série quando o fator de brilho é 30\% e seleciona apenas as que realmente se aproximam de um curto-circuito com zum fator de brilho de 20\%. Esse valor deve ser calibrado quando se muda o \textit{setup} do processo.
+
+Após a seleção, as imagens boas são armazenadas em um \textit{buffer} para que se siga o processamento. Nesta etapa também os valores calculados são repetidos quando a imagem não é selecionada. Ou seja enquanto não surgirem imagens propícias ao processamento, as medidas desejadas permanecem com seu valor anterior.
+
 \subsection{Filtros}
+
+
 \label{section:desenv-filtros}
 A escolha dos filtros utilizados foi baseada nas características do processo e das próprias imagens, já conhecidas. Abaixo segue a sequência de filtro utilizados.
 
 \begin{enumerate}
 \item Média de imagens
 
-Não é um filtro muito comumente utilizado, mas se provou útil neste trabalho. Observou-se em várias imagens objetos brilhosos que aparecem aleatoriamente, provavelmente respingos de solda e fagulhas. São ruídos muito grandes para serem retirados com filtros de janela. O interessante é que estes objetos não costumam estar presentes em mais de uma imagem. As características do processo favorecem o uso da média, pois as imagens as formas a serem identificadas mudam pouco de \textit{frame} a \textit{frame}.
+A média de imagens não é um filtro muito comumente utilizado, mas se provou útil neste trabalho. Observou-se em várias imagens objetos brilhosos que aparecem aleatoriamente, provavelmente respingos de solda e fagulhas. São ruídos muito grandes para serem retirados com filtros de janela. O interessante é que estes objetos não costumam estar presentes em mais de uma imagem. As características do processo favorecem o uso da média, pois as imagens as formas a serem identificadas mudam pouco de \textit{frame} a \textit{frame}.
 
 A média de imagens reduz bastante este efeito e quanto maior o número de imagens utilizadas, menor o efeito de deste tipo de ruído. Em contrapartida, o uso de muitas imagens pode propagar o ruído durante muitas leituras, o que comprometeria a eficácia do processamento de sinais mais tarde. Portanto, deve-se escolher uma quantidade razoável de imagens a serem utilizadas na média. Durante as simulações observou-se que três a cinco imagens são o suficiente para atenuar consideravelmente estes ruídos.
 
@@ -626,7 +659,7 @@ Os valores de $r_{eletrodo}$ e  $h$ foram utilizados para calcular a distorção d
 
 
 
-\subsection{Simulações em FPGA}
+\subsection{Simulações em FPGA} \label{section:desenv-simulacoes-fpga}
 
 Inicialmente, o algoritmo foi desenvolvido como se os dados de entrada (pixels) e clock viessem de alguma forma já desserializados para a placa. Ou seja, havia apenas a entrada de um clock e um byte, além dos outros sinais de configuração. As entidades de processamento foram todas feitas de forma a receber informações desta forma genérica, o que se mostrou eficiente após serem criados os blocos descritos em \ref{section:desenv-aquisicao-imagens}.
 

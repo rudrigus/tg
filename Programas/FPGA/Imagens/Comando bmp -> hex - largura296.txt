@@ -1,0 +1,62 @@
+#!/bin/bash
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+
+for arq in *.bmp
+do 
+  if [ $arq -nt "${arq::-4}".txt ]
+  then
+    echo "${arq::-4}"
+    od -j 1078 -w296 -A n -v -t x1 $arq > "${arq::-4}".txt
+  fi
+done
+
+
+for arq in *.txt
+do 
+  if [ $arq -nt "${arq::-4}".vhd ]
+  then
+    saida="${arq::-4}".vhd
+    echo $saida
+    echo -n "(" >> $saida
+    cat $arq | while IFS='' read -r line || [[ -n "$line" ]]; do
+      echo -n "(" >> $saida
+      echo $line | while IFS= read -r -N 3 i; do
+        # if [[ "$i" == *$'\n' ]]; then
+        #   echo  "(" >> $saida
+        #   echo  -n "X\"${i: -2}\")," >> $saida
+        # else
+          echo -n "X\"${i: -2}\"," >> $saida
+        # fi
+      done
+      sed -i '$ s/.$//' $saida
+      echo ")," >> $saida
+    done
+    sed -i '$ s/.$//' $saida
+    sed -i '$ s/.$//' $saida
+    echo -n "));" >> $saida
+  fi
+done
+
+
+# for arq in Img30*.vhd
+# do 
+#   if [ $arq -nt "${arq::-4}".txt ]
+#     echo "${arq::-4}"
+#     # touch "${arq::-4}".txt
+#     # 
+#     cat Img3011.vhd | while read -n 3 i; do 
+#       # if [$i == *$'\n'*]
+#         # cat "X" $i ")," >> "${arq::-4}".txt;  
+#       # else
+#         # cat "X\"" $i "\"," >> "${arq::-4}".txt; 
+#         echo "lega"
+#       # fi
+#     done
+
+
+#   fi
+# done
+
+IFS=$SAVEIFS
+

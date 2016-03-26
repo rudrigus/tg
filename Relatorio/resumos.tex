@@ -1,20 +1,7 @@
 %TCIDATA{LaTeXparent=0,0,relatorio.tex}
 
 %\resumo{Resumo}{O presente texto apresenta normas a serem seguidas por alunos do Curso de Engenharia Mecatrônica da Universidade de Brasília para redação de relatório na disciplina Projeto de Graduação 2. Tais normas foram aprovadas pela Comissão de Graduação do Curso de Engenharia Mecatrônica em julho/2005. São apresentadas instruções detalhadas para a formatação do trabalho em termos de suas partes principais.}
-\resumo{Resumo}{Desenvolvimento de um sensor de geometria da poça de fusão em um processo de soldagem GMAW por curto circuito por meio de algoritmos de processamento de imagem que possibilitem para cada quadro:
-
-\begin{itemize}
-\item
-Selecionar quadros propícios ao processamento;
-\item
-Determinar a largura e o eixo central do arame, bem como a distorção de perspectiva que ocorre no seu plano normal à direção do movimento de soldagem;
-\item
-Determinar a largura máxima da poça, assim como a distorção de perspectiva que ocorre no plano da poça de soldagem;
-\end{itemize}
-
-Os resultados do processamento acima serão organizados em vetores,  para geração de sinais propícios à utilização em uma malha de controle. Os algoritmos deverão ser validados comparando seus resultados com valores medidos à partir de testes controlados do processo.
-
-----------------------------------------------------------------
+\resumo{Resumo}{
 Desenvolvimento de métodos para a obtenção em tempo real de parâmetros em um processo de soldagem GMAW (\textit{Gas Metal Arc Welding}) por meio de processamento de imagens. Em uma primeira etapa foi desenvolvido um algoritmo em software que realiza as seguintes tarefas a cada quadro: 
 
 \begin{itemize}
@@ -23,27 +10,28 @@ Selecionar quadros propícios ao processamento;
 \item
 Determinar a largura e o eixo central do arame, bem como a distorção de perspectiva que ocorre no seu plano normal à direção do movimento de soldagem;
 \item
-Determinar a largura máxima da poça, assim como a distorção de perspectiva que ocorre no plano da poça de soldagem;
+Determinar a largura máxima da poça, assim como sua posição.
 \end{itemize}
 
-Em seguida, algumas das tarefas acima foram implementadas em \textit{hardware} com o uso de um FPGA (\textit{Field Programmable Gate Array}) para reduzir significativamente o tempo 
-de processamento.
+Na segunda etapa, algumas das tarefas acima foram implementadas em \textit{hardware} com o uso de um FPGA (\textit{Field Programmable Gate Array}) para reduzir significativamente o tempo de processamento.
 }
 
 \vspace*{2cm}
 
 \resumo{Abstract}
 {
-Continue the development of a welding pool geometry sensor in a short circuit GMAW process by means of the development of an image processing algorithm that makes possible at each frame:
+%Continue the development of a welding pool geometry sensor in a short circuit GMAW process by means of the development of an image processing algorithm that makes possible at each frame:
+The development of image processing methods for real time calculation of parameters in a GMAW (Gas Metal Arc Welding). A software algorithm was created in the first stage to realize the following task at each frame:
 
 \begin{itemize}
 \item
-Select frames appropriate to processing;
+Select proper frames for processing;
 \item
-Determine the wire's width and central axis, as well as perspective distortion in its plane normal to the welding's movement direction;
+Determine the wire's width and central axis, as well as perspective distortion in the plane orthogonal to the welding's movement direction;
 \item
-Determine the pool's max width, as well as the distortion perspective in the pool's plane;
+Determine the pool's max width and position.
 \end{itemize}
 
-The results of the processing above will be organized in vectors, which should be filtered by a Kalman Filter for the generation of  signals appropriate for utilization in a control system. The algorithms should be validated comparing its results with measured values from controlled process tests.
+In the second stage, some of the tasks above were implemented in hardware with the use of a FPGA (Field Programmable Gate Array) to reduce significantly the processing time.
+
 }

@@ -31,12 +31,20 @@
 \usepackage{indentfirst}
 \usepackage{listings}
 \usepackage{framed}
+%\usepackage{forloop}
+\usepackage{pgffor}
+
 
 % Escolher um dos seguintes formatos:
 %\usepackage{ft1unb} % segue padrão de fonte Times
 \usepackage{ft2unb} % segue padrão de fontes do Latex
 
-
+\def\figuraresult#1#2#3{%
+  \foreach \index in {#2, ..., #3} {%
+    \subfigure[\index]{
+    	\centering
+    	\includegraphics[width=.18\textwidth]{./Figuras/#1\index.jpg}}
+  }}
 
 \makeindex
 

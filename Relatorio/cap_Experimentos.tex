@@ -17,9 +17,26 @@ Foram realizadas simulações nas duas etapas do projeto. As duas utilizaram image
 
 \section{Avaliação do algoritmo em Matlab}
 
-Um grupo de três imagens foi escolhido para demonstrar a sequência do algoritmo, passo a passo. Essas imagens são as de número 440 a 442, em uma filmagem denominada ''Resultados Filtro Adaptativo'' no trabalho \cite{luciano} e foram capturadas a uma taxa de 1000 FPS. Cada uma tem 296x264 \textit{pixels} em níveis de cinza.
 
-\subsection{Filtros}
+As imagens utilizadas para validar o algoritmo são provenientes do trabalho \cite{luciano}. Cada uma tem 296x264 \textit{pixels} em níveis de cinza.
+
+As seções \ref{section:result-filtros} a \ref{section:result-correcao-distorcao} utilizam três imagens para demonstrar a sequência do algoritmo, passo a passo. Essas são as de número 440 a 442, em uma filmagem denominada ''Resultados Filtro Adaptativo'' e foram capturadas a uma taxa de 1000 FPS. 
+
+\subsection{Seleção de imagens}
+
+Para a validação desta etapa são utilizadas as imagens de número 2000 a 2999
+da filmagem não sincronizada denominada ''Resultados 2 DVd Guilherme'', a 1000 FPS. 
+Algumas dessas imagens estão em sequência na figura \ref{fig:desenv-imagens-selecao}.
+A figura \ref{fig:result-selecao-imagens} Mostra quais imagens foram selecionadas para se fazer o processamento. O fator de brilho utilizado para esta sequência de imagens é de 20\%.
+
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{./Figuras/result-grafico-selecao-02.jpg}
+\caption{Imagens selecionadas com fator brilho de 20\%}
+\label{fig:result-selecao-imagens}
+\end{figure}
+
+\subsection{Filtros}\label{section:result-filtros}
 
 Esta seção faz uma comparação de imagens com e sem os filtros selecionados. As imagens foram escolhidas propositalmente para a apresentação destes resultados de forma a ressaltar a importância de cada filtro. Todas as imagens desta seção têm as informações relevantes apresentadas por meio de linhas coloridas. Essas linhas são:
 
@@ -59,7 +76,7 @@ A primeira etapa do algoritmo é o filtro de média de imagens, como descrito na s
 \label{fig:result-media-imagens-sem-filtro}
 \end{figure}
 
-\subsubsection{Primeira binarização}
+\subsubsection{Primeira binarização}\label{section:result-threshold1}
 
 Em seguida é feito o primeiro filtro de binarização. A imagem \ref{fig:detalhe-scanlines} demonstra de forma satisfatória o resultado deste filtro. Como a ocorrência das \textit{scanlines} sua utilização antes ou depois do filtro de médias tem o mesmo efeito.  Visualmente, o efeito desse filtro é tão pequeno que cogitou-se retirá-lo, mas o custo computacional é tão baixo que decidiu-se mantê-lo. A figura \ref{fig:result-threshold1} ilustra qual é o efeito das \textit{scanlines} sobre a imagem. A primeira binarização tem evita medidas erradas nas bordas do eletrodo decorrentes das \textit{scanlines}.
 
@@ -99,24 +116,9 @@ Visualmente, o filtro parece quase não afetar a imagem, mas os ruídos neste exem
 
 Em seguida é aplicada a segunda binarização que visa eliminar porções e ruídos pouco relevantes ao processamento. Esta etapa faz duas binarizações, uma por mínimo e uma por máximo, e não apenas uma. Mas por serem operações simples e independentes de ordem chamou-se apenas de ''segunda binarização''.
 
-A figura \ref{fig:result-threshold23} demonstra o efeito deste filtro sobre as medidas finais. Sem este filtro, 
+A maior diferença é evidente na porção inferior da imagem, que é mais brilhosa na figura \ref{fig:result-medidas-threshold23-1}. Essa diferença de brilhosidade pode afetar o funcionamento dos algoritmos de perfis e suas derivadas.
 
-A maior diferença é evidente na porção inferior da imagem, que é mais brilhosa na figura \ref{fig:result-threshold23-1}. Essa diferença de brilhosidade pode afetar o funcionamento dos algoritmos de perfis e suas derivadas.
-
-\begin{figure}[h!]
-\begin{center}
-\subfigure[\label{fig:result-threshold23-1}]{
-	\centering
-	\includegraphics[width=.45\textwidth]{./Figuras/imagem440-442-filtro-gaussiana.jpg}}
-\subfigure[\label{fig:result-threshold23-2}]{
-	\centering
-	\includegraphics[width=.45\textwidth]{./Figuras/imagem440-442-threshold23.jpg}}
-\end{center}
-\caption{(a) Imagem original e (b) depois da segunda binarização}
-\label{fig:result-threshold23}
-\end{figure}
-
-Também foi feita a comparação entre as medidas feitas com e sem a segunda binarização. A figura \ref{fig:result-medidas-threshold23} mostra o efeito sobre as imagens 440 a 442, mas outras imagens têm melhorias mais significativas com este filtro.
+A figura \ref{fig:result-medidas-threshold23} mostra o efeito sobre as imagens 440 a 442, sobre a identificação da borda da poça. Outras imagens têm melhorias mais significativas com este filtro.
 
 \begin{figure}[h!]
 \subfigure[\label{fig:result-medidas-threshold23-1}]{
@@ -220,7 +222,7 @@ Esses valores são utilizados para se encontrar os vértices do eletrodo demonstra
 \end{figure}
 
 
-\subsection{Correção da distorção de perspectiva e medidas}
+\subsection{Correção da distorção de perspectiva e medidas}\label{section:result-correcao-distorcao}
 
 Para encontrar os valores finais com a correção de distorção de perspectiva, todos os passos anteriores foram aplicados em imagens corrigidas. No exemplo mostrado, utilizou-se uma imagem base como padrão para se definir os parâmetros da distorção, a imagem número 181 da mesma série. A figura \ref{fig:result-imagem-corrigida-medidas} mostra uma imagem transformada e tratada pelos filtros com as posições dos valores buscados. 
 
@@ -239,12 +241,12 @@ Os valores podem ser vistos na tabela \ref{table:result-imagem-corrigida} com a 
 \begin{tabular}{|l|c|c|}
 \hline
  & \textbf{X} & \textbf{Y} \\ \hline
-\textbf{Limite esquerdo da poça} & 297 &  \\ \hline
-\textbf{Limite direito da poça} & 1218 & \\ \hline
-\textbf{Topo esquerdo} & 465.2979 & 297 \\ \hline
-\textbf{Base esquerdo} & 467.7774 & 1218 \\ \hline
-\textbf{Topo direito} & 563.6346 & 297 \\ \hline
-\textbf{Base direito} & 565.8616 & 1218 \\ \hline
+\textbf{Limite esquerdo da poça} & 185 &  \\ \hline
+\textbf{Limite direito da poça} & 857 & \\ \hline
+\textbf{Topo esquerdo} & 464.8906 & 288 \\ \hline
+\textbf{Base esquerdo} & 468.0658 & 1223 \\ \hline
+\textbf{Topo direito} & 563.0091 & 288 \\ \hline
+\textbf{Base direito} & 565.9742 & 1223 \\ \hline
 \end{tabular}
 \label{table:result-imagem-corrigida}
 \caption{Valores medidos com o algoritmo em uma imagem corrigida.}
@@ -255,27 +257,27 @@ Os valores podem ser vistos na tabela \ref{table:result-imagem-corrigida} com a 
 \begin{tabular}{|l|c|c|}
 \hline
  & \textbf{X} & \textbf{Y} \\ \hline
-\textbf{Limite esquerdo da poça} & 1,4885 &  \\ \hline
-\textbf{Limite direito da poça} & 8,6762 & \\ \hline
-\textbf{Topo esquerdo} & 4,7439 & 3,0280 \\ \hline
-\textbf{Base esquerdo} & 4,7691 & 12,4179 \\ \hline
-\textbf{Topo direito} & 5,7464 & 3,0280 \\ \hline
-\textbf{Base direito} & 5,7691 & 12,4179 \\ \hline
+\textbf{Limite esquerdo da poça} & 1,8895 &  \\ \hline
+\textbf{Limite direito da poça} & 8,7531 & \\ \hline
+\textbf{Topo esquerdo} & 4,7482 & 2,9415 \\ \hline
+\textbf{Base esquerdo} & 4,7806 & 12,4913 \\ \hline
+\textbf{Topo direito} & 5,7504 & 2,9415 \\ \hline
+\textbf{Base direito} & 5,7806 & 12,4913 \\ \hline
 \end{tabular}
 \label{table:result-imagem-corrigida-mm}
 \caption{Valores reais medidos com o algoritmo em uma imagem corrigida.}
 \end{table}
 
-Esses valores são bastante razoáveis, considerando-se que uma imagem da mesma série foi utilizada para se fazer a calibração. Pode-se ver por exemplo que a largura calculada do eletrodo vai de $5,7464 - 4,7439 = 1,0025mm$ no topo a $ 5,7691 - 4,7691 = 1mm$ na base. Esses valores são bastante razoáveis e demonstram que a transformação está ocorrendo de forma satisfatória.
+Esses valores são bastante razoáveis, considerando-se que uma imagem da mesma série foi utilizada para se fazer a calibração. Pode-se ver por exemplo que a largura calculada do eletrodo vai de $5,7806 - 4,7806 = 1mm$ no topo a $ 5,7504 - 4,7482 = 1,0022mm$ na base. Esses valores são bastante razoáveis e demonstram que a transformação está ocorrendo de forma satisfatória.
 
-A largura da poça neste grupo de imagens é $8,6762 - 1,4885 = 7,1877mm$, um valor bastante plausível para uma solda de 1mm sobre uma chapa única.
+A largura da poça neste grupo de imagens é $8,7531 - 1,8895 = 6,8636mm$, um valor bastante plausível para uma solda de 1mm sobre uma chapa única.
 
-A altura do eletrodo, $12,4179 - 3,0280 = 9,3899mm$, apresenta um valor consideravelmente menor que o esperado de 10,25mm. Este valor pode significar uma variação no comprimento do eletrodo enquanto esse se funde durante o processo.
+A altura do eletrodo, $12,4913 - 2,9415 = 9,5498mm$, apresenta um valor consideravelmente menor que o esperado de 10,25mm. Este valor pode significar uma variação no comprimento do eletrodo enquanto esse se funde durante o processo.
 
 \subsection{Resultados com sequência de imagens}
 
 O algoritmo foi aplicado em uma sequência de imagens, das quais se obtiveram as medidas desejadas. Foram utilizadas as imagens de número 150 a 480. As sequências de medidas podem ser vistas nos gráficos de \ref{fig:result-bordas-poca} a \ref{fig:result-medidas-arame}.
-Essas medidas foram todas calculadas em mm.
+Essas medidas foram todas calculadas em mm. Os pontos em branco são referentes a imagens com brilho excessivo que não foram processadas.
 
 \begin{figure}[h!]
 \centering
@@ -284,7 +286,7 @@ Essas medidas foram todas calculadas em mm.
 \label{fig:result-bordas-poca}
 \end{figure}
 
-Pode-se observar na figura \ref{fig:result-bordas-poca} que para a sequência testada a largura da poça de soldagem teve pouca variação, sendo a borda esquerda praticamente constante durante todo o período. A borda direita apresentou algumas variações.
+Pode-se observar na figura \ref{fig:result-bordas-poca} que para a sequência testada a largura da poça de soldagem teve pouca variação, sendo a borda esquerda bastante estável durante todo o período. A borda direita apresentou algumas mais variações. Há dois pontos discrepantes no gráfico, que devem significar uma falha no algoritmo.
 
 \begin{figure}[h!]
 \centering
@@ -293,16 +295,16 @@ Pode-se observar na figura \ref{fig:result-bordas-poca} que para a sequência tes
 \label{fig:result-altura-eletrodo}
 \end{figure}
 
-De acordo com a figura \ref{fig:result-altura-eletrodo} o eletrodo de soldagem esteve boa parte do tempo entre 7mm e 11mm de comprimento. A variação desse comprimento aparentemente não tem uma frequência padrão que possa ser analisada. Apenas dois pontos (o de máximo e o de mínimo) indicam alguma falha do algoritmo neste quesito por estarem muito afastados do valor médio.
+De acordo com a figura \ref{fig:result-altura-eletrodo} o eletrodo de soldagem esteve boa parte do tempo entre 9mm e 11mm de comprimento. A variação desse comprimento aparentemente não tem uma frequência padrão que possa ser analisada. Apenas poucos pontos indicam alguma falha do algoritmo neste quesito por estarem muito afastados do valor médio.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=.8\textwidth]{./Figuras/imagem150-480-medidas-arame.jpg}
 \caption{Posição do eletrodo ao longo do tempo}
-\label{fig:result-medidas-arame}
+\label{fig:result-medidas-arame}	
 \end{figure}
 
-A figura \ref{fig:result-medidas-arame} mostra a variação de posição horizontal do topo e da base do eletrodo. Salvo por um ponto de máximo, a variação destes valores não é muito grande.
+A figura \ref{fig:result-medidas-arame} mostra a variação de posição horizontal do topo e da base do eletrodo. Salvo por dois pontos discrepantes, a variação destes valores não é muito grande.
 
 Foi feito um gráfico extra com as medidas da poça comparadas com a posição do eletrodo. Este gráfico, na figura \ref{fig:result-bordas-poca-medidas-arame}, deixa claro que as medidas de borda direita da poça e de posição do eletrodo devem ter alguma correlação.
 
@@ -315,31 +317,73 @@ Foi feito um gráfico extra com as medidas da poça comparadas com a posição do el
 
 %O gráfico \ref{fig:result-grafico-bordas-poca} foi sobreposto a um cordão de solda para se verificar a qualidade do algoritmo. Essa comparação se segue na figura \ref{fig:result-comparacao-bordas}
 
+O mesmo procedimento foi feito com uma sequência de imagens não sincronizadas. Foram utilizadas as imagens de número 2000 a 5452
+da filmagem não sincronizada denominada ''Resultados 2 DVd Guilherme'', a 1000 FPS. As figuras \ref{fig:result-altura-eletrodo-ns} e \ref{fig:result-bordas-poca-medidas-arame-ns} apresentam os resultados com essas imagens.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{./Figuras/imagem2000-5452-altura-eletrodo.jpg}
+\caption{Altura do eletrodo ao longo do tempo}
+\label{fig:result-altura-eletrodo-ns}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{./Figuras/imagem2000-5452-bordas-poca-medidas-arame.jpg}
+\caption{Posição do eletrodo e bordas da poça ao longo do tempo}
+\label{fig:result-bordas-poca-medidas-arame-ns}
+\end{figure}
+
+Os pontos de maior falha no gráfico \ref{fig:result-bordas-poca-medidas-arame-ns} foram avaliados. Tratam-se das imagens 4727 e 4743. As medidas foram marcadas nessas imagens e apresentadas na figura \ref{fig:result-falhas}.
+
+
+\begin{figure}[h!]
+\begin{center}
+\subfigure[\label{fig:result-falhas-1}]{
+	\centering
+		\includegraphics[width=.4\textwidth]{./Figuras/imagem4720-4727-falha.jpg}}
+\subfigure[\label{fig:result-falhas-2}]{
+	\centering
+	\includegraphics[width=.4\textwidth]{./Figuras/imagem4726-4743-falha.jpg}}
+\caption{(a) Imagens 4720 a 4727. (b) Imagens 4726 a 4743.}
+\end{center}
+\label{fig:result-falhas}
+\end{figure}
+
+Como pode-se observar, essas imagens ter brilho especificamente muito baixo, o que comprometeu o algoritmo de reconhecimento das bordas do eletrodo.
 
 
 \section{Avaliação do algoritmo em FPGA}
-\subsection{Média de imagens}
-\subsection{Primeira binarização}
-\subsection{Filtro de gaussiana}
-\subsection{Segunda binarização}
-\subsection{Perfis Horizontais}
-\subsection{Perfis Verticais}
 
---------------------------------------------------------
+O projeto em FPGA foi também simulado com imagens anteriores do trabalho \cite{luciano}, porém as simulações foram feitas como descrito na seção \ref{section:desenv-simulacoes-fpga} com arquivos. As simulações utilizadas para o desenvolvimento foram feitas com imagens reduzidas, de 60x60 \textit{pixels} para se aumentar a velocidade da simulação.
+Nesta seção serão apresentados resultados do processamento com imagens no tamanho original.
+Os valores aqui obtidos são comparados com aqueles da simulação em Matlab.
+Não foram geradas imagens com as medidas nestas simulações, apenas as formas de onda geradas pelo \textit{software} Modelsim são avaliadas.
 
-\begin{table}[tbp]
-\caption{Tempos de execução em segundos para diferentes máquinas}
-\label{TabDesempenho}
-\begin{center}
-\begin{tabular}{c|c|c|c|c}
-\hline
-\textbf{Algoritmo} & \textbf{Laptop} & \textbf{Desktop} & \textbf{Desktop} & 
-\textbf{Laptop} \\ 
-& \textbf{1.8 GHz} & \textbf{PIII 850 MHz} & \textbf{MMX 233} & \textbf{600
-MHz} \\ \hline
-Matlab ARE & 649,96 & 1.857,5 & 7.450,5 & 9.063,9 \\ 
-$CH$ & 259,44 & 606,4 & 2.436,5 & 2.588,5 \\ 
-$CH+LYAP$ & 357,86 & 952,9 & 3.689,2 & 3.875,0 \\ \hline
-\end{tabular}
-\end{center}
-\end{table}
+\subsection{Filtros}
+
+\subsubsection{Primeira binarização}
+
+Como citado na seção \ref{section:result-threshold1}, este filtro pode ser utilizado antes da média de imagens, o que é feito neste caso. Para verificar que está funcionando, basta comparar a forma de onda dos \textit{pixels} antes e depois deste filtro. As regiões mais escuras das imagens da imagem, com valores baixos de brilhosidade, devem aparecer com valor respectivo zero após o filtro. Esse comportamento pode ser visto na figura \ref{fig:result-fpga-threshold1}.
+
+\begin{figure}[h!]
+\centering
+%\includegraphics[width=.8\textwidth]{./Figuras/fpga-imagem440-443-threshold1.jpg}
+\caption{Formas de onda de \textit{pixels} antes e depois da binarização.}
+\label{fig:result-fpga-threshold1}
+\end{figure}
+
+\subsubsection{Média de imagens e seleção de imagens propícias}
+
+Esse primeiro filtro deve fornecer o somatório de três \textit{pixels} de mesma linha e coluna nas três imagens utilizadas, apenas para as imagens com brilho total menor que o máximo definido.
+A figura \ref{fig:result-fpga-media-imagens} mostra a saída com a soma dos \textit{pixels} armazenados em memória.
+
+
+
+\subsubsection{Filtro de gaussiana}
+\subsubsection{Segunda binarização}
+\subsection{Perfis horizontais}
+\subsection{Perfis verticais}
+\subsection{Regressao linear}
+

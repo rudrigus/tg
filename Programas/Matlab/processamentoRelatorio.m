@@ -1,9 +1,11 @@
-function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento (I, tamanho, filtrar,j)
+function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase,falha] = processamento (I, tamanho, filtrar,j)
+falha=0;
 Threshold1 = 7;
 Threshold2 = 26;
 Threshold3 = 127;
 Isemfiltro=I;
 if filtrar==1 
+%   figure;image(I);colormap(gray(256));axis image;
 % imwrite(I,colormap(gray(256)),strcat('Relatorio/Figuras/','imagem',int2str(j),'-comum.jpg'));
   %% Retirar scanlines
   a = I > Threshold1;
@@ -34,7 +36,7 @@ ImagemTratada = min(I2,Threshold3);
 
 % perfil horizontal, de cima para baixo
 % Usar ImagemTratada
-somaHor     = sum(ImagemTratada,2);
+somaHor     = sum(B,2);
 derivadaHor = diff(somaHor);
 
 % limiares tamanhos uteis
@@ -42,8 +44,8 @@ meioVert = floor(tamanho(1)/2);
 meioHor =  floor(tamanho(2)/2);
 
 % limites verticais do arame
-[M,posArameTopo] = max(derivadaHor(1:1:meioVert-1));
-[M,posArameBase] = max(derivadaHor(meioVert:1:tamanho(1)-1));
+[~,posArameTopo] = max(derivadaHor(1:1:meioVert-1));
+[~,posArameBase] = max(derivadaHor(meioVert:1:tamanho(1)-1));
 posArameBase     = posArameBase + meioVert;
 
 
@@ -52,20 +54,20 @@ posArameBase     = posArameBase + meioVert;
 % limites horizontais do arame
 % perfil vertical, da esquerda para a direita
 % Usar B
-somaVert     = sum(B,1);
+somaVert     = sum(ImagemTratada,1);
 derivadaVert = diff(somaVert);
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Borda esquerda da poca
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[M, limEsqPoca] = max(derivadaVert(1:1:meioHor));
+[~, limEsqPoca] = max(derivadaVert(1:1:meioHor));
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Borda direita da poca
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[M, limDirPoca] = min(derivadaVert(meioHor:1:tamanho(2)-1));
+[~, limDirPoca] = min(derivadaVert(meioHor:1:tamanho(2)-1));
 limDirPoca = limDirPoca + meioHor;
 
 
@@ -85,11 +87,12 @@ fimArame = zeros(n,1);
 derivadaArame = zeros(n,tamanho(2)-1);
 for i = 1:1:n
     derivadaArame(i,:) = diff(ImagemTratada(posArameTopo + afastamento1 + round(intervalo*(i-1)),:));
-    [M, inicioArame(i)] = min(derivadaArame(i,floor(meioHor/2):1:meioHor));
+    [~, inicioArame(i)] = min(derivadaArame(i,floor(meioHor/2):1:meioHor));
     inicioArame(i) = inicioArame(i) + floor(meioHor/2);
-    [M, fimArame(i)] = max(derivadaArame(i,meioHor:1:tamanho(2)-1));
+    [~, fimArame(i)] = max(derivadaArame(i,meioHor:1:tamanho(2)-1));
     fimArame(i) = fimArame(i) + meioHor;
 end
+
 % X = size(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2)
 % Y = size(inicioArame)
 ladoEsqArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,inicioArame);
@@ -110,33 +113,40 @@ ladoDirArame = robustfit(posArameTopo+afastamento1:intervalo:posArameBase-afasta
 
 %% calculo de cantos com regressao (funcionou muito melhor com a regressao robusta)
 pixelsArameBase = (posArameBase*ladoDirArame(2)+ladoDirArame(1)) - (posArameBase*ladoEsqArame(2)+ladoEsqArame(1));
+CentroArameBase  = ((posArameBase *ladoEsqArame(2)+ladoEsqArame(1) + posArameBase *ladoDirArame(2)+ladoDirArame(1))/2)/pixelsArameBase ;
+%achar imagens com problemas
 
-% if ((pixelsArameBase < 85) || (pixelsArameBase > 105)) && tamanho(1) > 1000
+% Detecção de falhas
+if (CentroArameBase > 7) || (CentroArameBase < 3) || 7 > (posArameBase - posArameTopo)/pixelsArameBase > 13
+  falha = 1;
+end
+
+% if falha
+%   
+  % impressão de imagem corrigida
+  figure;image(ImagemTratada);colormap(gray(256));axis image;hold on;
+  set(gca,'LooseInset',get(gca,'TightInset'));
+%   title(strcat('Imagem com problema numero: ',int2str(j)))
   
-%   % impressão de imagem corrigida
-%   figure;image(ImagemTratada);colormap(gray(256));axis image;
-%   set(gca,'LooseInset',get(gca,'TightInset'));
-% %   title('Imagem com medidas');
-%   hold on;
-  %bordas laterais
-%   b1=plot(ones(1,tamanho(1))*limEsqPoca,1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca,1:1:tamanho(1),'--y','LineWidth',2);
+% %   bordas laterais
+  b1=plot(ones(1,tamanho(1))*limEsqPoca,1:1:tamanho(1),'--y',ones(1,tamanho(1))*limDirPoca,1:1:tamanho(1),'--y','LineWidth',2);
 %   legend(b1,'Bordas da poça');
-  %lados esquerdo e direito do arame
-%   le1=plot(inicioArame,posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,'g','LineWidth',1.2);
-%   ld1=plot(fimArame,posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,'b','LineWidth',1.2);
-%   % com regressao
-
-%   le2=plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'g','LineWidth',2);
-%   ld2=plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'b','LineWidth',2);
+% %   lados esquerdo e direito do arame
+  le1=plot(inicioArame,posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,'r','LineWidth',1.2);
+  ld1=plot(fimArame,posArameTopo+afastamento1:intervalo:posArameBase-afastamento2,'g','LineWidth',1.2);
+  % com regressao
+  le2=plot([posArameTopo*ladoEsqArame(2)+ladoEsqArame(1) posArameBase*ladoEsqArame(2)+ladoEsqArame(1)],[posArameTopo posArameBase],'r','LineWidth',2);
+  ld2=plot([posArameTopo*ladoDirArame(2)+ladoDirArame(1) posArameBase*ladoDirArame(2)+ladoDirArame(1)],[posArameTopo posArameBase],'g','LineWidth',2);
 %   legend([le2,ld2],'Borda esquerda do eletrodo','Borda direita do eletrodo');
-  %topo e base do arame
-%   t1=plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'r','LineWidth',2);
-%   b3=plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'--r','LineWidth',2);
+% %   topo e base do arame
+  t1=plot(1:1:tamanho(2),ones(tamanho(2))*posArameTopo,'b','LineWidth',2);
+  b3=plot(1:1:tamanho(2),ones(tamanho(2))*posArameBase,'b','LineWidth',2);
 %   legend(t1,'Topo e base do arame');
   
-% legend([b1(1),le2(1),ld2(1),t1(1),b3(1)],'Bordas da poça','Borda esquerda do eletrodo','Borda direita do eletrodo','Topo do eletrodo','Base do eletrodo');
+legend([b1(1),le2(1),ld2(1),t1(1),b3(1)],'Bordas da poça','Borda esquerda do eletrodo','Borda direita do eletrodo','Topo do eletrodo','Base do eletrodo');
+end
 
-  % PERFIS
+% PERFIS
   % horizontal
 %     ph=plot(somaHor(:,1,1)/(max(somaHor)/tamanho(2)),1:1:tamanho(1),'g','LineWidth',2);
 %     pdh=plot(tamanho(2)/2 + derivadaHor(:,1)/(-2*min(derivadaHor)/tamanho(2)),1:1:tamanho(1)-1,'r','LineWidth',1.2);

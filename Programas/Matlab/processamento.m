@@ -1,4 +1,4 @@
-function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase] = processamento (I, tamanho, filtrar,j)
+function [ImagemTratada,posArameTopo,posArameBase,limEsqPoca,limDirPoca,ladoEsqArame,ladoDirArame,pixelsArameBase,falha] = processamento (I, tamanho, filtrar,j)
 Threshold1 = 7;
 Threshold2 = 40;
 Threshold3 = 100;
@@ -24,7 +24,7 @@ ImagemTratada = min(I2,Threshold3);
 %% Limites verticais do arame
 
 % perfil horizontal, de cima para baixo
-somaHor     = sum(ImagemTratada,2);
+somaHor     = sum(B,2);
 derivadaHor = diff(somaHor);
 
 % limiares tamanhos uteis
@@ -41,7 +41,7 @@ posArameBase     = posArameBase + meioVert;
 %%
 % limites horizontais do arame
 % perfil vertical, da esquerda para a direita
-somaVert     = sum(B,1);
+somaVert     = sum(ImagemTratada,1);
 derivadaVert = diff(somaVert);
 
 %%
