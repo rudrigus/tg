@@ -2,6 +2,7 @@ library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 use work.common.all;
+use work.imagensteste.all;
 --use work.imagensteste.all;
 
 entity ProcessadorImagemGMAW is

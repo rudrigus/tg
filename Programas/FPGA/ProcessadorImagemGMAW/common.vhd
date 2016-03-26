@@ -3,8 +3,8 @@ use ieee.numeric_std.all;
 use IEEE.STD_LOGIC_1164.all;
 
 package Common is
-  constant numcols   : integer := 60;
-  constant numlin    : integer := 60;
+  constant numcols   : integer := 296;
+  constant numlin    : integer := 264;
   --constant tamanho_imagem : integer := numcols * numlin;
   constant qtd_imagens : natural := 4;
 

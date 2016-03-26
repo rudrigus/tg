@@ -2,18 +2,27 @@
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
-for arq in *.bmp
+# converter imagens em texto
+for arq in Img*.bmp
 do 
-  if [ $arq -nt "${arq::-4}".txt ]
+  if [ $arq -nt "${arq::-4}".tmp ]
   then
     echo "${arq::-4}"
-    od -j 1078 -w296 -A n -v -t x1 $arq > "${arq::-4}".txt
+    od -j 1078 -w296 -A n -v -t x1 $arq > "${arq::-4}".tmp
   fi
 done
 
 
-for arq in *.txt
+# inverter linhas
+for arq in *.tmp
 do 
+  cat $arq | tac > "${arq::-4}".txt
+  rm $arq
+done
+
+# converter em matrizes de vhdl
+for arq in *.txt
+do
   if [ $arq -nt "${arq::-4}".vhd ]
   then
     saida="${arq::-4}".vhd
@@ -36,27 +45,8 @@ do
     sed -i '$ s/.$//' $saida
     echo -n "));" >> $saida
   fi
+  rm $arq
 done
-
-
-# for arq in Img30*.vhd
-# do 
-#   if [ $arq -nt "${arq::-4}".txt ]
-#     echo "${arq::-4}"
-#     # touch "${arq::-4}".txt
-#     # 
-#     cat Img3011.vhd | while read -n 3 i; do 
-#       # if [$i == *$'\n'*]
-#         # cat "X" $i ")," >> "${arq::-4}".txt;  
-#       # else
-#         # cat "X\"" $i "\"," >> "${arq::-4}".txt; 
-#         echo "lega"
-#       # fi
-#     done
-
-
-#   fi
-# done
 
 IFS=$SAVEIFS
 

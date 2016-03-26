@@ -51,8 +51,8 @@ SIGNAL LVAL_teste        : STD_LOGIC;
 SIGNAL RX                : STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');
 SIGNAL pixel_entrada     : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others => '0');
 SIGNAL bloco_atual       : natural range qtd_imagens downto 0 := 0;
-SIGNAL linha             : integer range 0 to numlin - 1 := 0;
-SIGNAL coluna            : integer range 0 to numcols - 1 := 0;
+SIGNAL linha             : integer range 0 to numcols - 1 := 0;
+SIGNAL coluna            : integer range 0 to numlin - 1 := 0;
 SIGNAL reset             : STD_LOGIC;
 SIGNAL start_stop        :  STD_LOGIC;
 SIGNAL contador12b       : STD_LOGIC_VECTOR(11 DOWNTO 0);
@@ -62,7 +62,6 @@ SIGNAL periodo           : real := 12.000E-8;
 SIGNAL afastamento       : natural range numlin downto 0 :=0 ;
 
 SIGNAL after_line        : integer range 0 to LinePause := 0;
-SIGNAL after_image       : integer range 0 to 10 := 0;
 --SIGNAL inicio_imagem   : STD_LOGIC := '0';
 SIGNAL inicio_imagem     : integer range 0 to IntegrationCPRE := 0;
 
@@ -131,32 +130,26 @@ BEGIN
 
 brilho_maximo <= to_unsigned(720000,25) after 0 ns;
 threshold1    <= "00001010" after 0 ns;
-meioVert      <= to_unsigned(132,8) after 0 ns;
-meioHor       <= to_unsigned(148,8) after 0 ns;
+meioVert      <= to_unsigned(30,8) after 0 ns;
+meioHor       <= to_unsigned(31,8) after 0 ns;
 afastamento   <= 2 after 0 ns;
-
 
 -- usando um line pause de 5 ciclos
 -- e tempos de integration + CPRE de 100 ciclos
-  -- line pauses: 264*5=1320
-  -- total de pixels: 264*296=78144
-  -- duracao de FVAL=78144+1320+5=79469
-  -- duracao do frame=FVAL+100+10=79579
-  -- fim de FVAL ate proximo FVAL=110
-FVAL_teste <= '1' after 100 * (1 sec / frequencia_camera),   -- imagem 0
+FVAL_teste <= '1' after 10 * (1 sec / frequencia_camera),   -- imagem 0
              --'0' after 4025 * (1 sec / frequencia_camera),
-             '0' after 79569 * (1 sec / frequencia_camera),
-             '1' after 79679 * (1 sec / frequencia_camera),  -- imagem 1
-             '0' after 159148 * (1 sec / frequencia_camera),
-             '1' after 159258 * (1 sec / frequencia_camera),  -- imagem 2
-             '0' after 238727 * (1 sec / frequencia_camera),
-             '1' after 238837 * (1 sec / frequencia_camera), -- imagem 3
-             '0' after 318306 * (1 sec / frequencia_camera);
+             '0' after 3955 * (1 sec / frequencia_camera),
+             '1' after 4055 * (1 sec / frequencia_camera),  -- imagem 1
+             '0' after 8000 * (1 sec / frequencia_camera),
+             '1' after 8100 * (1 sec / frequencia_camera),  -- imagem 2
+             '0' after 12075 * (1 sec / frequencia_camera),
+             '1' after 12175 * (1 sec / frequencia_camera), -- imagem 3
+             '0' after 16090 * (1 sec / frequencia_camera);
 
-bloco_atual <= 0 after 1 * (1 sec / frequencia_camera),
-               1 after 79579 * (1 sec / frequencia_camera),
-               2 after 159158 * (1 sec / frequencia_camera),
-               3 after 238737 * (1 sec / frequencia_camera);
+bloco_atual <= 0 after 10 * (1 sec / frequencia_camera),
+               1 after 4015 * (1 sec / frequencia_camera),
+               2 after 8030 * (1 sec / frequencia_camera),
+               3 after 12045 * (1 sec / frequencia_camera);
 
 IN_process: process (in_clock) begin
   if(rising_edge(in_clock)) then
@@ -171,6 +164,37 @@ IN_process: process (in_clock) begin
       when others => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna));
     end case;
 
+    -- marcacao de linhas, colunas e parada na simulacao
+  --  if (coluna = numcols - 1) then
+  --    LVAL_teste <= '0';
+  --    if (after_line /= LinePause-1) and (after_imagem = 0) then
+  --      after_line <= after_line + 1;
+  --    else
+  --      if (linha = numlin -1) then
+  --        if (after_imagem /= IntegrationCPRE-1) then
+  --          after_imagem <= after_imagem + 1;
+  --        else 
+  --          after_imagem <= 0;
+  --          linha <= 0;
+  --          --fim_imagem <= '1';
+  --        end if;
+  --      else
+  --        coluna <= 0;
+  --        after_line <= 0;
+  --        LVAL_teste <= '1';
+  --        linha <= linha + 1;
+  --      end if;    
+  --    end if;
+  --  else
+  --    if (after_line = 0) then
+  --      coluna <= coluna + 1;
+  --    end if;
+  --  end if;
+
+  --  if (clk_count = 4 * (numlin * numcols)) then
+  --    ENDSIM <= '1';
+  --  end if;
+  --end if;
   
   -- logica para simular a transmissao cameralink
   -- durante imagem
@@ -189,7 +213,7 @@ IN_process: process (in_clock) begin
       else
         if (coluna = numcols - 1) then
           LVAL_teste <= '0';
-          if (after_line /= LinePause) then
+          if (after_line /= LinePause-1) then
             after_line <= after_line + 1;
           else
             after_line <= 0;
