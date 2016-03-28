@@ -41,7 +41,6 @@ SIGNAL ENDSIM            : STD_LOGIC := '0';
 SIGNAL temp              : STD_LOGIC := '0';
 SIGNAL clk_count         : natural := 0;
 SIGNAL brilho_maximo     : UNSIGNED(24 DOWNTO 0);
-SIGNAL threshold1        : std_logic_vector(7 downto 0);
 SIGNAL meioVert          : unsigned(7 downto 0);
 SIGNAL meioHor           : unsigned(7 downto 0);
 SIGNAL in_clock          : STD_LOGIC;
@@ -70,8 +69,7 @@ port (
   FVAL_teste    : in std_logic;                                       -- para simulacao
   LVAL_teste    : in std_logic;                                       -- para simulacao
   --RX            : in std_logic_vector(3 downto 0);                    -- canais de dados
-  brilho_maximo : in unsigned(24 downto 0) := to_unsigned(720000,25);
-  threshold1    : in std_logic_vector(7 downto 0);
+  brilho_maximo : in unsigned(24 downto 0) := to_unsigned(5978016,25);
   meioVert      : in unsigned(7 downto 0);
   meioHor       : in unsigned(7 downto 0);
   afastamento   : in natural range numlin downto 0;
@@ -117,7 +115,6 @@ BEGIN
   in_clock => in_clock,
   FVAL_teste => FVAL_teste,
   brilho_maximo => brilho_maximo,
-  threshold1 => threshold1,
   meioVert => meioVert,
   meioHor => meioHor,
   afastamento => afastamento,
@@ -126,47 +123,56 @@ BEGIN
   pixel_entrada => pixel_entrada
   );
 
-brilho_maximo <= to_unsigned(720000,25) after 0 ns;
-threshold1    <= "00001010" after 0 ns;
-meioVert      <= to_unsigned(132,8) after 0 ns;
-meioHor       <= to_unsigned(148,8) after 0 ns;
+brilho_maximo <= to_unsigned(1258291,25) after 0 ns;
+meioVert      <= to_unsigned(64,8) after 0 ns;
+meioHor       <= to_unsigned(64,8) after 0 ns;
 afastamento   <= 2 after 0 ns;
 
 
 -- usando um line pause de 5 ciclos
 -- e tempos de integration + CPRE de 100 ciclos
-  -- line pauses: 264*5=1320
-  -- total de pixels: 264*296=78144
-  -- duracao de FVAL=78144+1320+5=79469
-  -- duracao do frame=FVAL+100+10=79579
+  -- line pauses: 128*5=640
+  -- total de pixels: 128*128=16384
+  -- duracao de FVAL=78144+1320+5=17029
+  -- duracao do frame=FVAL+100+10=17139
   -- fim de FVAL ate proximo FVAL=110
 FVAL_teste <= '1' after 100 * (1 sec / frequencia_camera),   -- imagem 0
              --'0' after 4025 * (1 sec / frequencia_camera),
-             '0' after 79569 * (1 sec / frequencia_camera),
-             '1' after 79679 * (1 sec / frequencia_camera),  -- imagem 1
-             '0' after 159148 * (1 sec / frequencia_camera),
-             '1' after 159258 * (1 sec / frequencia_camera),  -- imagem 2
-             '0' after 238727 * (1 sec / frequencia_camera),
-             '1' after 238837 * (1 sec / frequencia_camera), -- imagem 3
-             '0' after 318306 * (1 sec / frequencia_camera);
+             '0' after 17129 * (1 sec / frequencia_camera),
+             '1' after 17239 * (1 sec / frequencia_camera),  -- imagem 1
+             '0' after 34268 * (1 sec / frequencia_camera),
+             '1' after 34378 * (1 sec / frequencia_camera),  -- imagem 2
+             '0' after 51507 * (1 sec / frequencia_camera),
+             '1' after 51517 * (1 sec / frequencia_camera), -- imagem 3
+             '0' after 68546 * (1 sec / frequencia_camera);
 
 bloco_atual <= 0 after 1 * (1 sec / frequencia_camera),
-               1 after 79579 * (1 sec / frequencia_camera),
-               2 after 159158 * (1 sec / frequencia_camera),
-               3 after 238737 * (1 sec / frequencia_camera);
+               1 after 17139 * (1 sec / frequencia_camera),
+               2 after 34278 * (1 sec / frequencia_camera),
+               3 after 51417 * (1 sec / frequencia_camera);
 
 IN_process: process (in_clock) begin
   if(rising_edge(in_clock)) then
     clk_count <= clk_count + 1;
 
     -- avanca as imagens
-    case bloco_atual is
-      when 0 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna));
-      when 1 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste1(linha, coluna));
-      when 2 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste2(linha, coluna));
-      when 3 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste3(linha, coluna));
-      when others => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna));
-    end case;
+    if coluna=numcols-1 then
+      case bloco_atual is
+        when 0 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna));
+        when 1 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste1(linha, coluna));
+        when 2 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste2(linha, coluna));
+        when 3 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste3(linha, coluna));
+        when others => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna));
+      end case;
+    else
+      case bloco_atual is
+        when 0 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna+1));
+        when 1 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste1(linha, coluna+1));
+        when 2 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste2(linha, coluna+1));
+        when 3 => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste3(linha, coluna+1));
+        when others => pixel_entrada <= STD_LOGIC_VECTOR(imagem_teste0(linha, coluna));
+      end case;
+    end if;
 
   
   -- logica para simular a transmissao cameralink

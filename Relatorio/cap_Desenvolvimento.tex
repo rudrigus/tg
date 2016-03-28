@@ -507,13 +507,50 @@ Para agilizar o desenvolvimento do projeto foi criada um pacote com valores e ti
 \end{itemize}
 \end{enumerate}
 
-\subsection{Retirada de scanlines}
+
+\subsection{Retirada de \textit{scanlines}}
 
 Assim que os dados estejam corretamente disponíveis para processamento começam a passar por etapas semelhantes às descritas na seção \ref{section:implementacao-matlab}. A primeira etapa é a retirada de \textit{scanlines}.
 
 Este filtro de binarização é feito antes de qualquer outro, no momento de recepção de cada pixel. O código para tal é tão simples que foi deixado no corpo da entidade de projeto pois não justifica a criação de uma entidade para tal e não seria adequado colocá-lo em outra.
 
 A binarização consiste basicamente transformar em zero qualquer pixel que seja maior que $threshold1$. O valor utilizado para testes $threshold1$ foi de 7, sendo o brilho máximo 255.
+
+
+\subsection{Filtro de gaussiana}
+
+O sistema em FPGA necessitou que este filtro fosse executado antes do filtro de média de imagens pois  seriam necessárias muitas leituras em memória para se obter a janela 3x3. Dessa forma o filtro de gaussiana é aplicado logo em seguida à primeira binarização e o \textit{pixels} filtrados são armazenados em memória para a filtragem por média.
+
+Como explicado na seção \ref{section:realce-imagens}, este é um filtro que utiliza uma janela de \textit{pixels} em uma imagem e uma máscara. A máscara escolhida para se reduzir o ruído foi a de gaussiana, e pode ser vista na tabela abaixo \ref{table:mascara-gaussiana}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+0,0113 & 0,0838 & 0,0113 \\ \hline
+0,0838 & 0,6193 & 0,0838 \\ \hline
+0,0113 & 0,0838 & 0,0113 \\ \hline
+\end{tabular}
+\label{table:mascara-gaussiana}
+\caption{Máscara de gaussiana.}
+\end{table}
+
+Para evitar se trabalhar com pontos flutuantes na FPGA, os valores da tabela \ref{table:mascara-gaussiana} foram multiplicados por $2^8$ para se fazer a multiplicação pela janela de \textit{pixels}. O resultado da multiplicação sofre um \textit{shift} para a direita para se realizar uma divisão do resultado por $2^8$. Os novos valores podem ser vistos na tabela \ref{table:mascara-gaussiana-fpga}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+03 & 15 & 03 \\ \hline
+15 & 9E & 15 \\ \hline
+03 & 15 & 03 \\ \hline
+\end{tabular}
+\label{table:mascara-gaussiana-fpga}
+\caption{Máscara de gaussiana para FPGA (valores hexadecimais).}
+\end{table}
+
+A janela para o filtro é criada como descrito na seção \ref{section:tecnicas-filtro-fpga}. Ficou decidido, por questões de simplicidade e pela natureza das imagens usadas, que seriam descartadas as primeiras e últimas linhas e colunas das imagens. Dessa forma o \textit{pixel} processado está sempre uma linha e uma coluna atrás do novo \textit{pixel} recebido e o processamento termina quando o último é recebido.
+
 
 \subsection{Filtro de imagem média e seleção de imagens propícias} \label{section:desenv-fpga-filtro_media_imagens}
 
@@ -540,7 +577,7 @@ Para que isto fosse possível durante a simulação, foi implementado um bloco de R
 
 O interessante dessa implementação é que o endereçamento de leitura e escrita pode utilizar diretamente o sinal $ bloco\_atual $ com uma simples concatenação, o que poupa operações na implementação em VHDL e recursos na placa.
 
-Como será visto mais detalhadamente abaixo em \ref{section:topo_base}, os cálculos e operações são feitos a cada novo pixel durante o carregamento de uma imagem. Assim, a média de cada pixel das últimas três imagens válidas deve ser calculada a cada ciclo de \textit{clock}. Como os valores absolutos não são de interesse durante os cálculos ficou decidido que a soma das três imagens seria suficiente, o que evita uma divisão desnecessária.
+Como será visto mais detalhadamente abaixo em \ref{section:topo-base}, os cálculos e operações são feitos a cada novo pixel durante o carregamento de uma imagem. Assim, a média de cada pixel das últimas três imagens válidas deve ser calculada a cada ciclo de \textit{clock}. Como os valores absolutos não são de interesse durante os cálculos ficou decidido que a soma das três imagens seria suficiente, o que evita uma divisão desnecessária.
 
 Durante a implementação foi constatado que fazer a leitura de diversos pixels em diferentes endereços de memória podeira consumir muito tempo e talvez se tornar proibitivo caso se deseje uma quantidade maior de imagens no filtro de média. A solução para este problema foi utilizar uma espécie de média móvel nos sinais que são utilizados para os cálculos. Em vez de se fazer a leitura de dois endereços de memória mais recentes para somá-los com o novo pixel recebido ($dado\_escrita$), foi feita apenas a leitura do mais antigo par ser subtraído da soma. Por exemplo: quando era feito o recebimento de um pixel da linha $linha$, coluna $coluna$ o valor do elemento $somaHor(linha)$ era atualizado da seguinte forma:
 
@@ -550,23 +587,28 @@ somaHor(linha) = somaHor(linha) + dado\_escrita - q(bloco\_atual - 3,linha,colun
 
 Onde $q$ é o byte armazenado no endereço de memória dado por $bloco\_atual$ concatenado com $linha \times numcols + coluna$,  sendo $numcols$ a largura da imagem.
 
-\subsection{Cálculo de topo e base do arame} \label{section:topo_base}
+\subsection{Cálculo de topo e base do arame} \label{section:topo-base}
 
-Os dados de topo e base do arame foram obtidos com a mesma lógica criada para Matlab e de forma sequencial. Foi utilizado um processo que tem $in_janela$ e $in_clock$ como lista de sensitividade. O sinal $in_janela$ foi utilizado para sincronização de final de imagem e o $in_clock$ era o \textit{clock} de entrada da câmera e define o fim e o começo da transmissão de cada pixel.
+Os dados de topo e base do arame foram obtidos com a mesma lógica criada para Matlab e de forma sequencial. Foi utilizado um processo que tem $coluna$, $linha$ e $in\_clock$ como lista de sensitividade. Os sinais $coluna$ e $linha$ foram utilizados para identificar a posição que o algoritmo está na imagem e o $in\_clock$ é o \textit{clock} de entrada da câmera e define o fim e o começo da transmissão de cada pixel.
 
-Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{section:desenv-fpga-filtro_media_imagens} os elementos de $somaHor$ foram calculados a cada pixel recebido, mas os valores de $derivadaHor$ apenas foram calculados ao final da leitura de cada linha.
+Foram criados os mesmos vetores $somaHor$ e o $derivadaHor$ ambos do tipo $vetorHor$. Como citado em \ref{section:desenv-fpga-filtro_media_imagens} os elementos de $somaHor$ são calculados a cada pixel recebido. 
 
-Ao mesmo tempo foram definidos os valores $posArameTopo$ e $posArameBase$ com simples testes ao final de cada linha. Ao final da imagem estes valores já estão devidamente definidos.
+É nesta etapa onde a média de imagens é realmente aplicada. O vetor $somaHor$ é sempre acrescido do valor do \textit{pixel} recebido e subtraído do \textit{pixel} mais antigo armazenado na memória, recebido como entrada no sinal $q$.
 
-% apresentar resultados a cada imagem lida
+Os valores de $derivadaHor$ apenas são calculados ao final da leitura de cada linha. Ao mesmo tempo são definidos os valores $posArameTopo$ e $posArameBase$ com simples testes também ao final de cada linha. A derivada no índice da linha finalizada, $derivadaHor(linha)$ é testada para se definir as medidas buscadas. Ao final da imagem estes valores já estão devidamente calculados.
+
+
+\subsection{Bordas da poça de soldagem}\label{section:desenv-bordas-poca-fpga}
+
+A lógica para este cálculo é semelhante à obtenção do topo e base do eletrodo na seção \ref{section:topo-base}, porém as bordas da poça são calculadas apenas ao se receber a última linha de uma imagem. Este processo ocorre dessa forma pois os elementos do vetor $somaVert$ só têm seus valores definidos na última linha. Consequentemente o vetor $derivadaVert$ só pode ser definido também na última linha. 
 
 \subsection{Laterais do Eletrodo}
 
-As laterais do eletrodo são definidas em dois estágios diferentes. Primeiro os pontos prováveis destas laterais são encontrados, depois é calculada a equação de reta que descreve essas laterais. O cálculo desta equação de reta é descrita em \ref{section:desenv-fpga-regressao}
+As laterais do eletrodo são definidas em dois estágios diferentes. Primeiro os pontos prováveis destas laterais são encontrados, depois é calculada a equação de reta que descreve essas laterais. O cálculo desta equação de reta é descrita em \ref{section:desenv-fpga-regressao}.
 
+Para a obtenção dos pontos é feita a derivada \textit{pixel} a \textit{pixel} na direção horizontal, a cada linha. Quando essa derivada atinge um mínimo ou máximo local, o vetor $inicioArame0$ tem seu valor definido no índice daquela linha como a coluna onde ocorreu o mínimo ou o máximo.
 
-
-
+Para que seja aplicada a média de imagens, é necessário armazenar cópias desse vetor para cada nova imagem, são atualizados em forma de média móvel. Como $quantidadeImagens=3$, são necessários mais três vetores. As bordas do eletrodo são definidas como a média dos três vetores entre os índices $posArameTopo$ e $posArameBase$.
 
 
 \subsubsection{Regressão linear} \label{section:desenv-fpga-regressao}
@@ -580,7 +622,7 @@ Como os valores destas constantes são quase sempre muito pequenos (da ordem de $
 
 Os valores calculados para as contantes para 16 pontos, com seus proporcionais utilizados na no código VHDL, e as quantidades de \textit{shifts} são descritos na tabela \ref{table:constantes-reg-16}. É importante notar que os valores inteiros foram todos calculados de forma a se obter a máxima precisão com 18 bits, pois os multiplicadores da placa utilizada são de 18x18 bits.
 
-\begin{table}
+\begin{table}[h!]
 \centering
 \begin{tabular} {|c|c|c|c|}
 \hline

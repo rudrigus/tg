@@ -1,10 +1,10 @@
 Info: Start Nativelink Simulation process
-Info: NativeLink has detected a mixed Verilog and VHDL design -- vhdl simulation models will be used
+Info: NativeLink has detected VHDL design -- VHDL simulation models will be used
 
 ========= EDA Simulation Settings =====================
 
 Sim Mode              :  RTL
-Family                :  cycloneivgx
+Family                :  cycloneii
 Quartus root          :  /home/rudrigus/altera/13.0sp1/quartus/linux64/
 Quartus sim root      :  /home/rudrigus/altera/13.0sp1/quartus/eda/sim_lib
 Simulation Tool       :  modelsim-altera

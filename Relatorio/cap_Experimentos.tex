@@ -356,7 +356,7 @@ Como pode-se observar, essas imagens ter brilho especificamente muito baixo, o q
 
 \section{Avaliação do algoritmo em FPGA}
 
-O projeto em FPGA foi também simulado com imagens anteriores do trabalho \cite{luciano}, porém as simulações foram feitas como descrito na seção \ref{section:desenv-simulacoes-fpga} com arquivos. As simulações utilizadas para o desenvolvimento foram feitas com imagens reduzidas, de 60x60 \textit{pixels} para se aumentar a velocidade da simulação.
+O projeto em FPGA foi também simulado com imagens anteriores do trabalho \cite{luciano}, porém as simulações foram feitas como descrito na seção \ref{section:desenv-simulacoes-fpga} com arquivos. Para que pudessem ser comportadas 4 imagens em memória, que tem o tamanho máximo de 65536 \textit{bytes}, as simulações utilizadas para o foram feitas com imagens reduzidas, de 128x128 \textit{pixels}.
 Nesta seção serão apresentados resultados do processamento com imagens no tamanho original.
 Os valores aqui obtidos são comparados com aqueles da simulação em Matlab.
 Não foram geradas imagens com as medidas nestas simulações, apenas as formas de onda geradas pelo \textit{software} Modelsim são avaliadas.
@@ -365,25 +365,126 @@ Não foram geradas imagens com as medidas nestas simulações, apenas as formas de 
 
 \subsubsection{Primeira binarização}
 
-Como citado na seção \ref{section:result-threshold1}, este filtro pode ser utilizado antes da média de imagens, o que é feito neste caso. Para verificar que está funcionando, basta comparar a forma de onda dos \textit{pixels} antes e depois deste filtro. As regiões mais escuras das imagens da imagem, com valores baixos de brilhosidade, devem aparecer com valor respectivo zero após o filtro. Esse comportamento pode ser visto na figura \ref{fig:result-fpga-threshold1}.
+Como citado na seção \ref{section:result-threshold1}, este filtro pode ser utilizado antes da média de imagens, o que é feito neste caso. Para verificar que está funcionando, basta comparar a forma de onda dos \textit{pixels} antes e depois deste filtro. As regiões mais escuras das imagens da imagem, com valores baixos de brilhosidade, devem aparecer com valor respectivo zero após o filtro. Esse comportamento pode ser visto na figura \ref{fig:result-fpga-threshold1} com a comparação entre $pixelz\_entrada$ e $pixel\_filtrado0$.
 
 \begin{figure}[h!]
 \centering
-%\includegraphics[width=.8\textwidth]{./Figuras/fpga-imagem440-443-threshold1.jpg}
-\caption{Formas de onda de \textit{pixels} antes e depois da binarização.}
+\includegraphics[width=\textwidth]{./Figuras/fpga-imagem440-threshold1.png}
+\caption{Formas de onda de \textit{pixels} antes e depois da primeira binarização.}
 \label{fig:result-fpga-threshold1}
 \end{figure}
 
-\subsubsection{Média de imagens e seleção de imagens propícias}
-
-Esse primeiro filtro deve fornecer o somatório de três \textit{pixels} de mesma linha e coluna nas três imagens utilizadas, apenas para as imagens com brilho total menor que o máximo definido.
-A figura \ref{fig:result-fpga-media-imagens} mostra a saída com a soma dos \textit{pixels} armazenados em memória.
-
-
-
 \subsubsection{Filtro de gaussiana}
-\subsubsection{Segunda binarização}
-\subsection{Perfis horizontais}
-\subsection{Perfis verticais}
-\subsection{Regressao linear}
 
+Abaixo é mostrada uma parte do arquivo de imagem, com valores hexadecimais onde está localizada a janela para o filtro. Esta parte começa na linha 70 e coluna 48 da imagem número 440. O pixel filtrado é o da linha 71 e coluna 49, e o novo pixel é o da linha 72, coluna 50.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+... & \cellcolor{yellow} 48 & \cellcolor{yellow} 4A & \cellcolor{yellow} 52 & 53 & 55 & 57 & 59 & 54 & ... \\ \hline
+... & \cellcolor{yellow} 4C & \cellcolor{yellow} 51 & \cellcolor{yellow} 52 & 51 & 58 & 58 & 5D & 58 & ... \\ \hline
+... & \cellcolor{yellow} 4E & \cellcolor{yellow} 53 & \cellcolor{yellow} 55 & & & & & & \\ \hline
+\end{tabular}
+\label{table:result-porcao-imagem-buffer}
+\caption{Porção da imagem para filtro de gaussiana.}
+\end{table}
+
+O resultado da simulação pode ser visto na figura \ref{fig:result-porcao-imagem-buffer}. Os índices da variável $janela\_p\_filtro$, que aparecem em ordem inversa, confirmam o armazenamento do \textit{buffer}. É importante lembrar que os índices em VHDL começam do zero, portanto a variável $linha=71$ na imagem representa a linha 72 e a $coluna=49$, a coluna 50. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.6\textwidth]{./Figuras/fpga-imagem440-result-porcao-imagem-buffer.png}
+\caption{Formas de onda de \textit{pixels} na janela para filtro de gaussiana.}
+\label{fig:result-porcao-imagem-buffer}
+\end{figure}
+
+O resultado do cálculo, pode ser visto na variável $pixel\_filtrado1=4F$ (79 em decimal) muito próximo do que seria o resultado se fosse utilizado ponto flutuante: 80,1424. Vale também notar que o $pixel\_filtrado1$ tem um atraso devido ao filtro.
+
+\subsubsection{Segunda binarização}
+
+Esse filtro pode ser visualizado da mesma forma que a primeira binarização. A figura \ref{fig:result-fpga-threshold23} mostra a binarização seguida nas variáveis $pixel\_filtrado2$ e $pixel\_filtrado3$. Os limiares utilizados foram $threshold2=26$ (1A) e $threshold2=127$ (7F).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{./Figuras/fpga-imagem440-threshold23.png}
+\caption{Formas de onda de \textit{pixels} antes e depois da segunda binarização.}
+\label{fig:result-fpga-threshold23}
+\end{figure}
+
+\subsubsection{Média de imagens}
+
+Esse filtro deve fornecer o somatório de três \textit{pixels} de mesma linha e coluna nas três imagens utilizadas, apenas para as imagens com brilho total menor que o máximo definido.
+
+Como explicado nas seções \ref{section:topo-base} e  \ref{section:desenv-bordas-poca-fpga} esses valores são calculados a cada \textit{pixel} recebido nos vetores $somaHor$ e $somaVert$
+A figura \ref{fig:result-fpga-media-imagens} mostra a saída com a soma dos \textit{pixels} armazenados em memória. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.6\textwidth]{./Figuras/fpga-imagem440-443media.png}
+\caption{Atualização de valores a cada novo pixel.}
+\label{fig:result-fpga-media-imagens}
+\end{figure}
+
+Pode-se ver que o índice 49 do vetor $somaHor$ é acrescido do valor hexadecimal $3D-33=A$ (10 em decimal) pois $369C-3692=A$. 
+
+O mesmo ocorre para o índice 48 do vetor $somaVert$, com $7047-703D=A$.
+
+Esses valores sofrem a subtração apenas à partir da quarta imagem, pois como demonstrado a figura \ref{fig:result-fpga-q}, $q$ é zero durante as três primeiras.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.9\textwidth]{./Figuras/fpga-imagem440-443-q.png}
+\caption{Valor lido da memória ao longo das quatro primeiras imagens.}
+\label{fig:result-fpga-q}
+\end{figure}
+
+\subsection{Seleção de imagens propícias}
+
+Por praticidade decidiu-se utilizar as mesmas imagens e apenas se alterar o valor de $brilho\_maximo$ durante as simulações. A figura \ref{fig:result-fpga-selecao} mostra o avanço de $bloco\_atual$ e consequentemente o avanço dos blocos de memória para valores diferentes de $brilhoMaximo$.
+
+\subsection{Perfis horizontais e perfis verticais}
+
+Aqui são de fato apresentadas as medidas que deseja obter com o sistema.
+
+A figura \ref{fig:result-fpga-medidas-arame-poca-440-442} apresenta os resultados que são melhor organizados na tabela \ref{table:result-fpga-medidas-arame-poca}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.9\textwidth]{./Figuras/fpga-imagem440-442-medidas-arame-poca.png}
+\caption{Medidas do arame e poça ao longo das três primeiras imagens.}
+\label{fig:result-fpga-medidas-arame-poca-440-442}
+\end{figure}
+
+Para melhor visualizar os resultados ao final da imagem, a figura \ref{fig:result-fpga-medidas-arame-poca-440-442-det} mostra com mais detalhes esses valores antes de serem atualizados no processamento da próxima imagem.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.7\textwidth]{./Figuras/fpga-imagem440-442-medidas-arame-poca-det.png}
+\caption{Medidas do arame e poça ao final da terceira imagens.}
+\label{fig:result-fpga-medidas-arame-poca-440-442-det}
+\end{figure}
+
+A tabela \ref{table:result-fpga-medidas-arame-poca} lista os valores calculados na primeira coluna, comparando-os aos valores que seriam equivalentes se a imagem fosse do tamanho original de 296x264 \textit{pixels} e às medidas encontradas com o aloritmo em Matlab
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Calculado} & \textbf{Equivalente} & \textbf{Matlab} \\ \hline
+19 & 43,9375 & 41 \\ \hline
+111 & 256,6875 & 257 \\ \hline
+24 & 49,5 & 49 \\ \hline
+93 & 191,8125 & 190 \\ \hline
+\end{tabular}
+\label{table:result-fpga-medidas-arame-poca}
+\caption{Valores medidos.}
+\end{table}
+
+\subsection{Regressão linear}
+
+Esta etapa do projeto chegou a ser concluída, mas aqui serão apresentados os resultados intermediários do algoritmo de regressão linear.
+
+A tabela \ref{table:result-bordas-arame} lista os pontos encontrados para se fazer a regressão.
+
+A tabela \ref{table:fpga-coeficientes-regressao} apresenta os valores calculados para os coeficientes de reta em seu estágio intermediário.

@@ -1,6 +1,7 @@
 #!/bin/bash
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
+rm *.txt *.tmp *.vhd
 
 # converter imagens em texto
 for arq in Img4*.bmp
@@ -8,7 +9,8 @@ do
   if [ $arq -nt "${arq::-4}".tmp ]
   then
     echo "${arq::-4}"
-    od -j 1078 -w296 -A n -v -t x1 $arq > "${arq::-4}".tmp
+    # od -j 444 -w384 -A n -v -t x1 $arq > "${arq::-4}".tmp
+    od -j 54 -w384 -A n -v -t x1 $arq > "${arq::-4}".tmp
   fi
 done
 
@@ -17,6 +19,7 @@ done
 for arq in *.tmp
 do 
   cat $arq | tac > "${arq::-4}".txt
+  # cat $arq | tac > "${arq::-4}0".vhd
   rm $arq
 done
 
@@ -30,22 +33,19 @@ do
     echo -n "(" >> $saida
     cat $arq | while IFS='' read -r line || [[ -n "$line" ]]; do
       echo -n "(" >> $saida
-      echo $line | while IFS= read -r -N 3 i; do
-        # if [[ "$i" == *$'\n' ]]; then
-        #   echo  "(" >> $saida
-        #   echo  -n "X\"${i: -2}\")," >> $saida
-        # else
+      echo $line | while IFS= read -r -N 9 i; do
           echo -n "X\"${i: -2}\"," >> $saida
-        # fi
+          echo -n "${i: -3}" >> "${arq::-4}2".vhd
       done
       sed -i '$ s/.$//' $saida
       echo ")," >> $saida
+      echo "," >> "${arq::-4}2".vhd
     done
     sed -i '$ s/.$//' $saida
     sed -i '$ s/.$//' $saida
     echo -n "));" >> $saida
   fi
-  rm $arq
+  # rm $arq
 done
 
 IFS=$SAVEIFS

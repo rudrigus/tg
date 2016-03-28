@@ -8,17 +8,17 @@ entity FiltroGaussiana is
   port (
   in_clock         : in std_logic;
   FVAL             : in std_logic;
-  --bloco_atual   : in unsigned(1 downto 0);
-  --endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
-  --q                : in std_logic_vector(7 downto 0);
+  LVAL             : in std_logic;
+  coluna           : in natural range (numcols - 1) downto 0 := 0;
+  linha            : in natural range (numlin - 1) downto 0 := 0;
   pixel_entrada    : in std_logic_vector(7 downto 0) := (others => '0');
   pixel_filtrado   : out std_logic_vector(7 downto 0) := (others => '0'));
 end FiltroGaussiana;
 
 
 architecture comportamental of FiltroGaussiana is
-  signal coluna : natural range (numcols - 1) downto 0 := 0;
-  signal linha  : natural range (numlin  - 1) downto 0 := 0;
+  --signal coluna : natural range (numcols - 1) downto 0 := 0;
+  --signal linha  : natural range (numlin  - 1) downto 0 := 0;
   signal mascara_gaussiana : matriz33;
   signal janela_p_filtro   : matriz33;
   
@@ -32,6 +32,7 @@ architecture comportamental of FiltroGaussiana is
   signal p7 : std_logic_vector(15 downto 0)  := (others => '0');
   signal p8 : std_logic_vector(15 downto 0)  := (others => '0');
   signal p9 : std_logic_vector(15 downto 0)  := (others => '0');
+  signal temp : std_logic_vector(15 downto 0) := (others => '0');
 
   component Multiplicador8B16B
   port (
@@ -56,39 +57,16 @@ begin
   mascara_gaussiana(2,1) <= x"15";
   mascara_gaussiana(2,2) <= x"03";
 
-process(FVAL,in_clock) begin
+process(FVAL,LVAL,in_clock) begin
   
   if(rising_edge(in_clock)) then
-    buffer_filtro((2 * numcols + 1) downto 1) <= buffer_filtro((2 * numcols) downto 0);
-    buffer_filtro(0) <= pixel_entrada;
-
-    if(FVAL = '1') then
-      coluna <= 0;
-      linha <= 0;
-      -- no primeiro pixel, copiar para bordas
-
-    else
-      if (coluna = numcols - 1) then
-        -- fim de uma linha
-        coluna <= 0;
-
-        if (linha = numlin -1) then
-        -- fim de uma imagem
-          linha <= 0;
-        else
-        -- proxima linha
-          linha <= linha + 1;
-        end if;
-      else
-        -- cálculo normal
-
-        coluna <= coluna + 1;
-      end if;
+    if(FVAL='1' and LVAL='1') then
+        buffer_filtro((2 * numcols + 1) downto 1) <= buffer_filtro((2 * numcols) downto 0);
+        buffer_filtro(0) <= pixel_entrada;
     end if;
   end if;
 
 end process;
-
 -- arrumar janela nas bordas
   -- NAO ESTOU PEGANDO A ULTIMA LINHA E A ULTIMA COLUNA, nao sei se compensa
 process(in_clock)
@@ -144,14 +122,16 @@ begin
 end process;
 
 --somar dividindo por 2^8
-process(in_clock)
-begin
-  if (rising_edge(in_clock)) then
-    pixel_filtrado <= p1(15 downto 8) + p2(15 downto 8) + p3(15 downto 8) + 
-                      p4(15 downto 8) + p5(15 downto 8) + p6(15 downto 8) + 
-                      p7(15 downto 8) + p8(15 downto 8) + p9(15 downto 8);
-  end if ;
-end process;
+--process(in_clock)
+--begin
+--  if (rising_edge(in_clock)) then
+    
+    temp <= (p1 + p2 + p3 + 
+             p4 + p5 + p6 + 
+             p7 + p8 + p9);
+    pixel_filtrado <= temp(15 downto 8);
+--  end if ;
+--end process;
 
 m1 : Multiplicador8B16B port map(mascara_gaussiana(0,0), janela_p_filtro(0,0), p1);
 m2 : Multiplicador8B16B port map(mascara_gaussiana(0,1), janela_p_filtro(0,1), p2);

@@ -16,7 +16,7 @@ A figura \ref{fig:solda_gmaw} demonstra o processo de formação do cordão de sold
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{./Figuras/solda_gmaw}
+\includegraphics[width=.6\textwidth]{./Figuras/solda_gmaw}
 \caption{Elementos básicos da soldagem GMAW \cite{book:intro-soldagem}.}
 \label{fig:solda_gmaw}
 \end{figure}
@@ -140,7 +140,7 @@ O elemento mais importante neste trabalho, Processamento de Imagens,possui algun
 
 Todos esses passos são possíveis quando se tem uma \textbf{Base de conhecimento} prévia que fica codificada no sistema de processamento de imagens. Com esses conhecimentos sobre o problema em questão e os métodos disponíveis pode-se criar uma solução viável. Por exemplo, quando é conhecida a região da imagem que tem informações de interesses é mais fácil segmentar essa imagem.
 
-\subsection{Realce de imagens}
+\subsection{Realce de imagens}\label{section:realce-imagens}
 
 O objetivo das técnicas de realce é obter uma imagem mais apropriada para uma aplicação específica por meio de técnicas de processamento. As técnicas escolhidas, assim como seus parâmetros e a ordem em que são aplicadas dependem completamente da aplicação.
 Existem basicamente dois métodos de realce: \textbf{Métodos no domínio espacial} e \textbf{Métodos no domínio da frequência}.
@@ -152,6 +152,15 @@ g(x,y)=T[f(x,y)]
 \end{equation}
 
 em que $f(x,y)$ é a imagem de entrada, $g(x,y) $ é a imagem processada e $T$ é um operador sobre $f$, definido sobre alguma vizinhança de $(x,y)$. $T$ pode operar sobre um conjunto de imagens de entrada, como será explicado mais adiante.
+
+\begin{figure}[h!]
+\begin{center}
+\centering
+\includegraphics[scale = 0.5]{Figuras/convolucao.png}
+\caption{Máscara e vizinhança de pixel}\label{fig:convolucao}
+\end{center}
+\end{figure}
+
 
 A estratégia é definir uma subimagem em torno de um pixel $(x,y)$ (quadrado, retângulo ou mesmo aproximação de um círculo) e aplicar a operação sobre essa subimagem para cada pixel da imagem e obter $g$ em cada posição correspondente. A vizinhança mais simples que pode ser definida tem tamanho $1\times 1$, e $T$ é uma \textit{transformação de níveis de cinza} ou \textit{processamento ponto-a-ponto} da forma:
 
@@ -175,20 +184,27 @@ ou, a partir do teorema da convolução, no domínio da frequência:
 G(u,v)=H(u,v)F(u,v)
 \end{equation}
 
-em que $G$, $H$ e $F$ são transformadas de Fourier de $g$, $h$ e $f$, respectivamente. Similarmente aos sistemas lineares, a transformada $H(u,v)$ é chamada de \textit{função de transferência óptica}. A equação \ref{eq:convolucao} é um processo espacial análogo ao uso de máscaras e $h(x,y)$ costuma ser chamada de \textit{máscara de convolução espacial}.
+em que $G$, $H$ e $F$ são transformadas de Fourier de $g$, $h$ e $f$, respectivamente. Esta transformada é melhor demonstrada na figura \ref{fig:convolucao}. Similarmente aos sistemas lineares, a transformada $H(u,v)$ é chamada de \textit{função de transferência óptica}. A equação \ref{eq:convolucao} é um processo espacial análogo ao uso de máscaras e $h(x,y)$ costuma ser chamada de \textit{máscara de convolução espacial}.
 
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[scale = 0.7]{Figuras/convolucao.png}
-\caption{Máscara e vizinhança de pixel}\label{fig:convolucao}
-\end{center}
-\end{figure}
 
 A seguir são detalhados os métodos de processamento utilizados neste trabalho.
 
+\subsubsection{Técnicas especiais para sistemas reconfiguráveis} \label{section:tecnicas-filtro-fpga}
+
+A convolução pode ter um custo computacional elevado, mesmo se implementada em sistemas reconfiguráveis. Algumas técnicas foram desenvolvidas para aumentar a eficiência deste processamento. Uma dessas técnicas é a descrita em \cite{tese:jones}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.6\textwidth]{./Figuras/buffer-filtro.png}
+\caption{Esquemático de \textit{buffer} para filtro convolução.\cite{tese:jones}}
+\label{fig:buffer-filtro}
+\end{figure}
+
+Um \textit{buffer} é criado para armazenar duas linhas mais dois \textit{pixels} de forma a se evitar leituras em memória. A janela para a multiplicação é criada com um \textit{pixel} novo, recebido a cada ciclo, e os valores armazenados no \textit{buffer}. O \textit{buffer} sofre um \textit{shift} com todos os seus elementos para a esquerda, descartando o último valor armazenado e liberando espaço a o armazenamento de um novo \textit{pixel}. A figura \ref{fig:buffer-filtro} demonstra essa técnica.
+
 \subsubsection{Limiarização}
 
-Esta é um método espacial que consiste em separar uma imagem em diferentes níveis de cinza. O comum é ter apenas um limiar e dois níveis, o que constitui em uma binarização da imagem. A binarização pode ser feita de duas formas: transformar todos os pixels abaixo de um limiar em zero (preto) ou transformar todos os acima do limiar no nível máximo (branco).
+Também chamada de binarização, este é um método espacial que consiste em separar uma imagem em diferentes níveis de cinza. O comum é ter apenas um limiar e dois níveis, o que constitui em uma binarização da imagem. A binarização pode ser feita de duas formas: transformar todos os pixels abaixo de um limiar em zero (preto) ou transformar todos os acima do limiar no nível máximo (branco).
 
 O mais comum é a limiarização que transforma todos os pixels abaixo do limiar em preto e todos acima em branco, ou seja uma imagem binária.
 

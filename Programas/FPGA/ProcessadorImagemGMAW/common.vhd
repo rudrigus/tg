@@ -3,10 +3,14 @@ use ieee.numeric_std.all;
 use IEEE.STD_LOGIC_1164.all;
 
 package Common is
-  constant numcols   : integer := 296;
-  constant numlin    : integer := 264;
+  constant numcols   : integer := 128;
+  constant numlin    : integer := 128;
   --constant tamanho_imagem : integer := numcols * numlin;
   constant qtd_imagens : natural := 4;
+  constant threshold1  : std_logic_vector(7 downto 0) := "00000111";
+  constant threshold2  : std_logic_vector(7 downto 0) := "00011010";
+  constant threshold3  : std_logic_vector(7 downto 0) := "01111111";
+
 
   -- usado para regressao:linear
   -- olhar rea-Efficient Linear Regression Architecture for Real-Time Signal Processing on FPGAs

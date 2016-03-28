@@ -59,6 +59,13 @@ Disserta��o (Mestrado) --- Universidade Federal de Santa Catarina, 2005.}
 {GONZALEZ, R.~C.; WOODS, R.~E. \emph{Processamento de Imagens Digitais}. 1ª.
   ed. [S.l.]: Edgard Blücher LTDA, 2000.}
 
+\bibitem{tese:jones}
+\abntrefinfo{Silva}{SILVA}{}
+{SILVA, J. Y. M.~A. da.
+\emph{Implementação de Técnicas de Processamento de Imagens no Domínio
+  Espacial em Sistemas Reconfiguráveis}.
+Dissertação de Mestrado.}
+
 \bibitem{article:Criminisi}
 \abntrefinfo{Criminisi, Reid e Zisserman}{CRIMINISI; REID; ZISSERMAN}{1997}
 {CRIMINISI, A.; REID, I.; ZISSERMAN, A. A plane measuring device.

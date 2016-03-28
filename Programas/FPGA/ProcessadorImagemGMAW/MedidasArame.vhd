@@ -9,12 +9,10 @@ entity MedidasArame is
   meioVert      : in unsigned(7 downto 0);
   meioHor       : in unsigned(7 downto 0);
   in_clock      : in std_logic;
-  FVAL          : in std_logic;
-  LVAL          : in std_logic;
   pixel_entrada : in std_logic_vector(7 downto 0) := "00000000";
-  bloco_atual   : in unsigned(1 downto 0);
-  endereco_leitura : inout unsigned(13 downto 0) := (others => '0');
-  q                : in std_logic_vector(7 downto 0);
+  coluna        : in natural range (numcols - 1) downto 0 := 0;
+  linha         : in natural range (numlin - 1) downto 0 := 0;
+  q             : in std_logic_vector(7 downto 0);
   inicioArame   : buffer vetorVert := (others => 0);
   fimArame      : buffer vetorVert := (others => 0);
   posArameTopo  : out natural range numlin downto 0 := 0;
@@ -22,9 +20,6 @@ entity MedidasArame is
 end MedidasArame;
 
 architecture comportamental of MedidasArame is
-signal coluna : natural range (numcols - 1) downto 0 := 0;
-signal linha  : natural range (numlin  - 1) downto 0 := 0;
---signal somaLinha        : integer := 0;
 signal somaHor            : vetorHor := (others => 0);
 signal derivadaHor        : vetorHor := (others => 0);
 signal max_derivada       : integer := -1000000;
@@ -47,23 +42,11 @@ signal pixel_antigo       : unsigned(7 downto 0) := (others => '0');
 signal derivada           : integer := 0;
 
 begin
-
--- pegar valores das 3 imagens carregadas e calcular (só estou lendo uma imagem, isso vai dar dor de cabeça)
-  -- preciso pegar tambem do (bloco_atual -1) e do (bloco_atual -2)
-  -- fazer um for() aqui e tirar a média? ou talvez usar memórias separadas?
--- OU -> usar pixel de entrada direto da leitura
-  -- guardar os vetores somaHor e derivadaHor, para então subtrair do vetor os valores antigos de (bloco_atual -3)
-  -- se der certo dá para usar tranquilamente quantas imagens eu quiser, pelo menos no cálculo de topo e base
-
-process(FVAL,in_clock) begin
+process(coluna,linha,in_clock) begin
   if(rising_edge(in_clock)) then
     
-    if(FVAL = '0') then
-    -- começo de uma imagem. para evitar surpresas, resetar valores aqui
-      -- Adiantar endereço de memória pois sempre há o atraso de um ciclo para leitura e um para a subtração em soma_linha
-      endereco_leitura <= (bloco_atual - "10") & ("000000000000" + "000000000010");
-      coluna <= 0;
-      linha <= 0;
+    if(coluna=1 and linha=1) then
+    -- começo de uma imagem. resetar valores aqui
       max_derivada <= -1000000;
       max_derivada2 <= -1000000;
       max_derivada_arame <= -1000000;
@@ -71,22 +54,16 @@ process(FVAL,in_clock) begin
 
       
     else
-      if (coluna = numcols - 1) then
+        --endereco_leitura <= endereco_leitura + 1;
+      if (coluna = numcols - 2) then
       -- fim de uma linha
-        coluna <= 0;
-        endereco_leitura <= endereco_leitura + 1;
 
-        if (linha = numlin -1) then
+        if (linha = numlin - 2) then
         -- fim de uma imagem
-          linha <= 0;
-          endereco_leitura <= (bloco_atual - "10") & "000000000000";
-          
           max_derivada <= -1000000;
           max_derivada2 <= -1000000;
         else
         -- proxima linha
-          linha <= linha + 1;
-          
           max_derivada_arame <= -1000000;
           min_derivada_arame <= 1000000;
 
@@ -100,8 +77,8 @@ process(FVAL,in_clock) begin
           fimArame(linha) <= fimArame(linha) + fimArame0(linha) - fimArame3(linha);
 
           -- calculo das derivadas dos perfis horizontais
-          if(linha > 0) then
-            derivadaHor(linha) <= somaHor(linha) - somaHor(linha -1);
+          if(linha > 1) then
+            derivadaHor(linha-1) <= somaHor(linha-1) - somaHor(linha -2);
           end if;
 
           -- definicao do maximo e minimo das derivadas e topo e base do arame
@@ -119,11 +96,6 @@ process(FVAL,in_clock) begin
 
         end if;
       else
-      -- ler mais um pixel na linha
-        endereco_leitura <= endereco_leitura + 1;
-        if(LVAL = '1') then
-          coluna <= coluna + 1;
-        end if;
         -- definicao das laterais do arame
         derivada <= to_integer(unsigned(pixel_entrada)) - to_integer(unsigned(pixel_antigo));
         if (coluna < meioHor) then
